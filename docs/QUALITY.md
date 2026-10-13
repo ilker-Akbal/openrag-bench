@@ -15,7 +15,7 @@ the following pinned developer tools:
 python -m pip install -e '.[dev]'
 python -m ruff check openrag_bench tests
 python -m coverage run --source=openrag_bench -m unittest discover -s tests -v
-python -m coverage report -m --fail-under=55
+python -m coverage report -m --fail-under=90
 python -m coverage xml -o coverage.xml
 python -m unittest discover -s tests -p property_metrics.py -v
 ~~~
@@ -27,10 +27,12 @@ The existing **Python 3.11** status check in ci.yml executes these commands
 and must pass under the active main-branch ruleset. The other 3.10, 3.12
 and 3.13 jobs still run standard library unit tests and package smoke tests.
 
-The coverage threshold begins at **55%** while the first measured baseline
-is established. This minimum must be increased deliberately in a follow-up
-PR after inspecting the actual coverage report; 55% is a gate, **not** a
-claim about measured coverage.
+The observed initial Python 3.11 CI report measured **95% line coverage**
+(555 measured statements, 26 missed). The enforced threshold is set to
+**90%**, leaving a small margin while catching substantial regressions.
+This is actual line coverage under that test environment, **not** branch
+coverage, production correctness or whole application security.
+See the associated GitHub Actions quality job logs.
 
 ### Limitations
 
