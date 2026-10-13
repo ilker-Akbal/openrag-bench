@@ -129,3 +129,25 @@ version, original corpus checksum, top-1 IDs and aggregates. This tiny
 synthetic test proves API compatibility only; it cannot replace a real
 labeled multilingual or large-scale retrieval benchmark. Nothing is uploaded
 except synthetic numeric result metadata.
+
+
+## Verified real-framework GitHub Actions run (13 October 2026)
+
+**Both real package jobs passed** in the dedicated
+[GitHub Actions run](https://github.com/ilker-Akbal/openrag-bench/actions/runs/38456230435).
+
+| Installed framework | Verified package version | Interpreter | Result |
+| --- | --- | --- | --- |
+| LangChain InMemoryVectorStore | langchain-core 1.6.5 | Python 3.11.17 | Pass |
+| LlamaIndex VectorStoreIndex | llama-index-core 0.14.25 | Python 3.11.17 | Pass |
+
+Each job built an actual vector store, embedded three original synthetic
+documents, retrieved the top-ranked ID for three labeled queries, and
+evaluated the output using the real OpenRAG Bench adapter and metric functions.
+All @1 metrics were 1.0 because the keyword vectors were deliberately
+unambiguous. These figures **are not a benchmark of either framework's search
+quality** and do not provide evidence of any third-party user adoption.
+The workflow uploaded aggregate-only results and installed-version metadata.
+
+Additional versions, other stores, production indices and semantic
+embeddings have not been independently validated.
