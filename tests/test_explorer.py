@@ -41,7 +41,7 @@ class ExplorerTests(unittest.TestCase):
         html=render_html(report)
         self.assertLess(html.index(">worse</th>"),html.index(">better</th>"))
         self.assertIn("Regressed",html)
-        self.assertIn("Bootstrap",html.capitalize())
+        self.assertIn("bootstrap intervals",html)
         self.assertNotIn("document IDs are not included in this HTML", "")
 
     def test_escaped_ids_and_no_raw_question_or_doc_ids(self):
