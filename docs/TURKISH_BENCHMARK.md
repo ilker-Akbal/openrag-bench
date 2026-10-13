@@ -60,10 +60,24 @@ scores are presented as our own.
 
 ### Verified results
 
-**Pending first pinned dataset CI run.** Run URL, hashes and numbers will be
-filled in **only after a real CI job succeeds**. Avoid reproducing metrics
-from the original dataset author's different chunking/retriever configurations
-as though they came from this evaluation.
+**Verified** by [real pinned data GitHub Actions run](https://github.com/ilker-Akbal/openrag-bench/actions/runs/38459555733) on Python 3.11/Linux. The run checked exactly **54 documents, 58 human-labeled queries and 58 qrels**, and retained only an aggregate-only JSON artifact:
+
+| Lexical method | NDCG@10 |
+| --- | ---: |
+| Unicode casefold BM25 | **0.8544543634421565** |
+| Turkish-specific casing BM25 | **0.8544543634421565** |
+| Candidate minus baseline | **0.0000000000000000** |
+
+In this specific article-level health dataset, the selected casing change
+**made no difference to NDCG@10**. This is a useful negative result, not
+evidence of model superiority. It does not mean the two tokenizations are
+equivalent across Turkish domains, or that suffix-aware morphological
+processing would have no value.
+
+The test artifact contains original source file SHA-256 digests, aggregate
+scores and paired descriptive intervals; licensed articles and questions
+are excluded. For exact checksums, inspect the numeric-only artifact from
+the linked workflow.
 
 ## Limitations
 
