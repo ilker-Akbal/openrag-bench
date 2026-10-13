@@ -1,5 +1,9 @@
 # OpenRAG Bench
 
+[![CI](https://github.com/ilker-Akbal/openrag-bench/actions/workflows/ci.yml/badge.svg)](https://github.com/ilker-Akbal/openrag-bench/actions/workflows/ci.yml)
+[![GitHub pre-release](https://img.shields.io/github/v/release/ilker-Akbal/openrag-bench?include_prereleases)](https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.1.0)
+
+
 **Offline retrieval evaluation and regression testing for RAG pipelines.**
 
 OpenRAG Bench is a small Python toolkit for comparing the ranked document results of retrieval-augmented generation systems. It helps developers catch regressions when they change an embedding model, chunking strategy, retriever or index configuration.
@@ -11,11 +15,19 @@ OpenRAG Bench is a small Python toolkit for comparing the ranked document result
 - **Integrate** custom retrievers through a tiny protocol or the optional FAISS adapter.
 - **Reproduce** seeded, paired-bootstrap uncertainty intervals without a cloud API.
 
-**Status:** early open-source release candidate. This measures **retrieval relevance**, not LLM answer quality or factual correctness. Example data is synthetic; no benchmark superiority or external adoption is claimed.
+**Status:** [v0.1.0 public GitHub pre-release](https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.1.0), with SHA-256 checksums and tested wheel/source archives. This measures **retrieval relevance**, not LLM answer quality or factual correctness. Example data is synthetic; no benchmark superiority or external adoption is claimed.
 
 ## Quick start
 
-Requirements: Python 3.10 or newer.
+Requires Python 3.10 or newer. Install the **GitHub release wheel** (not
+published on PyPI):
+
+```bash
+python -m pip install https://github.com/ilker-Akbal/openrag-bench/releases/download/v0.1.0/openrag_bench-0.1.0-py3-none-any.whl
+openrag-bench --help
+```
+
+To run the examples and tests from source:
 
 ```bash
 git clone https://github.com/ilker-Akbal/openrag-bench.git
@@ -128,6 +140,8 @@ workflow performs the real model evaluation.
 - [Security guidance](SECURITY.md)
 - [Provenance and third-party asset policy](docs/PROVENANCE.md)
 - [Development roadmap](docs/ROADMAP.md)
+- [First-time contributor and reproduction tasks](docs/GET_INVOLVED.md)
+- [Latest public GitHub release](https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.1.0)
 
 This repository contains the standalone toolkit only, **not** the ROKETSAN workshop archive. Third-party material from that archive is deliberately excluded.
 

@@ -1,11 +1,12 @@
 # Changelog
 
-All notable changes to OpenRAG Bench will be documented here.
-The project follows semantic versioning for **tagged releases**; the Python
-package metadata currently indicates 0.1.0 but **no GitHub release/tag is
-claimed by this file**.
+All notable changes to OpenRAG Bench are documented here.
 
-## Unreleased (release candidate work, 13 October 2026)
+## [v0.1.0] — 2026-10-13
+
+[GitHub public pre-release](https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.1.0)
+includes tested wheel, source distribution and SHA256SUMS integrity file.
+This is a **GitHub release, not a PyPI publication**.
 
 ### Added
 - Dependency-free, offline Precision@k, Recall@k, Hit@k, MRR@k and NDCG@k
@@ -21,8 +22,7 @@ claimed by this file**.
   contributor guidance.
 
 ### Limitations
-- No public source/wheel release or PyPI availability is claimed until a
-  signed-off release is explicitly made.
+- The first source and wheel GitHub release exists; no PyPI package is claimed.
 - Verified MiniLM + FAISS SciFact results were also recorded from
   GitHub Actions (full CPU model inference and independent TREC re-scoring).
   This specific run's NDCG@10 was 0.6451, versus BM25 0.6605; no
