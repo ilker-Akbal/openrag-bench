@@ -201,3 +201,28 @@ dependency-free wrappers that extract stable document IDs. No frameworks or
 model weights are installed automatically. See the separate
 [adapter guide](FRAMEWORK_INTEGRATIONS.md) for integration contracts, example
 code, ground-truth ID alignment and limitations.
+
+
+## Streaming JSONL summary (v0.3.0 development)
+
+Use --streaming-summary for JSONL/NDJSON files larger than memory. It uses
+one input line at a time and retains only the running eight-metric summary:
+
+~~~bash
+openrag-bench your-evaluation.jsonl --streaming-summary --k 5 --output summary.json
+~~~
+
+The output contains count, k, metrics, evaluation_mode and limitations;
+it deliberately omits every per-query row. The implementation retains a
+single decoded row and fixed-size running sums. **Memory still depends
+on the length of the largest input line**. Query text is never copied
+into the report. Per-query JSON, CSV and HTML reports, TREC qrels,
+baseline/candidate alignment, bootstrap uncertainty and regression gates
+are incompatible with this mode and will cause a helpful CLI error.
+
+The default JSON/JSONL/TREC paths have not changed and may still load data
+into memory. Summing floating point values incrementally can differ by
+last-bit rounding from batch evaluation; semantic parity is tested with
+numerical tolerances. Graded relevance and empty-label conventions are
+unchanged. The input must already be labeled; this mode does not produce
+retrieval rankings or query IDs.

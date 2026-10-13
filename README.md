@@ -55,6 +55,19 @@ openrag-bench candidate.jsonl --baseline baseline.jsonl --csv deltas.csv --k 5
 CSV reports exclude raw question text and protect against spreadsheet formula
 injection. See [data formats](docs/USAGE.md).
 
+## Bounded-memory JSONL summary mode
+
+For large labeled JSONL datasets, evaluate without materializing the complete
+input or per-query report:
+
+~~~bash
+openrag-bench large.jsonl --streaming-summary --k 5 --output summary.json
+~~~
+
+This mode writes only aggregate metrics and rejects baselines, HTML, CSV and
+TREC inputs. Normal JSONL/JSON/TREC behavior remains unchanged. See the
+[streaming guide](docs/USAGE.md) and benchmark methodology.
+
 ## Graded judgments and MAP@k
 
 Beyond binary relevance, evaluate documents labeled with positive integer

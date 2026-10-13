@@ -4,6 +4,10 @@ All notable changes to OpenRAG Bench are documented here.
 
 ## Unreleased — working toward v0.3.0
 
+- Add explicit bounded-memory JSONL **aggregate-only** streaming evaluator;
+  preserve all existing metrics and reject unsupported paired/reporting
+  combinations rather than silently changing semantics.
+
 - Add a separate GitHub Actions compatibility suite for actual installed
   LangChain and LlamaIndex vector index/retriever implementations, using a
   deterministic, offline, synthetic embedding and exact-label evaluation.

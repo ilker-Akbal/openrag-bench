@@ -45,6 +45,10 @@ jobs:
         run: |
           openrag-bench examples/trec_candidate.run --qrels examples/trec_graded.qrels --graded-qrels --k 2 --metric graded_ndcg_at_k > graded.json
           python -c "import json; r=json.load(open('graded.json')); assert 'map_at_k' in r['metrics'] and 'graded_ndcg_at_k' in r['metrics']"
+      - name: Streaming JSONL aggregate-only smoke test
+        run: |
+          openrag-bench examples/retrieval_results.jsonl --streaming-summary --k 2 --output streaming_summary.json > /dev/null
+          python -c "import json; r=json.load(open('streaming_summary.json')); assert r['count']==2 and 'per_query' not in r"
       - name: JSONL plus CSV smoke test
         run: |
           openrag-bench examples/retrieval_results.jsonl --k 2 --csv per_query.csv

@@ -92,7 +92,15 @@ def main(argv=None):
     parser.add_argument("--output", type=Path, help="Write machine-readable JSON report")
     parser.add_argument("--html", type=Path, help="Write standalone HTML report")
     parser.add_argument("--csv", type=Path, help="Write per-query spreadsheet-safe CSV (excludes question text)")
+    parser.add_argument("--streaming-summary", action="store_true",
+                        help="Evaluate JSONL incrementally; output aggregate metrics without per-query rows")
     args = parser.parse_args(argv)
+    if args.streaming_summary:
+        if args.baseline or args.qrels or args.graded_qrels or args.csv or args.html:
+            parser.error("--streaming-summary supports JSONL summary only; no --baseline, --qrels, --csv or --html")
+        if args.input_format == "json" or (args.input_format == "auto" and
+             args.dataset.suffix.lower() not in (".jsonl", ".ndjson")):
+            parser.error("--streaming-summary requires a .jsonl/.ndjson file or --input-format jsonl")
     if args.graded_qrels and not args.qrels:
         parser.error("--graded-qrels requires --qrels")
     if args.qrels and args.input_format != "auto":
@@ -105,20 +113,25 @@ def main(argv=None):
             parser.error("--min-delta must be finite")
 
     try:
-        if args.qrels:
+        if args.streaming_summary:
+            from .streaming import evaluate_jsonl_stream
+            report = evaluate_jsonl_stream(args.dataset, args.k)
+        elif args.qrels:
             from .trec import load_trec_run
             candidate = load_trec_run(args.dataset, args.qrels, graded=args.graded_qrels)
         else:
             from .io import read_rows
             candidate = read_rows(args.dataset, input_format=args.input_format)
-        if args.baseline:
+        if args.streaming_summary:
+            pass
+        elif args.baseline:
             from .comparison import compare_rows
             if args.qrels:
                 baseline = load_trec_run(args.baseline, args.qrels, graded=args.graded_qrels)
             else:
                 baseline = read_rows(args.baseline, input_format=args.input_format)
             report = compare_rows(candidate, baseline, args.k)
-        else:
+        elif not args.streaming_summary:
             report = evaluate(candidate, args.k)
     except (ValueError, KeyError, TypeError, OSError, json.JSONDecodeError) as exc:
         parser.error(str(exc))

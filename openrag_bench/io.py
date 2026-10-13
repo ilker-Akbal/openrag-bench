@@ -2,6 +2,29 @@
 import json
 from pathlib import Path
 
+def iter_jsonl(path):
+    """Yield physical line numbers and JSON objects, without storing past rows."""
+    source = Path(path)
+    with source.open("r", encoding="utf-8-sig") as handle:
+        nonblank = 0
+        for lineno, line in enumerate(handle, 1):
+            if not line.strip():
+                continue
+            try:
+                item = json.loads(line)
+            except json.JSONDecodeError as exc:
+                raise ValueError(
+                    f"{source}: invalid JSON Lines record at line {lineno}, "
+                    f"column {exc.colno}: {exc.msg}"
+                ) from exc
+            if not isinstance(item, dict):
+                raise ValueError(f"{source}: JSON Lines record at line {lineno} must be an object")
+            nonblank += 1
+            yield lineno, item
+        if nonblank == 0:
+            raise ValueError(f"{source}: JSON Lines file contains no records")
+
+
 
 def read_rows(path, *, input_format="auto"):
     """Read a list of labeled retrieval rows.
@@ -23,20 +46,4 @@ def read_rows(path, *, input_format="auto"):
                     f"{source}: invalid JSON at line {exc.lineno}, column {exc.colno}: {exc.msg}"
                 ) from exc
 
-        rows = []
-        for lineno, line in enumerate(handle, 1):
-            if not line.strip():
-                continue
-            try:
-                item = json.loads(line)
-            except json.JSONDecodeError as exc:
-                raise ValueError(
-                    f"{source}: invalid JSON Lines record at line {lineno}, "
-                    f"column {exc.colno}: {exc.msg}"
-                ) from exc
-            if not isinstance(item, dict):
-                raise ValueError(f"{source}: JSON Lines record at line {lineno} must be an object")
-            rows.append(item)
-        if not rows:
-            raise ValueError(f"{source}: JSON Lines file contains no records")
-        return rows
+        return [row for _line, row in iter_jsonl(source)]
