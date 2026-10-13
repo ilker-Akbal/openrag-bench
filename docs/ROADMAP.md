@@ -50,7 +50,7 @@
 **Priority 2: wider evidence and sustainable maintenance**
 
 4. [Turkish-language retrieval benchmark with valid relevance labels](https://github.com/ilker-Akbal/openrag-bench/issues/20): add an external pinned Turkish Wikipedia human-labeled set (CC BY-SA, not bundled), validated Turkish casing rules, BM25 comparison and a real CI run. No cross-domain claim.
-5. [Quality gates and maintainable releases](https://github.com/ilker-Akbal/openrag-bench/issues/22): measurable coverage, property tests, focused lint and versioned artifact publication.
+5. [Quality gates and maintainable releases](https://github.com/ilker-Akbal/openrag-bench/issues/22): enforce Ruff lint, actual coverage reports, Hypothesis property tests and Node.js 24-compatible GitHub Actions; future version releases remain separate reviewed changes.
 6. [Independent user reproduction and feedback](https://github.com/ilker-Akbal/openrag-bench/issues/4): collect **real** downstream examples and issues from non-maintainers.
 
 Each issue has testable acceptance criteria. The existing `v0.2.0` release

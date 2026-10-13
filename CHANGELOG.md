@@ -4,6 +4,12 @@ All notable changes to OpenRAG Bench are documented here.
 
 ## Unreleased — working toward v0.3.0
 
+- Add **enforced** Ruff static lint and measured test coverage to the
+  protected Python 3.11 required status check, with optional developer-only
+  tooling and Hypothesis property invariants.
+- Upgrade GitHub workflow actions to Node.js 24-capable supported major
+  versions. Preserve required check job names and avoid auto-release triggers.
+
 - Add pinned CC BY-SA Turkish Wikipedia retrieval benchmark runner, consuming
   54 articles and 58 independently authored human-labeled questions from an
   external dataset **without bundling** third-party texts or questions.

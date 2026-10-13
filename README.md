@@ -226,6 +226,23 @@ and [verified aggregate metrics](benchmarks/scifact_dense_2026-10-13.json).
 Ordinary unit CI does not download weights; a dedicated GitHub Actions
 workflow performs the real model evaluation.
 
+## Development quality gates (v0.3 development)
+
+The required Python 3.11 CI job now runs Ruff static lint, exact coverage
+measurement, and Hypothesis property tests alongside ordinary unit tests.
+Development tooling remains an **optional** install, not a mandatory runtime
+dependency.
+
+~~~bash
+python -m pip install -e '.[dev]'
+python -m ruff check openrag_bench tests
+python -m coverage run --source=openrag_bench -m unittest discover -s tests -v
+python -m coverage report -m
+python -m unittest discover -s tests -p property_metrics.py -v
+~~~
+
+See [quality requirements and actual measured coverage](docs/QUALITY.md).
+
 ## Contribute, get support and verify results
 
 The tool is maintained in the open. You can install the existing public
