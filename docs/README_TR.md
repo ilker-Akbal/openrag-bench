@@ -85,3 +85,21 @@ Mevcut LangChain veya LlamaIndex retriever nesnelerini, uygulamanızdaki
 sabit doküman kimliklerini koruyarak değerlendirmeye bağlayabilirsiniz.
 Temel paket bu framework'leri kendisi kurmaz. Ayrıntılar:
 [Entegrasyon rehberi](FRAMEWORK_INTEGRATIONS.md).
+
+
+## Gerçek Türkçe etiketli retrieval benchmark'ı
+
+Türkçe Vikipedi'den **54 makale ve insan tarafından etiketlenmiş 58 sorgu**
+üzerinde iki farklı metin normalizasyonunu **aynı BM25 algoritmasıyla**
+karşılaştırabilirsiniz:
+
+~~~bash
+python examples/turkish_real_benchmark.py --download --k 10 --output turkish_summary.json
+~~~
+
+Veri, üçüncü taraf [Turkish RAG Eval](https://huggingface.co/datasets/RizgarOzan/turkish-rag-eval)
+projesinden belirli commit ile yalnızca çalıştırma sırasında indirilir.
+Korpus ve etiketler CC BY-SA 4.0 lisanslıdır; bu depoya veya MIT pakete
+kopyalanmaz. Çıktı yalnızca sayısal metrikleri ve SHA-256 özetlerini içerir.
+Tek bir sağlık alanındaki 58 soru, genel Türkçe RAG doğruluğunu kanıtlamaz.
+Ayrıntılar: [Veri ve yöntem belgesi](TURKISH_BENCHMARK.md).

@@ -4,6 +4,13 @@ All notable changes to OpenRAG Bench are documented here.
 
 ## Unreleased — working toward v0.3.0
 
+- Add pinned CC BY-SA Turkish Wikipedia retrieval benchmark runner, consuming
+  54 articles and 58 independently authored human-labeled questions from an
+  external dataset **without bundling** third-party texts or questions.
+- Compare identical BM25 settings with Unicode casefold versus Turkish-aware
+  dotted/dotless-I casing; archive aggregate metrics and dataset checksums,
+  not question text or article contents.
+
 - Add offline, keyboard-accessible per-query diagnostic HTML explorer with
   safe filtering/sorting, top-k overlap and label coverage. Omit raw question
   text and document IDs from HTML to reduce accidental disclosures.
