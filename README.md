@@ -207,3 +207,12 @@ This repository contains the standalone toolkit only, **not** the ROKETSAN works
 ## License
 
 MIT; see [LICENSE](LICENSE). No permission is claimed over third-party workshop content or externally supplied benchmark datasets.
+
+
+### Verified installed-framework compatibility
+
+Both pinned packages passed true offline vector-store integration on GitHub
+Actions: LangChain core **1.6.5** and LlamaIndex core **0.14.25** (Python
+3.11.17). See the [actual passing framework run](https://github.com/ilker-Akbal/openrag-bench/actions/runs/38456230435).
+The tiny synthetic keyword-vector exercise is a compatibility check, not
+semantic retrieval benchmarking.
