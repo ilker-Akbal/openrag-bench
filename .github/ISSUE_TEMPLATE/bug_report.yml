@@ -1,0 +1,48 @@
+name: Bug report
+description: Report a reproducible software bug (do not include confidential datasets)
+title: "[Bug]: "
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting an issue. Do not include API keys, private corpora,
+        sensitive benchmark queries, or third-party copyrighted documents.
+        For security vulnerabilities, follow SECURITY.md rather than posting exploit details here.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Observed behavior and impact
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Minimal reproduction
+      description: Command, tiny synthetic JSON/TREC fixture, and steps
+      placeholder: |
+        python -m pip install -e .
+        openrag-bench examples/retrieval_results.json --k 2
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version / commit
+      placeholder: v0.1.0 or git SHA
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Python version, OS, and optional dependencies
+    validations:
+      required: true

@@ -1,0 +1,25 @@
+name: Feature request
+description: Propose a documented, reproducible addition
+title: "[Feature]: "
+body:
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Which real RAG evaluation task is difficult today?
+      description: Explain use case and current workaround.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed interface and expected behavior
+      description: Include synthetic example inputs/outputs; avoid copyrighted/private datasets.
+    validations:
+      required: true
+  - type: textarea
+    id: compatibility
+    attributes:
+      label: Reproducibility and compatibility
+      description: Dependencies, cross-platform needs, and potential changes to metric semantics.
+    validations:
+      required: false
