@@ -55,6 +55,12 @@ jobs:
           python -m pip install build
           python -m build
           python scripts/audit_distributions.py
+      - name: Install sdist in isolated environment
+        if: matrix.python-version == '3.11'
+        run: |
+          python -m venv .sdist-smoke
+          .sdist-smoke/bin/pip install dist/*.tar.gz
+          .sdist-smoke/bin/openrag-bench examples/retrieval_results.jsonl --k 2 --csv sdist_report.csv > /dev/null
       - name: Install built wheel in isolated environment
         if: matrix.python-version == '3.11'
         run: |

@@ -1,9 +1,11 @@
 # Maintainer release checklist
 
-The first version [v0.1.0](https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.1.0)
-was published as a **GitHub pre-release** on 2026-10-13. Its build workflow
-passed package tests, archive-content audit, clean-venv wheel installation,
-SHA256SUMS validation and GitHub Release publication.
+Version [v0.1.0](https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.1.0)
+was published on 2026-10-13. Version
+[v0.2.0](https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.2.0)
+adds JSONL/CSV, MAP, graded NDCG and optional retriever framework adapters.
+The v0.2.0 pipeline builds/tests archives and checks their integrity before
+publication. Both versions are GitHub **pre-releases**, not PyPI distributions.
 
 This checklist applies to **future** releases. A package version alone never
 proves that a later release exists.
@@ -32,7 +34,7 @@ proves that a later release exists.
 
 1. Confirm the version in `pyproject.toml` matches the intended tag.
 2. From the reviewed clean `main` commit, create a signed or annotated
-   Git tag such as `v0.1.0`. Push the tag and verify it resolves to
+   Git tag such as `v0.3.0`. Push the tag and verify it resolves to
    the reviewed commit.
 3. Generate SHA-256 hashes for wheel and source distribution.
 4. Create a GitHub Release from that tag with tested Python versions,

@@ -1,7 +1,7 @@
 # OpenRAG Bench — Türkçe Hızlı Başlangıç
 
 [English README](../README.md) ·
-[GitHub v0.1.0 ön sürümü](https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.1.0)
+[GitHub v0.2.0 ön sürümü](https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.2.0)
 
 **OpenRAG Bench**, RAG sistemlerinin *belge erişim (retrieval) kalitesini*
 ölçen, iki retrieval sürümünü karşılaştırabilen ve performans gerilemelerini
@@ -24,7 +24,7 @@ doğruluğunu, halüsinasyon oranını veya bilgiye dayandırılmasını doğrud
 Python 3.10–3.13 desteklenir. GitHub ön sürümü için:
 
 ```bash
-python -m pip install https://github.com/ilker-Akbal/openrag-bench/releases/download/v0.1.0/openrag_bench-0.1.0-py3-none-any.whl
+python -m pip install https://github.com/ilker-Akbal/openrag-bench/releases/download/v0.2.0/openrag_bench-0.2.0-py3-none-any.whl
 openrag-bench --help
 ```
 

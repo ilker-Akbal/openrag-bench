@@ -130,7 +130,7 @@ must contain one JSON object matching the row schema above.
 
 ```bash
 openrag-bench examples/results.jsonl --k 5 --csv per_query.csv
-openrag-bench candidate.jsonl --baseline baseline.jsonl --k 5 \\
+openrag-bench candidate.jsonl --baseline baseline.jsonl --k 5 \
   --csv comparison.csv --output comparison.json
 ```
 
@@ -183,7 +183,7 @@ relevance sets, to ensure meaningful paired comparisons.
 For TREC, an **opt-in** flag preserves positive relevance grades:
 ```bash
 openrag-bench examples/trec_candidate.run --baseline examples/trec_baseline.run \\
-  --qrels examples/trec_graded.qrels --graded-qrels --k 2 \\
+  --qrels examples/trec_graded.qrels --graded-qrels --k 2 \
   --metric graded_ndcg_at_k --min-delta 0
 ```
 
