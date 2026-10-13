@@ -8,6 +8,8 @@ All notable changes to OpenRAG Bench are documented here.
   exports with physical-line parse diagnostics.
 - Add MAP@k and exponential-gain graded NDCG@k; preserve binary NDCG and
   introduce opt-in TREC `--graded-qrels`.
+- Add lightweight LangChain and LlamaIndex retriever interoperability
+  adapters with stable-ID validation and dependency-free mocked tests.
 - Maintain source-only development changes on `main`; published v0.1.0
   wheel and source distribution remain unchanged.
 
