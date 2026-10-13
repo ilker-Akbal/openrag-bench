@@ -137,6 +137,10 @@ def main(argv=None):
             for query_id in sorted(queries):
                 for rank, (doc_id, score) in enumerate(result[method][query_id], 1):
                     writer.write(f"{query_id} Q0 {doc_id} {rank} {score:.10f} {method}\n")
+    with (dest / "test.qrels").open("w", encoding="utf-8") as writer:
+        for query_id in sorted(relevant):
+            for doc_id in relevant[query_id]:
+                writer.write(f"{query_id} 0 {doc_id} 1\n")
     print(json.dumps({
         "documents": len(docs), "queries": len(queries), "k": args.k,
         "baseline_bm25": comparison["baseline"]["metrics"],

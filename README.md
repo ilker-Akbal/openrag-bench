@@ -114,9 +114,12 @@ python -m pip install -e '.[dense]'
 python examples/scifact_dense_faiss.py --download --k 10
 ```
 
-**Do not report dense results as verified yet:** this optional full-model
-example requires downloading weights and running a separate end-to-end job.
-Offline CI tests only its alignment and reporting logic.
+**Real dense model results have now been verified** on 5,183 SciFact
+documents and 300 judged queries: MiniLM + FAISS NDCG@10 **0.6451** versus
+BM25 **0.6605**. See the [provenance and limitations](docs/DENSE_SCIFACT.md)
+and [verified aggregate metrics](benchmarks/scifact_dense_2026-10-13.json).
+Ordinary unit CI does not download weights; a dedicated GitHub Actions
+workflow performs the real model evaluation.
 
 ## Documentation
 

@@ -1,0 +1,42 @@
+{
+  "benchmark": "BEIR SciFact test",
+  "run_date": "2026-10-13",
+  "git_commit": "a97846610b10723258d9b7e2eb618183c9d81020",
+  "workflow_run": "https://github.com/ilker-Akbal/openrag-bench/actions/runs/38441972953",
+  "dataset_sha256": "536e14446a0ba56ed1398ab1055f39fe852686ecad24a6306c80c490fa8e0165",
+  "documents": 5183,
+  "queries": 300,
+  "k": 10,
+  "model": "sentence-transformers/all-MiniLM-L6-v2",
+  "model_revision": "c21050a7ef692090620a6d037dd736908f9c7cf6",
+  "index": "FAISS IndexFlatIP exact normalized cosine",
+  "baseline": "BM25 k1=1.2 b=0.75",
+  "python": "3.11",
+  "device": "cpu",
+  "sentence_transformers": "6.1.0",
+  "faiss_cpu": "1.15.1",
+  "numpy": "2.4.6",
+  "bm25": {
+    "precision_at_k": 0.08700000000000027,
+    "recall_at_k": 0.7876111111111112,
+    "hit_at_k": 0.8066666666666666,
+    "mrr_at_k": 0.6269695767195768,
+    "ndcg_at_k": 0.6604641499925741
+  },
+  "minilm_faiss": {
+    "precision_at_k": 0.08833333333333362,
+    "recall_at_k": 0.7833333333333333,
+    "hit_at_k": 0.7933333333333333,
+    "mrr_at_k": 0.6047248677248678,
+    "ndcg_at_k": 0.6450816521455774
+  },
+  "delta_dense_minus_bm25": {
+    "precision_at_k": 0.0013333333333333337,
+    "recall_at_k": -0.004277777777777776,
+    "hit_at_k": -0.013333333333333334,
+    "mrr_at_k": -0.022244708994709,
+    "ndcg_at_k": -0.015382497846996947
+  },
+  "verification": "Independently rescored both TREC run files on GitHub Actions. Each metric matched within 1e-9.",
+  "caveats": "One dataset, incomplete binary qrels, no statistical significance or broad superiority inference."
+}
