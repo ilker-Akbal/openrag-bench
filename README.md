@@ -3,7 +3,7 @@
 [![CI](https://github.com/ilker-Akbal/openrag-bench/actions/workflows/ci.yml/badge.svg)](https://github.com/ilker-Akbal/openrag-bench/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.10--3.13-blue.svg)](pyproject.toml)
-[![GitHub pre-release](https://img.shields.io/github/v/release/ilker-Akbal/openrag-bench?include_prereleases)](https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.2.0)
+[![GitHub pre-release](https://img.shields.io/github/v/release/ilker-Akbal/openrag-bench?include_prereleases)](https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.3.0)
 
 **Offline retrieval evaluation and regression testing for RAG pipelines.**
 
@@ -16,7 +16,7 @@ OpenRAG Bench is a small Python toolkit for comparing the ranked document result
 - **Integrate** custom, LangChain, LlamaIndex and optional FAISS retrievers using stable document IDs.
 - **Reproduce** seeded, paired-bootstrap uncertainty intervals without a cloud API.
 
-**Status:** [v0.2.0 public GitHub pre-release](https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.2.0), with SHA-256 checksums and tested wheel/source archives. This measures **retrieval relevance**, not LLM answer quality or factual correctness. The bundled quickstart fixtures are synthetic; separate, real **SciFact**
+**Status:** [v0.3.0 public GitHub pre-release](https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.3.0), with SHA-256 checksums and tested wheel/source archives. This measures **retrieval relevance**, not LLM answer quality or factual correctness. The bundled quickstart fixtures are synthetic; separate, real **SciFact**
 benchmark results are independently verified and published below. We do
 not claim benchmark superiority or an established external user base.
 
@@ -28,7 +28,7 @@ Requires Python 3.10 or newer. Install the **GitHub release wheel** (not
 published on PyPI):
 
 ```bash
-python -m pip install https://github.com/ilker-Akbal/openrag-bench/releases/download/v0.2.0/openrag_bench-0.2.0-py3-none-any.whl
+python -m pip install https://github.com/ilker-Akbal/openrag-bench/releases/download/v0.3.0/openrag_bench-0.3.0-py3-none-any.whl
 openrag-bench --help
 ```
 
@@ -42,7 +42,7 @@ python -m unittest discover -s tests -v
 openrag-bench examples/retrieval_results.json --k 2 --output report.json --html report.html
 ```
 
-## Offline diagnostic explorer (v0.3 development)
+## Offline diagnostic explorer (v0.3.0)
 
 Standalone interactive HTML reports show per-query worst regressions,
 judgment coverage, empty retrieval cases, top-k overlap, and local metric
@@ -149,7 +149,7 @@ python -m pip install '.[faiss]'
 python examples/faiss_integration.py
 ```
 
-## Turkish human-labeled retrieval evaluation (v0.3 development)
+## Turkish human-labeled retrieval evaluation (v0.3.0)
 
 A dedicated offline Python evaluator measures BM25 under Unicode casefolding
 versus Turkish-specific dotted/dotless-I casing on an **external** dataset of
@@ -226,7 +226,7 @@ and [verified aggregate metrics](benchmarks/scifact_dense_2026-10-13.json).
 Ordinary unit CI does not download weights; a dedicated GitHub Actions
 workflow performs the real model evaluation.
 
-## Development quality gates (v0.3 development)
+## Development quality gates (v0.3.0)
 
 The required Python 3.11 CI job now runs Ruff static lint, exact coverage
 measurement, and Hypothesis property tests alongside ordinary unit tests.
@@ -254,7 +254,7 @@ issues must come from real users; no usage figures are claimed.
 - [Ask a usage question or report a reproducible bug](SUPPORT.md)
 - [Contributor guidelines](CONTRIBUTING.md)
 - [Report a security concern](SECURITY.md)
-- [Verified v0.2.0 release assets and checksums](https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.2.0)
+- [Verified v0.3.0 release assets and checksums](https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.3.0)
 
 ## Documentation
 
@@ -263,7 +263,7 @@ issues must come from real users; no usage figures are claimed.
 - [Security guidance](SECURITY.md)
 - [Provenance and third-party asset policy](docs/PROVENANCE.md)
 - [Development roadmap](docs/ROADMAP.md)
-- [Latest public GitHub release](https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.2.0)
+- [Latest public GitHub release](https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.3.0)
 
 This repository contains the standalone toolkit only, **not** the ROKETSAN workshop archive. Third-party material from that archive is deliberately excluded.
 

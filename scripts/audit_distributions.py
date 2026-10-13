@@ -16,6 +16,8 @@ REQUIRED = (
     "openrag_bench/io.py",
     "openrag_bench/csv_report.py",
     "openrag_bench/integrations/frameworks.py",
+    "openrag_bench/html_report.py",
+    "openrag_bench/streaming.py",
 )
 FORBIDDEN = {"day-01-llm-rag-agents", "day-02-computer-vision",
              "day-03-sensor-fusion-navigation", "practice",
@@ -70,7 +72,17 @@ def audit(directory):
                          "tests/test_formats.py",
                          "tests/test_grades.py",
                          "tests/test_framework_adapters.py",
-                         "scripts/audit_distributions.py"):
+                         "scripts/audit_distributions.py",
+                         "tests/test_explorer.py",
+                         "tests/test_turkish.py",
+                         "tests/test_streaming.py",
+                         "tests/property_metrics.py",
+                         "docs/TURKISH_BENCHMARK.md",
+                         "docs/QUALITY.md",
+                         "examples/turkish_real_benchmark.py",
+                         "examples/framework_real_integration.py",
+                         "scripts/benchmark_streaming.py",
+                         "benchmarks/streaming_100k_2026-10-13.json"):
             if not any(name.endswith("/" + required) for name in names):
                 raise ValueError(f"Source distribution missing {required}")
     return wheels[0], tarballs[0]

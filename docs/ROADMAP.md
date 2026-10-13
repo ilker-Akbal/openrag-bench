@@ -39,21 +39,21 @@
 - [ ] Compare fairly with existing open-source evaluation tools
 - [ ] Collect genuine outside user feedback and maintain issues/releases over time
 
-## v0.3.0 — planned measurable improvements
+## v0.3.0 — verified and shipped
 
 **Priority 1: real user workflows and scalability**
 
 1. [Genuine LangChain and LlamaIndex end-to-end compatibility](https://github.com/ilker-Akbal/openrag-bench/issues/19): real pinned framework vector-store CI added; complete only after both live integration jobs succeed, then seek independent user reproduction.
 2. [Streaming and bounded-memory evaluation](https://github.com/ilker-Akbal/openrag-bench/issues/18): **implemented** summary-only JSONL; verified 100k synthetic queries with measured memory, wall time, and metric parity. Broader file formats and paired external-memory joins remain future work.
-3. [Diagnostic report explorer](https://github.com/ilker-Akbal/openrag-bench/issues/21): identify per-query failures without exposing private source text.
+3. [Diagnostic report explorer](https://github.com/ilker-Akbal/openrag-bench/issues/21): **completed**, with offline searchable/filterable HTML query diagnostics and no raw question/document text.
 
 **Priority 2: wider evidence and sustainable maintenance**
 
-4. [Turkish-language retrieval benchmark with valid relevance labels](https://github.com/ilker-Akbal/openrag-bench/issues/20): add an external pinned Turkish Wikipedia human-labeled set (CC BY-SA, not bundled), validated Turkish casing rules, BM25 comparison and a real CI run. No cross-domain claim.
-5. [Quality gates and maintainable releases](https://github.com/ilker-Akbal/openrag-bench/issues/22): enforce Ruff lint, actual coverage reports, Hypothesis property tests and Node.js 24-compatible GitHub Actions; future version releases remain separate reviewed changes.
+4. [Turkish-language retrieval benchmark with valid relevance labels](https://github.com/ilker-Akbal/openrag-bench/issues/20): **completed** external pinned Turkish Wikipedia human-labeled set, 54 docs/58 qrels and real CI; same 0.85445 NDCG@10 under both casefoldings.
+5. [Quality gates and maintainable releases](https://github.com/ilker-Akbal/openrag-bench/issues/22): **completed** Ruff, measured 95% line coverage with enforced 90% minimum, Hypothesis property tests and Node.js 24-capable actions.
 6. [Independent user reproduction and feedback](https://github.com/ilker-Akbal/openrag-bench/issues/4): collect **real** downstream examples and issues from non-maintainers.
 
-Each issue has testable acceptance criteria. The existing `v0.2.0` release
+Each issue has testable acceptance criteria. The new `v0.3.0` release
 provides the working baseline; future experiments must not rewrite prior
 published metric values or tags. Large optional frameworks and models must
 not become required dependencies for the offline core.

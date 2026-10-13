@@ -1,0 +1,27 @@
+{
+  "source_dataset": "RizgarOzan/turkish-rag-eval",
+  "revision": "d166363bd8d906154b56fbb7009787f2a8591fbe",
+  "dataset_license": "CC BY-SA 4.0, data not redistributed",
+  "labeled_split": "root human-labeled 58-query health-domain article retrieval",
+  "documents": 54,
+  "queries": 58,
+  "judgments": 58,
+  "k": 10,
+  "bm25_configuration": {
+    "k1": 1.2,
+    "b": 0.75,
+    "tie_break": "document ID"
+  },
+  "baseline": {
+    "normalizer": "Unicode casefold",
+    "ndcg_at_10": 0.8544543634421565
+  },
+  "candidate": {
+    "normalizer": "Turkish I/İ/ı/i-aware lower",
+    "ndcg_at_10": 0.8544543634421565
+  },
+  "delta_ndcg_at_10": 0,
+  "verified_workflow": "https://github.com/ilker-Akbal/openrag-bench/actions/runs/38459744535",
+  "limitations": "Single health domain; one human annotator; article-level relevance; identical NDCG under both tokenizers, no performance improvement shown",
+  "data_included": false
+}
