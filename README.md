@@ -149,6 +149,23 @@ python -m pip install '.[faiss]'
 python examples/faiss_integration.py
 ```
 
+## Turkish human-labeled retrieval evaluation (v0.3 development)
+
+A dedicated offline Python evaluator measures BM25 under Unicode casefolding
+versus Turkish-specific dotted/dotless-I casing on an **external** dataset of
+54 Turkish Wikipedia articles and **58 human-annotated Turkish questions**.
+The corpus is CC BY-SA 4.0 and **is downloaded at test time only**, not
+redistributed with our MIT package. No third-party question/article content
+is written to published GitHub reports.
+
+~~~bash
+python examples/turkish_real_benchmark.py --download --k 10 --output turkish_summary.json
+~~~
+
+See [provenance, exact pinned revision, data limitations and results](docs/TURKISH_BENCHMARK.md).
+These are article-level lexical retrieval baselines on a single health-domain
+set, not multilingual model certification.
+
 ## Reproduce a real dataset benchmark
 
 Run two lexical retrieval baselines against the externally hosted **BEIR SciFact

@@ -1,0 +1,52 @@
+name: Turkish real human-labeled retrieval benchmark
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/turkish-real-benchmark.yml"
+      - "examples/turkish_real_benchmark.py"
+      - "tests/test_turkish.py"
+      - "docs/TURKISH_BENCHMARK.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  benchmark:
+    name: Turkish Wikipedia real qrels (58 queries)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependency-free evaluator
+        run: python -m pip install -e .
+      - name: Test Turkish casing, qrels validation and lexical ranking
+        run: python -m unittest discover -s tests -p test_turkish.py -v
+      - name: Download pinned CC BY-SA corpus and verify labeled scores
+        run: |
+          python examples/turkish_real_benchmark.py --download --k 10 --output turkish_aggregate.json > /dev/null
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          report=json.loads(Path("turkish_aggregate.json").read_text())
+          assert report["documents"]==54, report["documents"]
+          assert report["queries"]==58, report["queries"]
+          assert report["judgments"]==58, report["judgments"]
+          for side in ("baseline", "candidate"):
+              metrics=report[side]["metrics"]
+              assert all(0<=score<=1 for score in metrics.values())
+          assert all(len(v)==64 for v in report["source_sha256"].values())
+          print("Verified externally labeled Turkish corpus: 54 docs, 58 queries, 58 qrels")
+          print("NDCG@10 baseline:", report["baseline"]["metrics"]["ndcg_at_k"])
+          print("NDCG@10 Turkish casing:", report["candidate"]["metrics"]["ndcg_at_k"])
+          PY
+      - name: Upload aggregate-only artifact without CC BY-SA corpus text
+        uses: actions/upload-artifact@v4
+        with:
+          name: turkish-58q-aggregate-metrics
+          path: turkish_aggregate.json
+          retention-days: 60
