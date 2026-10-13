@@ -10,6 +10,7 @@
 - [x] HTML reporting with untrusted text escaped
 - [x] Custom retriever protocol and optional FAISS adapter
 - [x] Synthetic fixtures, unit tests, 3.10–3.13 CI and wheel build
+- [x] TREC run/qrels format for externally maintained retrieval benchmarks
 - [x] Independent repository, MIT license and provenance document
 
 ## Next milestones
