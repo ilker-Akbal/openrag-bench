@@ -1,7 +1,7 @@
-"""Strictly validate and evaluate offline retrieval datasets.
+"""Strictly validate and evaluate offline JSON, JSONL and TREC datasets.
 
-The input is a JSON array of rows. Each row contains retrieved_ids and
-relevant_ids; query_id is required only for paired comparisons.
+Rows contain retrieved_ids and relevant_ids; query_id is required only for
+paired comparisons. TREC run files require --qrels.
 """
 import argparse
 import json
@@ -64,6 +64,8 @@ def main(argv=None):
     parser = argparse.ArgumentParser(
         description="Evaluate or compare ranked retrieval results (offline)")
     parser.add_argument("dataset", type=Path, help="Candidate JSON or TREC run file")
+    parser.add_argument("--input-format", choices=("auto", "json", "jsonl"),
+                        default="auto", help="Select JSON array or JSON Lines; auto uses filename extension")
     parser.add_argument("--qrels", type=Path,
                         help="TREC qrels file; interpret inputs as six-column TREC runs")
     parser.add_argument("--k", type=int, default=3)
@@ -75,7 +77,10 @@ def main(argv=None):
                         help="Fail if candidate mean minus baseline mean falls below this")
     parser.add_argument("--output", type=Path, help="Write machine-readable JSON report")
     parser.add_argument("--html", type=Path, help="Write standalone HTML report")
+    parser.add_argument("--csv", type=Path, help="Write per-query spreadsheet-safe CSV (excludes question text)")
     args = parser.parse_args(argv)
+    if args.qrels and args.input_format != "auto":
+        parser.error("--input-format applies to JSON/JSONL only; omit it with --qrels")
     if args.min_delta is not None and not args.baseline:
         parser.error("--min-delta requires --baseline")
     if args.min_delta is not None:
@@ -88,13 +93,14 @@ def main(argv=None):
             from .trec import load_trec_run
             candidate = load_trec_run(args.dataset, args.qrels)
         else:
-            candidate = json.loads(args.dataset.read_text(encoding="utf-8"))
+            from .io import read_rows
+            candidate = read_rows(args.dataset, input_format=args.input_format)
         if args.baseline:
             from .comparison import compare_rows
             if args.qrels:
                 baseline = load_trec_run(args.baseline, args.qrels)
             else:
-                baseline = json.loads(args.baseline.read_text(encoding="utf-8"))
+                baseline = read_rows(args.baseline, input_format=args.input_format)
             report = compare_rows(candidate, baseline, args.k)
         else:
             report = evaluate(candidate, args.k)
@@ -111,6 +117,9 @@ def main(argv=None):
     if args.html:
         from .html_report import render_html
         args.html.write_text(render_html(report), encoding="utf-8")
+    if args.csv:
+        from .csv_report import render_csv
+        args.csv.write_text(render_csv(report), encoding="utf-8-sig")
     print(rendered)
     if args.baseline and not report["gate"]["passed"]:
         parser.exit(2, f"Regression gate failed: {args.metric} delta "
