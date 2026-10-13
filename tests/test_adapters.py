@@ -23,7 +23,8 @@ class AdapterTests(unittest.TestCase):
                   "per_query": [{"question": "<script>alert(1)</script>", "metrics": {"hit_at_k": 1.0}}]}
         html = render_html(report)
         self.assertNotIn("<script>", html)
-        self.assertIn("&lt;script&gt;", html)
+        self.assertNotIn("&lt;script&gt;", html)
+        self.assertIn("raw questions and document IDs are not included", html)
 
 if __name__ == "__main__":
     unittest.main()

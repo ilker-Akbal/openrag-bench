@@ -68,6 +68,11 @@ def evaluate(rows, k):
             "query_id": row.get("query_id"),
             "question": row.get("question"),
             "metrics": score,
+            "diagnostics": {
+                "retrieved_count": len(row["retrieved_ids"]),
+                "judged_positive_count": len(row["relevant_ids"]),
+                "hits_at_k": len(set(row["retrieved_ids"][:k]) & set(row["relevant_ids"])),
+            },
         } for row, score in zip(rows, scores)],
     }
 

@@ -4,6 +4,12 @@ All notable changes to OpenRAG Bench are documented here.
 
 ## Unreleased — working toward v0.3.0
 
+- Add offline, keyboard-accessible per-query diagnostic HTML explorer with
+  safe filtering/sorting, top-k overlap and label coverage. Omit raw question
+  text and document IDs from HTML to reduce accidental disclosures.
+- Add optional per-query diagnostic counts to JSON reports, without changing
+  retrieval metric calculations.
+
 - Add explicit bounded-memory JSONL **aggregate-only** streaming evaluator;
   preserve all existing metrics and reject unsupported paired/reporting
   combinations rather than silently changing semantics.
