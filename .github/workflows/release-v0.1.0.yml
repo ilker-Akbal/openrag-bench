@@ -1,0 +1,78 @@
+name: Publish v0.1.0 GitHub pre-release
+# This workflow runs once after it is first added to main; workflow_dispatch
+# permits an explicit retry. It will never replace or retag an existing release.
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/release-v0.1.0.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: openrag-bench-v0.1.0
+  cancel-in-progress: false
+
+jobs:
+  build-and-release:
+    if: github.repository == 'ilker-Akbal/openrag-bench' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Check version and existing tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import tomllib
+          doc = tomllib.loads(Path("pyproject.toml").read_text(encoding="utf-8"))
+          assert doc["project"]["version"] == "0.1.0", "Unexpected version"
+          PY
+          if gh release view v0.1.0 --repo "${GITHUB_REPOSITORY}" >/dev/null 2>&1; then
+            echo "Release v0.1.0 already exists. No replacement permitted."
+            exit 1
+          fi
+          if git ls-remote --exit-code --tags "https://github.com/${GITHUB_REPOSITORY}.git" "refs/tags/v0.1.0" >/dev/null 2>&1; then
+            echo "Tag v0.1.0 already exists. No replacement permitted."
+            exit 1
+          fi
+      - name: Test evaluation core
+        run: |
+          python -m pip install -e .
+          python -m unittest discover -s tests -v
+          openrag-bench examples/retrieval_results.json --k 2 > /dev/null
+          openrag-bench examples/trec_candidate.run --qrels examples/trec.qrels --baseline examples/trec_baseline.run --k 2 --min-delta 0 > /dev/null
+          python examples/scifact_benchmark.py --help > /dev/null
+          python examples/scifact_dense_faiss.py --help > /dev/null
+      - name: Build and audit archives
+        run: |
+          python -m pip install build
+          python -m build
+          python scripts/audit_distributions.py
+      - name: Test installed wheel in clean venv
+        run: |
+          python -m venv .release-check
+          .release-check/bin/python -m pip install --no-deps dist/*.whl
+          .release-check/bin/openrag-bench examples/retrieval_results.json --k 2 > /dev/null
+          .release-check/bin/python -c "import openrag_bench; assert openrag_bench.__version__ == '0.1.0'"
+      - name: Produce reproducible archive checksums
+        run: |
+          cd dist
+          sha256sum openrag_bench-*.whl openrag_bench-*.tar.gz > SHA256SUMS
+          sha256sum --check SHA256SUMS
+          cat SHA256SUMS
+      - name: Publish versioned GitHub pre-release with tested artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create v0.1.0             dist/openrag_bench-*.whl dist/openrag_bench-*.tar.gz dist/SHA256SUMS             --repo "${GITHUB_REPOSITORY}"             --target "${GITHUB_SHA}"             --title "OpenRAG Bench v0.1.0"             --notes-file docs/RELEASE_NOTES_v0.1.0.md             --prerelease
+          gh release view v0.1.0 --repo "${GITHUB_REPOSITORY}" --json tagName,isPrerelease,url
