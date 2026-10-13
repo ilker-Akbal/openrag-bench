@@ -1,5 +1,4 @@
 """Offline regression tests; the real SciFact archive is never bundled."""
-import io
 import json
 import tempfile
 import unittest
