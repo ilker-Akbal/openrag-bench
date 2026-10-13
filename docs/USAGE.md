@@ -193,3 +193,11 @@ are rejected in graded mode to avoid unreasonable exponential gain. Without
 extension changes only the reporting schema by **adding** new metric keys.
 The v0.1.0 tagged pre-release remains unchanged; this functionality is
 currently on the development branch until its next versioned release.
+
+## Integrate LangChain and LlamaIndex
+
+Existing LangChain and LlamaIndex retrievers can be evaluated through thin,
+dependency-free wrappers that extract stable document IDs. No frameworks or
+model weights are installed automatically. See the separate
+[adapter guide](FRAMEWORK_INTEGRATIONS.md) for integration contracts, example
+code, ground-truth ID alignment and limitations.

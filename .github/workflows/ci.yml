@@ -38,6 +38,9 @@ jobs:
         run: python examples/scifact_benchmark.py --help
       - name: Dense example CLI import smoke test (no model downloads)
         run: python examples/scifact_dense_faiss.py --help
+      - name: Framework adapter import smoke test
+        run: |
+          python -c "from openrag_bench.integrations.frameworks import LangChainAdapter, LlamaIndexAdapter; assert LangChainAdapter and LlamaIndexAdapter"
       - name: Graded qrels plus MAP smoke test
         run: |
           openrag-bench examples/trec_candidate.run --qrels examples/trec_graded.qrels --graded-qrels --k 2 --metric graded_ndcg_at_k > graded.json

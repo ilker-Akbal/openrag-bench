@@ -78,3 +78,10 @@ Kaynak ve çalışma kayıtları:
 projelerce benimsenme hakkında doğrulanmamış iddialar bulunmaz. Örnek test
 girdileri sentetiktir, ancak yukarıdaki SciFact sonuçları gerçek verilerle
 doğrulanmıştır. Harici veri kümeleri ve model ağırlıkları bu depoda yer almaz.
+
+## LangChain ve LlamaIndex kullanımı
+
+Mevcut LangChain veya LlamaIndex retriever nesnelerini, uygulamanızdaki
+sabit doküman kimliklerini koruyarak değerlendirmeye bağlayabilirsiniz.
+Temel paket bu framework'leri kendisi kurmaz. Ayrıntılar:
+[Entegrasyon rehberi](FRAMEWORK_INTEGRATIONS.md).

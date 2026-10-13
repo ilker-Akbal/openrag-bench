@@ -140,6 +140,17 @@ per-query comparisons. Python standard library is sufficient.
 and [aggregate-only metrics](benchmarks/scifact_2026-10-13.json). The dataset
 retains its respective licenses; no data is included in this code repository.
 
+## Use existing LangChain or LlamaIndex retrievers
+
+Plug in LangChain `invoke(query)` retrievers or LlamaIndex
+`retrieve(query)` retrievers without installing those frameworks as
+mandatory package dependencies. Both adapters extract stable document/node IDs
+and reject duplicates.
+
+See the [framework integration guide](docs/FRAMEWORK_INTEGRATIONS.md).
+Offline adapter contract tests are provided; full third-party installations
+must be verified independently.
+
 ## How it works
 
 Your RAG system supplies a ranked list of retrieved document IDs for each labeled question. OpenRAG Bench compares those rankings against explicitly documented relevant IDs. With a baseline and candidate JSON file, it reports per-query differences and seeded paired-bootstrap confidence intervals. Comparisons require matching query IDs and ground-truth labels.
