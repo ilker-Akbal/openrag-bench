@@ -2,7 +2,13 @@
 
 All notable changes to OpenRAG Bench are documented here.
 
-## Unreleased — working toward v0.3.0
+## [v0.3.0] — 2026-10-13
+
+[GitHub public pre-release](https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.3.0):
+new privacy-aware diagnostic HTML explorer, independently labeled Turkish
+lexical benchmark, 100,000-query bounded-memory JSONL evaluation, genuine
+pinned LangChain/LlamaIndex compatibility tests, and stricter quality gates.
+This is a GitHub pre-release, **not** a PyPI publication.
 
 - Add **enforced** Ruff static lint and measured test coverage to the
   protected Python 3.11 required status check, with optional developer-only

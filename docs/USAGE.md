@@ -151,7 +151,7 @@ This is still an in-memory report generator: the JSONL reader supports
 convenient line-oriented files but is not a constant-memory streaming
 aggregator.
 
-## MAP@k and graded relevance (next development version)
+## MAP@k and graded relevance (available since v0.2.0)
 
 The evaluator also calculates **MAP@k** and **graded NDCG@k**. MAP@k is the
 mean of per-query average precision over the first `k` ranked documents.
@@ -191,8 +191,9 @@ Any qrel grade `<= 0` is treated as not relevant; positive grades above 31
 are rejected in graded mode to avoid unreasonable exponential gain. Without
 `--graded-qrels`, TREC inputs continue to use binary relevance. This
 extension changes only the reporting schema by **adding** new metric keys.
-The v0.1.0 tagged pre-release remains unchanged; this functionality is
-currently on the development branch until its next versioned release.
+The original binary metric semantics remain unchanged in v0.3.0. New
+per-query diagnostic JSON fields are additive; exact-schema consumers should
+account for the new entries.
 
 ## Integrate LangChain and LlamaIndex
 
@@ -203,7 +204,7 @@ model weights are installed automatically. See the separate
 code, ground-truth ID alignment and limitations.
 
 
-## Streaming JSONL summary (v0.3.0 development)
+## Streaming JSONL summary (v0.3.0)
 
 Use --streaming-summary for JSONL/NDJSON files larger than memory. It uses
 one input line at a time and retains only the running eight-metric summary:
