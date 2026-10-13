@@ -29,14 +29,34 @@
 ## Next milestones
 
 - [x] Run and independently verify SciFact on real BEIR data; commit aggregate-only metrics with provenance
-- [ ] Publish reproducible full-pipeline RAG case study with embeddings and retrieval settings
+- [x] Publish reproducible SciFact dense embedding + FAISS walkthrough with pinned model and retrieval settings
 - [x] Publish an initial v0.1.0 GitHub pre-release with verified wheel/sdist archives and SHA256SUMS
 - [ ] Review ownership/attribution continuously before future versions; PyPI publication is not yet planned
 - [x] Audit wheel/sdist archives, clean-install release, and enable weekly Dependabot checks
-- [ ] Confirm private GitHub vulnerability reporting is enabled and configure a confidential contact
+- [x] Owner enabled GitHub private vulnerability reporting, secret protection, push protection and CodeQL defaults
+- [ ] Establish a reliable maintainer contact for confidential issues
 - [ ] Produce genuinely multilingual labeled evaluation resources
 - [ ] Compare fairly with existing open-source evaluation tools
 - [ ] Collect genuine outside user feedback and maintain issues/releases over time
+
+## v0.3.0 — planned measurable improvements
+
+**Priority 1: real user workflows and scalability**
+
+1. [Genuine LangChain and LlamaIndex end-to-end compatibility](https://github.com/ilker-Akbal/openrag-bench/issues/19): verify pinned real framework versions with a small permissively constructed corpus, **not only mocks**.
+2. [Streaming and bounded-memory evaluation](https://github.com/ilker-Akbal/openrag-bench/issues/18): verify 100k synthetic queries with reported wall-clock time and peak memory, and preserve metric semantics.
+3. [Diagnostic report explorer](https://github.com/ilker-Akbal/openrag-bench/issues/21): identify per-query failures without exposing private source text.
+
+**Priority 2: wider evidence and sustainable maintenance**
+
+4. [Turkish-language retrieval benchmark with valid relevance labels](https://github.com/ilker-Akbal/openrag-bench/issues/20): select or create a licensed test collection, validate tokenizer behavior and document methodology.
+5. [Quality gates and maintainable releases](https://github.com/ilker-Akbal/openrag-bench/issues/22): measurable coverage, property tests, focused lint and versioned artifact publication.
+6. [Independent user reproduction and feedback](https://github.com/ilker-Akbal/openrag-bench/issues/4): collect **real** downstream examples and issues from non-maintainers.
+
+Each issue has testable acceptance criteria. The existing `v0.2.0` release
+provides the working baseline; future experiments must not rewrite prior
+published metric values or tags. Large optional frameworks and models must
+not become required dependencies for the offline core.
 
 ## Codex for Open Source application
 
