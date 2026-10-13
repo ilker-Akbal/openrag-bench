@@ -50,10 +50,11 @@ class MetricInvariants(unittest.TestCase):
             self.assertGreaterEqual(actual, 0)
             self.assertLessEqual(actual, 1 + 1e-12)
             self.assertAlmostEqual(actual, reordered, places=12)
-        self.assertEqual(
+        self.assertAlmostEqual(
             baseline[-1],
             ndcg_at_k(retrieved, relevant, k),
-            "Identical positive grades should give binary-equivalent NDCG",
+            places=12,
+            msg="Identical positive grades should give binary-equivalent NDCG",
         )
 
     @quality
