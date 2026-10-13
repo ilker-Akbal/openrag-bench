@@ -103,6 +103,21 @@ Your RAG system supplies a ranked list of retrieved document IDs for each labele
 
 No models are downloaded and the evaluation core makes no network calls.
 
+## Dense embeddings + FAISS (optional)
+
+A separate [CPU-capable real-data walkthrough](docs/DENSE_SCIFACT.md) compares
+a pinned Sentence Transformers MiniLM embedding model with BM25 using FAISS
+exact vector search:
+
+```bash
+python -m pip install -e '.[dense]'
+python examples/scifact_dense_faiss.py --download --k 10
+```
+
+**Do not report dense results as verified yet:** this optional full-model
+example requires downloading weights and running a separate end-to-end job.
+Offline CI tests only its alignment and reporting logic.
+
 ## Documentation
 
 - [Input format, metric definitions and limitations](docs/USAGE.md)
