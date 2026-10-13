@@ -1,8 +1,9 @@
 # OpenRAG Bench
 
 [![CI](https://github.com/ilker-Akbal/openrag-bench/actions/workflows/ci.yml/badge.svg)](https://github.com/ilker-Akbal/openrag-bench/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.10--3.13-blue.svg)](pyproject.toml)
 [![GitHub pre-release](https://img.shields.io/github/v/release/ilker-Akbal/openrag-bench?include_prereleases)](https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.1.0)
-
 
 **Offline retrieval evaluation and regression testing for RAG pipelines.**
 
@@ -15,7 +16,11 @@ OpenRAG Bench is a small Python toolkit for comparing the ranked document result
 - **Integrate** custom retrievers through a tiny protocol or the optional FAISS adapter.
 - **Reproduce** seeded, paired-bootstrap uncertainty intervals without a cloud API.
 
-**Status:** [v0.1.0 public GitHub pre-release](https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.1.0), with SHA-256 checksums and tested wheel/source archives. This measures **retrieval relevance**, not LLM answer quality or factual correctness. Example data is synthetic; no benchmark superiority or external adoption is claimed.
+**Status:** [v0.1.0 public GitHub pre-release](https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.1.0), with SHA-256 checksums and tested wheel/source archives. This measures **retrieval relevance**, not LLM answer quality or factual correctness. The bundled quickstart fixtures are synthetic; separate, real **SciFact**
+benchmark results are independently verified and published below. We do
+not claim benchmark superiority or an established external user base.
+
+**Language:** English documentation (primary) · [Türkçe hızlı başlangıç](docs/README_TR.md)
 
 ## Quick start
 
@@ -133,6 +138,19 @@ and [verified aggregate metrics](benchmarks/scifact_dense_2026-10-13.json).
 Ordinary unit CI does not download weights; a dedicated GitHub Actions
 workflow performs the real model evaluation.
 
+## Contribute, get support and verify results
+
+The tool is maintained in the open. You can install the existing public
+pre-release, reproduce the verified SciFact results, report bugs with tiny
+synthetic fixtures, or suggest a new retriever adapter. Contributions and
+issues must come from real users; no usage figures are claimed.
+
+- [Reproduce independently or contribute](docs/GET_INVOLVED.md)
+- [Ask a usage question or report a reproducible bug](SUPPORT.md)
+- [Contributor guidelines](CONTRIBUTING.md)
+- [Report a security concern](SECURITY.md)
+- [Verified v0.1.0 release assets and checksums](https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.1.0)
+
 ## Documentation
 
 - [Input format, metric definitions and limitations](docs/USAGE.md)
@@ -140,7 +158,6 @@ workflow performs the real model evaluation.
 - [Security guidance](SECURITY.md)
 - [Provenance and third-party asset policy](docs/PROVENANCE.md)
 - [Development roadmap](docs/ROADMAP.md)
-- [First-time contributor and reproduction tasks](docs/GET_INVOLVED.md)
 - [Latest public GitHub release](https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.1.0)
 
 This repository contains the standalone toolkit only, **not** the ROKETSAN workshop archive. Third-party material from that archive is deliberately excluded.

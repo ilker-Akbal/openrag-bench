@@ -20,3 +20,11 @@ the public internet without resource limits, validation and isolation.
 
 HTML output escapes untrusted display strings. Optional FAISS support does
 not download models, send telemetry or persist indexes.
+
+## Current maintainer setup
+
+The repository owner should enable **Private vulnerability reporting** under
+GitHub repository Settings → Security → Code security and analysis (where
+available). This setting is managed on GitHub, not by the files in this
+repository. Do not assume it is enabled merely because `SECURITY.md`
+exists. Do not attach confidential exploit details to a public issue.
