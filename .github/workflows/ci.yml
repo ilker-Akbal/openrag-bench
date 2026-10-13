@@ -34,6 +34,8 @@ jobs:
       - name: TREC run and qrels smoke test
         run: |
           openrag-bench examples/trec_candidate.run --qrels examples/trec.qrels --baseline examples/trec_baseline.run --k 2 --min-delta 0
+      - name: SciFact benchmark CLI import smoke test
+        run: python examples/scifact_benchmark.py --help
       - name: Wheel build
         if: matrix.python-version == '3.11'
         run: |

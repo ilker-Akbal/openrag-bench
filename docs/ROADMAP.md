@@ -13,9 +13,12 @@
 - [x] TREC run/qrels format for externally maintained retrieval benchmarks
 - [x] Independent repository, MIT license and provenance document
 
+- [x] Reproducible BEIR SciFact BM25 versus TF-IDF benchmark *runner* with checksum validation, independent of cloud APIs
+- [x] Offline fixture tests for SciFact dataset parsing and ranking
+
 ## Next milestones
 
-- [ ] Validate against a realistically sized, properly licensed and labeled dataset
+- [ ] Actually run and independently verify SciFact results on real downloaded data; publish exact metric values with metadata
 - [ ] Publish reproducible full-pipeline RAG case study with embeddings and retrieval settings
 - [ ] Package/publish tagged releases after verifying source attributions
 - [ ] Harden release workflows, automate security/dependency checks and enable private reporting
