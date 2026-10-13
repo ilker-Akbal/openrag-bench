@@ -76,8 +76,12 @@ def _tr(row, index, paired, selected):
 
 def render_html(report):
     paired = "delta" in report
-    selected = "ndcg_at_k"
-    if report.get("gate", {}).get("metric") in METRICS:
+    scores_reference = report["delta"] if paired else report["metrics"]
+    available_metrics = [metric for metric in METRICS if metric in scores_reference]
+    if not available_metrics:
+        raise ValueError("Report must contain at least one supported metric")
+    selected = "ndcg_at_k" if "ndcg_at_k" in available_metrics else available_metrics[0]
+    if report.get("gate", {}).get("metric") in available_metrics:
         selected = report["gate"]["metric"]
     rows = report.get("per_query_delta" if paired else "per_query", [])
     rows = sorted(rows, key=lambda row: (
