@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "If you use OpenRAG Bench in research, please cite the repository and the original datasets you evaluated."
+type: software
+title: "OpenRAG Bench: Retrieval Evaluation and Regression Testing for RAG Pipelines"
+authors:
+  - family-names: Akbal
+    given-names: Ilker
+repository-code: "https://github.com/ilker-Akbal/openrag-bench"
+license: MIT
+keywords:
+  - information retrieval
+  - RAG
+  - retrieval evaluation
+  - benchmark
+  - FAISS
