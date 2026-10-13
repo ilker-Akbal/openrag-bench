@@ -1,10 +1,8 @@
 name: Publish v0.3.0 GitHub pre-release
 
-# One-shot release: triggers only on first introduction to main.
+# v0.3.0 GitHub pre-release has been published successfully.
+# Retained as a historical manual check; it refuses existing tags/releases.
 on:
-  push:
-    branches: [main]
-    paths: [".github/workflows/release-v0.3.0.yml"]
   workflow_dispatch:
 
 permissions:
