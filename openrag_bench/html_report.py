@@ -46,7 +46,7 @@ def _coverage(rows, *, paired=False):
 
 def _payload(row, paired):
     metrics = row["delta"] if paired else row["metrics"]
-    return escape(json.dumps({key: float(metrics[key]) for key in METRICS},
+    return escape(json.dumps({key: float(metrics[key]) for key in METRICS if key in metrics},
                              separators=(",", ":"), allow_nan=False), quote=True)
 
 
