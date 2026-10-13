@@ -13,6 +13,9 @@ REQUIRED = (
     "openrag_bench/comparison.py",
     "openrag_bench/trec.py",
     "openrag_bench/integrations/faiss.py",
+    "openrag_bench/io.py",
+    "openrag_bench/csv_report.py",
+    "openrag_bench/integrations/frameworks.py",
 )
 FORBIDDEN = {"day-01-llm-rag-agents", "day-02-computer-vision",
              "day-03-sensor-fusion-navigation", "practice",
@@ -61,7 +64,13 @@ def audit(directory):
     with tarfile.open(tarballs[0], "r:gz") as tf:
         names = tf.getnames()
         check_names(names, "source distribution")
-        for required in ("pyproject.toml", "README.md", "LICENSE"):
+        for required in ("pyproject.toml", "README.md", "LICENSE",
+                         "docs/USAGE.md", "docs/FRAMEWORK_INTEGRATIONS.md",
+                         "benchmarks/scifact_2026-10-13.json",
+                         "tests/test_formats.py",
+                         "tests/test_grades.py",
+                         "tests/test_framework_adapters.py",
+                         "scripts/audit_distributions.py"):
             if not any(name.endswith("/" + required) for name in names):
                 raise ValueError(f"Source distribution missing {required}")
     return wheels[0], tarballs[0]

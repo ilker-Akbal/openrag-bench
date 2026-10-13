@@ -21,6 +21,11 @@
 - [x] Run pinned MiniLM dense model on real SciFact; independently verify metrics and record aggregate-only provenance
 - [ ] Recruit independent outside developers to reproduce dense/lexical findings and file genuine feedback
 
+- [x] v0.2.0: JSONL/NDJSON, spreadsheet-safe per-query CSV and improved diagnostics
+- [x] v0.2.0: MAP@k and opt-in graded relevance with TREC qrels
+- [x] v0.2.0: optional, dependency-free LangChain and LlamaIndex protocol adapters
+- [x] v0.2.0: audited and tested wheel and source distribution, with reproducibility docs
+
 ## Next milestones
 
 - [x] Run and independently verify SciFact on real BEIR data; commit aggregate-only metrics with provenance

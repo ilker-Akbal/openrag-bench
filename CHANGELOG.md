@@ -2,7 +2,11 @@
 
 All notable changes to OpenRAG Bench are documented here.
 
-## Unreleased — working toward v0.2.0
+## [v0.2.0] — 2026-10-13
+
+[GitHub public pre-release](https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.2.0).
+The release is additive but introduces extra metric keys in JSON reports;
+integrations that expect an exact metric-key set should update their schemas.
 
 - Add native JSONL/NDJSON evaluation input and spreadsheet-safe per-query CSV
   exports with physical-line parse diagnostics.
@@ -10,8 +14,9 @@ All notable changes to OpenRAG Bench are documented here.
   introduce opt-in TREC `--graded-qrels`.
 - Add lightweight LangChain and LlamaIndex retriever interoperability
   adapters with stable-ID validation and dependency-free mocked tests.
-- Maintain source-only development changes on `main`; published v0.1.0
-  wheel and source distribution remain unchanged.
+- Publish verified v0.2.0 wheel and source archives without bundling
+  SciFact documents or external model weights. The earlier v0.1.0 tag and
+  its files remain immutable.
 
 ## [v0.1.0] — 2026-10-13
 
