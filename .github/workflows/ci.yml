@@ -27,7 +27,7 @@ jobs:
           python -m pip install -e '.[dev]'
           python -m ruff check openrag_bench tests
           python -m coverage run --source=openrag_bench -m unittest discover -s tests -v
-          python -m coverage report -m --fail-under=55
+          python -m coverage report -m --fail-under=90
           python -m coverage xml -o coverage.xml
           python -m unittest discover -s tests -p property_metrics.py -v
       - name: Install package
