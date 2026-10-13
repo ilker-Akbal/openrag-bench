@@ -16,6 +16,10 @@
 - [x] Reproducible BEIR SciFact BM25 versus TF-IDF benchmark *runner* with checksum validation, independent of cloud APIs
 - [x] Offline fixture tests for SciFact dataset parsing and ranking
 
+- [x] Optional pinned-model dense embeddings + FAISS SciFact runnable example, dependency isolated
+- [x] Offline regression tests for dense versus lexical result alignment
+- [ ] Run the real dense model, verify metrics and collect independent outside reproduction
+
 ## Next milestones
 
 - [x] Run and independently verify SciFact on real BEIR data; commit aggregate-only metrics with provenance
