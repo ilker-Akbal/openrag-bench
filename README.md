@@ -9,7 +9,7 @@
 
 OpenRAG Bench is a small Python toolkit for comparing the ranked document results of retrieval-augmented generation systems. It helps developers catch regressions when they change an embedding model, chunking strategy, retriever or index configuration.
 
-- **Measure** Precision@k, Recall@k, Hit@k, MRR@k and binary NDCG@k.
+- **Measure** Precision@k, Recall@k, Hit@k, MRR@k, MAP@k, binary and graded NDCG@k.
 - **Compare** candidate and baseline outputs, aligned by stable query identifiers.
 - **Guard** a CI pipeline with an explicit minimum metric delta and exit code 2.
 - **Report** macro-averaged results, per-query metrics and standalone HTML/JSON output.
@@ -54,6 +54,19 @@ openrag-bench candidate.jsonl --baseline baseline.jsonl --csv deltas.csv --k 5
 
 CSV reports exclude raw question text and protect against spreadsheet formula
 injection. See [data formats](docs/USAGE.md).
+
+## Graded judgments and MAP@k
+
+Beyond binary relevance, evaluate documents labeled with positive integer
+relevance grades, including standard graded TREC qrels:
+
+```bash
+openrag-bench examples/trec_candidate.run --qrels examples/trec_graded.qrels \\
+  --graded-qrels --k 2 --metric graded_ndcg_at_k
+```
+
+The original binary NDCG definition remains unchanged. See
+[metric definitions and graded JSON input](docs/USAGE.md).
 
 ## Compare two retrieval versions
 

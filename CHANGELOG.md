@@ -2,6 +2,15 @@
 
 All notable changes to OpenRAG Bench are documented here.
 
+## Unreleased — working toward v0.2.0
+
+- Add native JSONL/NDJSON evaluation input and spreadsheet-safe per-query CSV
+  exports with physical-line parse diagnostics.
+- Add MAP@k and exponential-gain graded NDCG@k; preserve binary NDCG and
+  introduce opt-in TREC `--graded-qrels`.
+- Maintain source-only development changes on `main`; published v0.1.0
+  wheel and source distribution remain unchanged.
+
 ## [v0.1.0] — 2026-10-13
 
 [GitHub public pre-release](https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.1.0)

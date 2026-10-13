@@ -15,8 +15,8 @@ def _lines(path):
             yield number, clean.split()
 
 
-def load_qrels(path):
-    """Parse `query_id iteration doc_id relevance` judgments."""
+def load_qrels(path, *, with_grades=False):
+    """Parse qrels, optionally preserving positive integer relevance grades."""
     judgments = {}
     for line_number, cols in _lines(path):
         if len(cols) != 4:
@@ -26,24 +26,29 @@ def load_qrels(path):
             grade = int(value)
         except ValueError as exc:
             raise ValueError(f"qrels line {line_number}: relevance must be an integer") from exc
+        if with_grades and grade > 31:
+            raise ValueError(f"qrels line {line_number}: graded relevance cannot exceed 31")
         seen = judgments.setdefault(query_id, {})
         if doc_id in seen:
             raise ValueError(f"qrels line {line_number}: duplicate judgment for {query_id}/{doc_id}")
         seen[doc_id] = grade
     if not judgments:
         raise ValueError("qrels must include at least one judged query")
+    if with_grades:
+        return {query_id: {doc: grade for doc, grade in scores.items() if grade > 0}
+                for query_id, scores in judgments.items()}
     return {query_id: sorted(doc for doc, grade in scores.items() if grade > 0)
             for query_id, scores in judgments.items()}
 
 
-def load_trec_run(path, qrels_path):
+def load_trec_run(path, qrels_path, *, graded=False):
     """Produce validated evaluator rows from a TREC run and qrels file.
 
     Run format: query_id Q0 doc_id rank score run_id
     Query sets are defined by qrels to avoid inflated scores from omitted
     queries. Unknown query IDs in the run are an error, not silently ignored.
     """
-    qrels = load_qrels(qrels_path)
+    qrels = load_qrels(qrels_path, with_grades=graded)
     ranked = {query_id: [] for query_id in qrels}
     ids = {query_id: set() for query_id in qrels}
     ranks = {query_id: set() for query_id in qrels}
@@ -68,9 +73,14 @@ def load_trec_run(path, qrels_path):
         ranks[query_id].add(rank)
         ranked[query_id].append((rank, doc_id))
 
-    return [
-        {"query_id": query_id,
-         "retrieved_ids": [doc_id for _rank, doc_id in sorted(ranked[query_id])],
-         "relevant_ids": relevant}
-        for query_id, relevant in sorted(qrels.items())
-    ]
+    result = []
+    for query_id, labels in sorted(qrels.items()):
+        row = {
+            "query_id": query_id,
+            "retrieved_ids": [doc_id for _rank, doc_id in sorted(ranked[query_id])],
+            "relevant_ids": sorted(labels) if graded else labels,
+        }
+        if graded:
+            row["relevance_grades"] = labels
+        result.append(row)
+    return result

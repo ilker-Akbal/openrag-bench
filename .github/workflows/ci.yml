@@ -38,6 +38,10 @@ jobs:
         run: python examples/scifact_benchmark.py --help
       - name: Dense example CLI import smoke test (no model downloads)
         run: python examples/scifact_dense_faiss.py --help
+      - name: Graded qrels plus MAP smoke test
+        run: |
+          openrag-bench examples/trec_candidate.run --qrels examples/trec_graded.qrels --graded-qrels --k 2 --metric graded_ndcg_at_k > graded.json
+          python -c "import json; r=json.load(open('graded.json')); assert 'map_at_k' in r['metrics'] and 'graded_ndcg_at_k' in r['metrics']"
       - name: JSONL plus CSV smoke test
         run: |
           openrag-bench examples/retrieval_results.jsonl --k 2 --csv per_query.csv

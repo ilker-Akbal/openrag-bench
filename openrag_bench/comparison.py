@@ -52,6 +52,12 @@ def compare_rows(candidate_rows, baseline_rows, k):
     for query_id in base_index:
         if set(cand_index[query_id]["relevant_ids"]) != set(base_index[query_id]["relevant_ids"]):
             raise ValueError(f"Ground-truth relevant_ids differ for {query_id!r}")
+        cand_grades = cand_index[query_id].get("relevance_grades", {
+            doc_id: 1 for doc_id in cand_index[query_id]["relevant_ids"]})
+        base_grades = base_index[query_id].get("relevance_grades", {
+            doc_id: 1 for doc_id in base_index[query_id]["relevant_ids"]})
+        if cand_grades != base_grades:
+            raise ValueError(f"Ground-truth relevance_grades differ for {query_id!r}")
 
     cand_scores = {row["query_id"]: row["metrics"] for row in candidate["per_query"]}
     base_scores = {row["query_id"]: row["metrics"] for row in baseline["per_query"]}
