@@ -15,9 +15,15 @@ import sys
 
 from openrag_bench.cli import evaluate
 from openrag_bench.comparison import compare_rows
-from examples.scifact_benchmark import (
-    DATASET_MD5, LexicalIndex, download_archive, file_digest, load_scifact,
-)
+# Support both "python examples/scifact_dense_faiss.py" and module imports.
+if __package__:
+    from .scifact_benchmark import (
+        DATASET_MD5, LexicalIndex, download_archive, file_digest, load_scifact,
+    )
+else:
+    from scifact_benchmark import (
+        DATASET_MD5, LexicalIndex, download_archive, file_digest, load_scifact,
+    )
 
 MODEL_ID = "sentence-transformers/all-MiniLM-L6-v2"
 MODEL_REVISION = "c21050a7ef692090620a6d037dd736908f9c7cf6"
