@@ -164,7 +164,7 @@ footer{margin-top:2rem;color:var(--soft);font-size:.92rem}
                   '<div class="controls">',
                   '<label for="query-search">Query ID <input type="search" id="query-search" placeholder="Filter query ID"></label>',
                   '<label for="metric-select">Metric <select id="metric-select">']
-        for metric in METRICS:
+        for metric in available_metrics:
             selected_attr = " selected" if metric == selected else ""
             lines.append(f'<option value="{escape(metric)}"{selected_attr}>{escape(metric)}</option>')
         lines += ['</select></label>',
