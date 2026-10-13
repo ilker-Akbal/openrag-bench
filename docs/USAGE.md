@@ -150,3 +150,46 @@ characters are prefixed with a literal apostrophe for safety.
 This is still an in-memory report generator: the JSONL reader supports
 convenient line-oriented files but is not a constant-memory streaming
 aggregator.
+
+## MAP@k and graded relevance (next development version)
+
+The evaluator also calculates **MAP@k** and **graded NDCG@k**. MAP@k is the
+mean of per-query average precision over the first `k` ranked documents.
+For each query, average precision sums `precision@rank` at relevant ranks,
+then divides by `min(k, number_of_relevant_documents)`. This convention
+differs from variants that normalize by the *total* relevant count regardless
+of cutoff. Duplicates consume ranks but earn no duplicate relevance.
+
+Default `ndcg_at_k` stays **binary**, preserving its existing definition.
+`graded_ndcg_at_k` uses gain `2**grade-1`, with integer grades 1..31.
+Without graded labels, `graded_ndcg_at_k` equals binary `ndcg_at_k`.
+
+For JSON/JSONL rows, supply an optional `relevance_grades` object:
+
+```json
+{
+  "query_id": "q-001",
+  "retrieved_ids": ["doc-b", "doc-a"],
+  "relevant_ids": ["doc-a", "doc-b"],
+  "relevance_grades": {"doc-a": 3, "doc-b": 1}
+}
+```
+
+The positive-grade mapping must have **exactly the same document IDs** as
+`relevant_ids`. Queries with no relevant documents use an empty mapping.
+Candidate and baseline must have the same grades, not merely matching binary
+relevance sets, to ensure meaningful paired comparisons.
+
+For TREC, an **opt-in** flag preserves positive relevance grades:
+```bash
+openrag-bench examples/trec_candidate.run --baseline examples/trec_baseline.run \\
+  --qrels examples/trec_graded.qrels --graded-qrels --k 2 \\
+  --metric graded_ndcg_at_k --min-delta 0
+```
+
+Any qrel grade `<= 0` is treated as not relevant; positive grades above 31
+are rejected in graded mode to avoid unreasonable exponential gain. Without
+`--graded-qrels`, TREC inputs continue to use binary relevance. This
+extension changes only the reporting schema by **adding** new metric keys.
+The v0.1.0 tagged pre-release remains unchanged; this functionality is
+currently on the development branch until its next versioned release.

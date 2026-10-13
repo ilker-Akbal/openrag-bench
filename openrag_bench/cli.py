@@ -7,10 +7,11 @@ import argparse
 import json
 from pathlib import Path
 
-from .metrics import hit_at_k, ndcg_at_k, precision_at_k, recall_at_k, reciprocal_rank
+from .metrics import (average_precision_at_k, graded_ndcg_at_k, hit_at_k,
+                      ndcg_at_k, precision_at_k, recall_at_k, reciprocal_rank)
 
 METRICS = ("precision_at_k", "recall_at_k", "hit_at_k", "mrr_at_k",
-           "reciprocal_rank", "ndcg_at_k")
+           "reciprocal_rank", "ndcg_at_k", "map_at_k", "graded_ndcg_at_k")
 
 
 def _validate(rows, k):
@@ -28,6 +29,14 @@ def _validate(rows, k):
                 raise ValueError(f"Row {i}: {field} must be a list of non-empty strings")
             if len(ids) != len(set(ids)):
                 raise ValueError(f"Row {i}: duplicate document IDs in {field}")
+        if "relevance_grades" in row:
+            grades = row["relevance_grades"]
+            if not isinstance(grades, dict) or set(grades) != set(row["relevant_ids"]):
+                raise ValueError(
+                    f"Row {i}: relevance_grades must map exactly the relevant_ids")
+            if any(not isinstance(grade, int) or isinstance(grade, bool) or
+                   not 1 <= grade <= 31 for grade in grades.values()):
+                raise ValueError(f"Row {i}: positive integer grades must be in 1..31")
         for field in ("query_id", "question"):
             if field in row and (not isinstance(row[field], str) or
                                   not row[field].strip()):
@@ -40,6 +49,7 @@ def evaluate(rows, k):
     scores = []
     for row in rows:
         retrieved, relevant = row["retrieved_ids"], row["relevant_ids"]
+        grades = row.get("relevance_grades", {doc_id: 1 for doc_id in relevant})
         scores.append({
             "precision_at_k": precision_at_k(retrieved, relevant, k),
             "recall_at_k": recall_at_k(retrieved, relevant, k),
@@ -47,6 +57,8 @@ def evaluate(rows, k):
             "mrr_at_k": reciprocal_rank(retrieved, relevant, k),
             "reciprocal_rank": reciprocal_rank(retrieved, relevant),
             "ndcg_at_k": ndcg_at_k(retrieved, relevant, k),
+            "map_at_k": average_precision_at_k(retrieved, relevant, k),
+            "graded_ndcg_at_k": graded_ndcg_at_k(retrieved, grades, k),
         })
     return {
         "count": len(rows), "k": k,
@@ -68,6 +80,8 @@ def main(argv=None):
                         default="auto", help="Select JSON array or JSON Lines; auto uses filename extension")
     parser.add_argument("--qrels", type=Path,
                         help="TREC qrels file; interpret inputs as six-column TREC runs")
+    parser.add_argument("--graded-qrels", action="store_true",
+                        help="Preserve positive graded qrels for graded NDCG (requires --qrels)")
     parser.add_argument("--k", type=int, default=3)
     parser.add_argument("--baseline", type=Path,
                         help="Baseline dataset with matching query_id and ground truth")
@@ -79,6 +93,8 @@ def main(argv=None):
     parser.add_argument("--html", type=Path, help="Write standalone HTML report")
     parser.add_argument("--csv", type=Path, help="Write per-query spreadsheet-safe CSV (excludes question text)")
     args = parser.parse_args(argv)
+    if args.graded_qrels and not args.qrels:
+        parser.error("--graded-qrels requires --qrels")
     if args.qrels and args.input_format != "auto":
         parser.error("--input-format applies to JSON/JSONL only; omit it with --qrels")
     if args.min_delta is not None and not args.baseline:
@@ -91,14 +107,14 @@ def main(argv=None):
     try:
         if args.qrels:
             from .trec import load_trec_run
-            candidate = load_trec_run(args.dataset, args.qrels)
+            candidate = load_trec_run(args.dataset, args.qrels, graded=args.graded_qrels)
         else:
             from .io import read_rows
             candidate = read_rows(args.dataset, input_format=args.input_format)
         if args.baseline:
             from .comparison import compare_rows
             if args.qrels:
-                baseline = load_trec_run(args.baseline, args.qrels)
+                baseline = load_trec_run(args.baseline, args.qrels, graded=args.graded_qrels)
             else:
                 baseline = read_rows(args.baseline, input_format=args.input_format)
             report = compare_rows(candidate, baseline, args.k)
