@@ -1,0 +1,5 @@
+[
+  {"query_id":"eval-03","question":"How are retrieval metrics computed?","retrieved_ids":["doc-other","doc-eval"],"relevant_ids":["doc-eval"]},
+  {"query_id":"vector-02","question":"What is vector search?","retrieved_ids":["doc-vector","doc-other"],"relevant_ids":["doc-vector"]},
+  {"query_id":"grounding-01","question":"What is retrieval grounding?","retrieved_ids":["doc-intro","doc-ground"],"relevant_ids":["doc-ground"]}
+]
