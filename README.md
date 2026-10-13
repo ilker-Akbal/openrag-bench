@@ -42,6 +42,19 @@ python -m unittest discover -s tests -v
 openrag-bench examples/retrieval_results.json --k 2 --output report.json --html report.html
 ```
 
+## JSONL input and CSV diagnostics
+
+Use newline-delimited retrieval records directly and export spreadsheet-safe,
+query-level metric comparisons:
+
+```bash
+openrag-bench examples/retrieval_results.json --csv per_query.csv --k 2
+openrag-bench candidate.jsonl --baseline baseline.jsonl --csv deltas.csv --k 5
+```
+
+CSV reports exclude raw question text and protect against spreadsheet formula
+injection. See [data formats](docs/USAGE.md).
+
 ## Compare two retrieval versions
 
 ```bash

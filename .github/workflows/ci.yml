@@ -38,6 +38,10 @@ jobs:
         run: python examples/scifact_benchmark.py --help
       - name: Dense example CLI import smoke test (no model downloads)
         run: python examples/scifact_dense_faiss.py --help
+      - name: JSONL plus CSV smoke test
+        run: |
+          openrag-bench examples/retrieval_results.jsonl --k 2 --csv per_query.csv
+          python -c "import csv; x=list(csv.DictReader(open('per_query.csv', encoding='utf-8-sig'))); assert len(x)==2"
       - name: Build and audit wheel and source distribution
         if: matrix.python-version == '3.11'
         run: |

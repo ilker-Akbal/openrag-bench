@@ -119,3 +119,34 @@ print(report["metrics"])
 OpenRAG Bench measures retrieved **document relevance**. It does not directly
 evaluate hallucination rates, answer factuality, grounding, latency or cost.
 No cloud API, Ollama service or model downloads are required for the core.
+
+## JSON Lines / NDJSON input and spreadsheet-safe CSV output
+
+Large corpora often produce one row per line rather than a single JSON array.
+The CLI accepts both `.jsonl` and `.ndjson` automatically, alongside
+the existing `.json` arrays. JSONL files may include blank lines.
+Malformed records report the original **line number**; each nonblank line
+must contain one JSON object matching the row schema above.
+
+```bash
+openrag-bench examples/results.jsonl --k 5 --csv per_query.csv
+openrag-bench candidate.jsonl --baseline baseline.jsonl --k 5 \\
+  --csv comparison.csv --output comparison.json
+```
+
+If filenames have custom extensions, specify `--input-format jsonl` or
+`--input-format json`. Both candidate and baseline use this setting.
+TREC inputs still use `--qrels FILE` and are unaffected; do not combine
+`--qrels` with `--input-format`.
+
+CSV output contains one row per evaluated query. For a single run, columns
+are `query_id` and metric names. For paired runs, metric columns are
+prefixed `baseline_`, `candidate_` and `delta_`.
+The output has a UTF-8 BOM so Excel can read non-ASCII IDs. **Question text
+is intentionally omitted** from CSV to reduce accidental disclosure of
+sensitive prompt contents. Query IDs beginning with spreadsheet formula
+characters are prefixed with a literal apostrophe for safety.
+
+This is still an in-memory report generator: the JSONL reader supports
+convenient line-oriented files but is not a constant-memory streaming
+aggregator.
