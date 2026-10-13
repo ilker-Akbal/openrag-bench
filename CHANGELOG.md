@@ -23,8 +23,10 @@ claimed by this file**.
 ### Limitations
 - No public source/wheel release or PyPI availability is claimed until a
   signed-off release is explicitly made.
-- Real SciFact MiniLM embedding results are not claimed until separately
-  executed and verified.
+- Verified MiniLM + FAISS SciFact results were also recorded from
+  GitHub Actions (full CPU model inference and independent TREC re-scoring).
+  This specific run's NDCG@10 was 0.6451, versus BM25 0.6605; no
+  significance or cross-domain superiority is claimed.
 - Synthetic tests are not evidence of third-party usage.
 - Scores cover document retrieval, not generated answer truthfulness.
 
