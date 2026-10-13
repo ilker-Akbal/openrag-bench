@@ -83,6 +83,22 @@ This is a deterministic engineering threshold, not a significance test.
 Confidence intervals are computed from 1,000 seeded paired bootstrap samples,
 and are descriptive; small or biased datasets undermine generalization.
 
+## Standard TREC input
+
+`--qrels FILE` enables evaluation of classic four-column qrels files
+(`query_id iteration doc_id relevance`) and six-column run files
+(`query_id Q0 doc_id rank score run_id`):
+
+```bash
+openrag-bench examples/trec_candidate.run --qrels examples/trec.qrels \
+  --baseline examples/trec_baseline.run --k 2 --min-delta 0
+```
+
+Scores are sorted by the provided **rank**, not score. Every judged query is
+evaluated, including queries omitted from a run. Positive integer grades are
+treated as binary relevance. Unknown query IDs in a run and malformed or
+repeated rank/document entries are errors.
+
 ## Existing retriever integration
 
 ```python

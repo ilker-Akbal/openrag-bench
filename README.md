@@ -36,6 +36,23 @@ openrag-bench examples/comparison_candidate.json \
 
 A negative delta means the candidate scored worse than the baseline. With `--min-delta 0`, the CLI exits with code `2` if that metric regresses. Use this as a deterministic engineering gate, **not** as a statistical significance test.
 
+## Evaluate standard TREC run files
+
+No custom JSON conversion needed for common information-retrieval datasets.
+Given four-column `qrels` and six-column `run` files:
+
+```bash
+openrag-bench examples/trec_candidate.run \
+  --qrels examples/trec.qrels \
+  --baseline examples/trec_baseline.run \
+  --k 2 --metric ndcg_at_k --min-delta 0
+```
+
+Each query from the qrels contributes to the score even when the run returns
+nothing. Positive relevance grades count as relevant; zero and negative
+judgments are not relevant. Unknown query IDs, duplicate docs, duplicate
+ranks and invalid scores are rejected.
+
 ## Run against a real retriever
 
 ```python

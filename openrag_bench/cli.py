@@ -63,7 +63,9 @@ def evaluate(rows, k):
 def main(argv=None):
     parser = argparse.ArgumentParser(
         description="Evaluate or compare ranked retrieval results (offline)")
-    parser.add_argument("dataset", type=Path, help="Candidate JSON dataset")
+    parser.add_argument("dataset", type=Path, help="Candidate JSON or TREC run file")
+    parser.add_argument("--qrels", type=Path,
+                        help="TREC qrels file; interpret inputs as six-column TREC runs")
     parser.add_argument("--k", type=int, default=3)
     parser.add_argument("--baseline", type=Path,
                         help="Baseline dataset with matching query_id and ground truth")
@@ -82,10 +84,17 @@ def main(argv=None):
             parser.error("--min-delta must be finite")
 
     try:
-        candidate = json.loads(args.dataset.read_text(encoding="utf-8"))
+        if args.qrels:
+            from .trec import load_trec_run
+            candidate = load_trec_run(args.dataset, args.qrels)
+        else:
+            candidate = json.loads(args.dataset.read_text(encoding="utf-8"))
         if args.baseline:
             from .comparison import compare_rows
-            baseline = json.loads(args.baseline.read_text(encoding="utf-8"))
+            if args.qrels:
+                baseline = load_trec_run(args.baseline, args.qrels)
+            else:
+                baseline = json.loads(args.baseline.read_text(encoding="utf-8"))
             report = compare_rows(candidate, baseline, args.k)
         else:
             report = evaluate(candidate, args.k)

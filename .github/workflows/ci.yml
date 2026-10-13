@@ -31,6 +31,9 @@ jobs:
         run: |
           openrag-bench examples/comparison_candidate.json --baseline examples/comparison_baseline.json --k 2 --min-delta 0 --output comparison.json --html comparison.html
           python -c "import json; r=json.load(open('comparison.json')); assert r['count']==3 and r['gate']['passed'] and 'paired_bootstrap_95pct_ci' in r"
+      - name: TREC run and qrels smoke test
+        run: |
+          openrag-bench examples/trec_candidate.run --qrels examples/trec.qrels --baseline examples/trec_baseline.run --k 2 --min-delta 0
       - name: Wheel build
         if: matrix.python-version == '3.11'
         run: |
