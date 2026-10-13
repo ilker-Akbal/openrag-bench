@@ -1,12 +1,8 @@
 name: SciFact dense model verification
 
+# Heavy model downloads are deliberately opt-in. Run from Actions > Run workflow.
 on:
   workflow_dispatch:
-  pull_request:
-    paths:
-      - ".github/workflows/scifact-dense-verification.yml"
-      - "examples/scifact_dense_faiss.py"
-      - "docs/DENSE_SCIFACT.md"
 
 permissions:
   contents: read
