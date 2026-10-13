@@ -1,11 +1,8 @@
 name: Publish v0.1.0 GitHub pre-release
 # This workflow runs once after it is first added to main; workflow_dispatch
 # permits an explicit retry. It will never replace or retag an existing release.
+# v0.1.0 has been published; keep this as an explicit manual historical check.
 on:
-  push:
-    branches: [main]
-    paths:
-      - ".github/workflows/release-v0.1.0.yml"
   workflow_dispatch:
 
 permissions:

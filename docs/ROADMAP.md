@@ -25,8 +25,10 @@
 
 - [x] Run and independently verify SciFact on real BEIR data; commit aggregate-only metrics with provenance
 - [ ] Publish reproducible full-pipeline RAG case study with embeddings and retrieval settings
-- [ ] Package/publish tagged releases after verifying source attributions
-- [ ] Harden release workflows, automate security/dependency checks and enable private reporting
+- [x] Publish an initial v0.1.0 GitHub pre-release with verified wheel/sdist archives and SHA256SUMS
+- [ ] Review ownership/attribution continuously before future versions; PyPI publication is not yet planned
+- [x] Audit wheel/sdist archives, clean-install release, and enable weekly Dependabot checks
+- [ ] Confirm private GitHub vulnerability reporting is enabled and configure a confidential contact
 - [ ] Produce genuinely multilingual labeled evaluation resources
 - [ ] Compare fairly with existing open-source evaluation tools
 - [ ] Collect genuine outside user feedback and maintain issues/releases over time

@@ -1,7 +1,12 @@
 # Maintainer release checklist
 
-Publishing a GitHub release is a separate deliberate action. The package
-version in `pyproject.toml` does **not** mean a release exists.
+The first version [v0.1.0](https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.1.0)
+was published as a **GitHub pre-release** on 2026-10-13. Its build workflow
+passed package tests, archive-content audit, clean-venv wheel installation,
+SHA256SUMS validation and GitHub Release publication.
+
+This checklist applies to **future** releases. A package version alone never
+proves that a later release exists.
 
 ## Pre-release verification
 
@@ -23,7 +28,7 @@ version in `pyproject.toml` does **not** mean a release exists.
 - [ ] Ensure no dataset corpora, secrets, model artifacts or private user data
       are present in release archives or commit history.
 
-## Versioned release — only after pre-release review
+## Versioned release procedure for future versions
 
 1. Confirm the version in `pyproject.toml` matches the intended tag.
 2. From the reviewed clean `main` commit, create a signed or annotated
