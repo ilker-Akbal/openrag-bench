@@ -5,9 +5,29 @@ This tutorial extends the **real, verified** lexical benchmark in
 embedding search. A user can now compare two *actual retriever families*
 over the same 5,183 scientific documents and 300 judged queries.
 
-**Status:** code and offline mock tests are provided, but full model inference
-over the real SciFact dataset has **not yet been run and verified** as part
-of the project. Do not cite or invent any dense scores.
+**Status: FULL REAL-DATA RUN VERIFIED ON 13 OCTOBER 2026.**
+The full 5,183-document, 300-test-query SciFact experiment completed on
+GitHub Actions using the pinned MiniLM model (CPU) and exact FAISS indexing,
+then was independently re-scored from the produced standard TREC files.
+
+| Macro metric @ 10 | BM25 | MiniLM + FAISS |
+| --- | ---: | ---: |
+| Precision | 0.0870 | **0.0883** |
+| Recall | **0.7876** | 0.7833 |
+| Hit | **0.8067** | 0.7933 |
+| MRR | **0.6270** | 0.6047 |
+| NDCG | **0.6605** | 0.6451 |
+
+- [Full passing real model run](https://github.com/ilker-Akbal/openrag-bench/actions/runs/38441972953)
+- [Aggregate results and provenance](../benchmarks/scifact_dense_2026-10-13.json)
+- Git SHA `a97846610b10723258d9b7e2eb618183c9d81020`
+- Python 3.11, sentence-transformers 6.1.0, faiss-cpu 1.15.1, numpy 2.4.6
+- Model revision `c21050a7ef692090620a6d037dd736908f9c7cf6`
+
+**Interpretation:** BM25 achieved higher NDCG@10 and MRR@10, while the dense
+model slightly exceeded BM25's Precision@10 on this specific run. Neither
+method establishes general superiority, model answer factuality, or
+statistical significance. Incomplete relevance labels limit interpretation.
 
 ## Dependencies and provenance
 
@@ -46,12 +66,11 @@ measure hallucinations, factuality, latency or safety.
 
 ## Reproduction honesty
 
-Before publicly reporting dense scores:
-1. Run on the complete SciFact **test** split, not on the mock test corpus.
-2. Record Git commit, model revision, package versions, OS/CPU/GPU and runtime.
-3. Independently re-score both generated runs with the TREC CLI.
-4. Only commit aggregate results, not third-party document text or query text.
-5. Avoid significance and cross-domain superiority claims.
+The verified GitHub Actions run above completed all model/relevance checks
+and published *aggregate-only* numbers. Reproductions should record the
+same model revision, Python/package versions, archive hash and hardware, and
+should never upload third-party data. No statistical significance or
+cross-domain superiority is claimed.
 
 The separate optional dependencies and external model weights are **not**
 subject to this repository's MIT license.

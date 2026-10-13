@@ -18,7 +18,8 @@
 
 - [x] Optional pinned-model dense embeddings + FAISS SciFact runnable example, dependency isolated
 - [x] Offline regression tests for dense versus lexical result alignment
-- [ ] Run the real dense model, verify metrics and collect independent outside reproduction
+- [x] Run pinned MiniLM dense model on real SciFact; independently verify metrics and record aggregate-only provenance
+- [ ] Recruit independent outside developers to reproduce dense/lexical findings and file genuine feedback
 
 ## Next milestones
 
