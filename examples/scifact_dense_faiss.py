@@ -140,7 +140,7 @@ def main(argv=None):
     with (dest / "test.qrels").open("w", encoding="utf-8") as writer:
         for query_id in sorted(relevant):
             for doc_id in relevant[query_id]:
-                writer.write(f"{query_id} 0 {doc_id} 1\\n")
+                writer.write(f"{query_id} 0 {doc_id} 1\n")
     print(json.dumps({
         "documents": len(docs), "queries": len(queries), "k": args.k,
         "baseline_bm25": comparison["baseline"]["metrics"],
