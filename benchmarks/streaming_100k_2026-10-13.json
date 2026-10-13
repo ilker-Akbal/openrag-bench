@@ -1,0 +1,25 @@
+{
+  "benchmark": "OpenRAG Bench 100000-query synthetic JSONL streaming vs materialized",
+  "run_date": "2026-10-13",
+  "workflow_run_url": "https://github.com/ilker-Akbal/openrag-bench/actions/runs/38456988019",
+  "runner": "GitHub Actions Linux",
+  "python": "3.11.17",
+  "pull_request": 24,
+  "run_checkout_sha": "267ce046a4eb4e8a2070a75d200af10eb04aedb6",
+  "synthetic_queries": 100000,
+  "k": 2,
+  "streaming": {
+    "seconds": 12.45836,
+    "python_peak_bytes": 316634,
+    "python_peak_mib": 0.302
+  },
+  "in_memory": {
+    "seconds": 9.41808,
+    "python_peak_bytes": 127189354,
+    "python_peak_mib": 121.297
+  },
+  "python_peak_memory_ratio": 0.002489,
+  "metric_parity_tolerance": 1e-9,
+  "passed": true,
+  "limitations": "tracemalloc tracks Python allocations, not total OS RSS; same one-run synthetic dataset, observed streaming runtime was slower and figures are environment-specific"
+}

@@ -44,7 +44,7 @@
 **Priority 1: real user workflows and scalability**
 
 1. [Genuine LangChain and LlamaIndex end-to-end compatibility](https://github.com/ilker-Akbal/openrag-bench/issues/19): real pinned framework vector-store CI added; complete only after both live integration jobs succeed, then seek independent user reproduction.
-2. [Streaming and bounded-memory evaluation](https://github.com/ilker-Akbal/openrag-bench/issues/18): verify 100k synthetic queries with reported wall-clock time and peak memory, and preserve metric semantics.
+2. [Streaming and bounded-memory evaluation](https://github.com/ilker-Akbal/openrag-bench/issues/18): **implemented** summary-only JSONL; verified 100k synthetic queries with measured memory, wall time, and metric parity. Broader file formats and paired external-memory joins remain future work.
 3. [Diagnostic report explorer](https://github.com/ilker-Akbal/openrag-bench/issues/21): identify per-query failures without exposing private source text.
 
 **Priority 2: wider evidence and sustainable maintenance**

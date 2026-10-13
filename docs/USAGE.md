@@ -226,3 +226,30 @@ last-bit rounding from batch evaluation; semantic parity is tested with
 numerical tolerances. Graded relevance and empty-label conventions are
 unchanged. The input must already be labeled; this mode does not produce
 retrieval rankings or query IDs.
+
+
+### Verified 100,000-query synthetic benchmark (2026-10-13)
+
+[Passing hosted run](https://github.com/ilker-Akbal/openrag-bench/actions/runs/38456988019)
+on Linux/Python 3.11.17 used exactly 100,000 generated **synthetic** labeled
+queries and compared the same data in streamed and fully materialized modes,
+with all eight metrics matching within 1e-9.
+
+| Mode | Python peak allocations (tracemalloc) | Wall time |
+| --- | ---: | ---: |
+| Streaming summary | 0.302 MiB | 12.458 s |
+| Full batch evaluation | 121.297 MiB | 9.418 s |
+
+Thus this specific benchmark showed ~400x less *measured Python allocation
+peak*, at the cost of slower execution. Tracemalloc does NOT represent
+total process RSS, framework memory or all native allocations. Timings
+can differ significantly by runner and machine. The benchmark checks
+metric parity and proves neither production adoption nor an overall
+speedup.
+
+See [aggregate numeric result](../benchmarks/streaming_100k_2026-10-13.json).
+Re-run using:
+
+~~~bash
+python scripts/benchmark_streaming.py --queries 100000 --output memory_result.json
+~~~

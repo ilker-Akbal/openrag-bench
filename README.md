@@ -66,7 +66,12 @@ openrag-bench large.jsonl --streaming-summary --k 5 --output summary.json
 
 This mode writes only aggregate metrics and rejects baselines, HTML, CSV and
 TREC inputs. Normal JSONL/JSON/TREC behavior remains unchanged. See the
-[streaming guide](docs/USAGE.md) and benchmark methodology.
+[streaming guide](docs/USAGE.md) and
+[100k-query synthetic benchmark evidence](benchmarks/streaming_100k_2026-10-13.json).
+On one Python 3.11 GitHub runner, Python peak allocations were 0.302 MiB
+streaming versus 121.297 MiB batch, while streaming took 12.46 s versus
+9.42 s batch. This is a **memory-for-speed tradeoff**, not a production
+throughput or total system RAM claim.
 
 ## Graded judgments and MAP@k
 
