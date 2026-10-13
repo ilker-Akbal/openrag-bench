@@ -1,0 +1,36 @@
+name: Streaming 100k synthetic-query memory benchmark
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/streaming-memory-benchmark.yml"
+      - "scripts/benchmark_streaming.py"
+      - "openrag_bench/io.py"
+      - "openrag_bench/streaming.py"
+      - "openrag_bench/cli.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  benchmark:
+    name: 100k JSONL memory benchmark
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependency-free evaluator
+        run: python -m pip install -e .
+      - name: Benchmark 100000 unique synthetic labeled queries
+        run: |
+          python scripts/benchmark_streaming.py --queries 100000 --output synthetic_memory_results.json
+      - name: Upload numeric-only performance record
+        uses: actions/upload-artifact@v4
+        with:
+          name: streaming-100k-memory-results
+          path: synthetic_memory_results.json
+          retention-days: 30
