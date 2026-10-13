@@ -18,8 +18,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.11'
       - name: Install package
@@ -64,7 +64,7 @@ jobs:
           print(json.dumps(public, indent=2))
           PY
       - name: Upload aggregate-only metrics (no dataset content)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: scifact-aggregate-metrics
           path: public_metrics.json

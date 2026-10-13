@@ -1,5 +1,4 @@
 """Query-level interactive diagnostic report regression and security tests."""
-import json
 import re
 import unittest
 

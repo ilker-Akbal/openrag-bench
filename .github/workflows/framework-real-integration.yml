@@ -26,8 +26,8 @@ jobs:
       OPENRAG_REAL_FRAMEWORK: ${{ matrix.framework }}
       PIP_DISABLE_PIP_VERSION_CHECK: "1"
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.11"
       - name: Install core and pinned real framework
@@ -56,7 +56,7 @@ jobs:
           print(json.dumps(result, indent=2))
           PY
       - name: Upload synthetic aggregate evidence
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: "real-${{ matrix.framework }}-compatibility"
           path: framework_result.json

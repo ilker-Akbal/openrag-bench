@@ -17,10 +17,19 @@ jobs:
       matrix:
         python-version: ['3.10', '3.11', '3.12', '3.13']
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
+      - name: Enforced development quality gates (Python 3.11)
+        if: matrix.python-version == '3.11'
+        run: |
+          python -m pip install -e '.[dev]'
+          python -m ruff check openrag_bench tests
+          python -m coverage run --source=openrag_bench -m unittest discover -s tests -v
+          python -m coverage report -m --fail-under=90
+          python -m coverage xml -o coverage.xml
+          python -m unittest discover -s tests -p property_metrics.py -v
       - name: Install package
         run: python -m pip install -e .
       - name: Unit tests

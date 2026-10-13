@@ -17,8 +17,8 @@ jobs:
       OMP_NUM_THREADS: "2"
       MKL_NUM_THREADS: "2"
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.11"
       - name: Install CPU PyTorch
@@ -67,7 +67,7 @@ jobs:
           print(json.dumps(public, indent=2))
           PY
       - name: Upload aggregate-only metrics (no corpus or query texts)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: scifact-dense-aggregate-metrics
           path: public_dense_metrics.json
