@@ -12,3 +12,8 @@ results.json
 results.html
 comparison.json
 comparison.html
+
+# Externally downloaded corpora and generated evaluation results
+data/
+reports/
+*.download

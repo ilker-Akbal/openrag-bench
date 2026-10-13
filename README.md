@@ -77,6 +77,26 @@ python -m pip install '.[faiss]'
 python examples/faiss_integration.py
 ```
 
+## Reproduce a real dataset benchmark
+
+Run two lexical retrieval baselines against the externally hosted **BEIR SciFact
+test** split (5,183 scientific abstracts; 300 judged queries):
+
+```bash
+python examples/scifact_benchmark.py --download --k 10 --output-dir reports/scifact
+```
+
+The tool explicitly downloads the official 2.8 MB ZIP, verifies the checksum,
+reads it without extracting files, builds a local inverted index, runs **TF-IDF
+cosine** and **BM25**, and saves ranked TREC run files plus aggregate and
+per-query comparisons. Python standard library is sufficient.
+
+**Verified results are published:** BM25 NDCG@10 **0.6605**, versus TF-IDF
+**0.6329** on 300 judged queries. See the exact
+[reproduction, data attribution and limitations](docs/BENCHMARK_SCIFACT.md)
+and [aggregate-only metrics](benchmarks/scifact_2026-10-13.json). The dataset
+retains its respective licenses; no data is included in this code repository.
+
 ## How it works
 
 Your RAG system supplies a ranked list of retrieved document IDs for each labeled question. OpenRAG Bench compares those rankings against explicitly documented relevant IDs. With a baseline and candidate JSON file, it reports per-query differences and seeded paired-bootstrap confidence intervals. Comparisons require matching query IDs and ground-truth labels.

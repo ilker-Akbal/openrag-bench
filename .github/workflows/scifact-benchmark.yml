@@ -1,0 +1,71 @@
+name: SciFact real-data benchmark
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "examples/scifact_benchmark.py"
+      - "tests/test_scifact_benchmark.py"
+      - ".github/workflows/scifact-benchmark.yml"
+      - "openrag_bench/**"
+      - "docs/BENCHMARK_SCIFACT.md"
+
+permissions:
+  contents: read
+
+jobs:
+  scifact:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install package
+        run: python -m pip install -e .
+      - name: Run BEIR SciFact real-data retrieval benchmark
+        run: |
+          python examples/scifact_benchmark.py --download --k 10 \
+            --archive data/scifact.zip --output-dir reports/scifact
+      - name: Independently re-evaluate generated TREC run files
+        run: |
+          openrag-bench reports/scifact/bm25.run --qrels reports/scifact/test.qrels \
+            --baseline reports/scifact/tfidf.run --k 10 \
+            --output reports/scifact/verified.json > /dev/null
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          raw = json.loads(Path("reports/scifact/comparison.json").read_text())
+          verified = json.loads(Path("reports/scifact/verified.json").read_text())
+          for method in ("tfidf", "bm25"):
+              expected = raw["comparison"]["baseline" if method == "tfidf" else "candidate"]["metrics"]
+              got = verified["baseline" if method == "tfidf" else "candidate"]["metrics"]
+              for name in expected:
+                  assert abs(expected[name] - got[name]) < 1e-9, (method, name)
+          for name, value in raw["comparison"]["delta"].items():
+              assert abs(value - verified["delta"][name]) < 1e-9, name
+          public = {
+              "benchmark": raw["benchmark"],
+              "dataset_source": raw["dataset_source"],
+              "archive_md5": raw["dataset_archive_md5"],
+              "archive_sha256": raw["dataset_archive_sha256"],
+              "documents": raw["documents"],
+              "queries": raw["queries"],
+              "k": raw["k"],
+              "baseline": raw["baseline"],
+              "candidate": raw["candidate"],
+              "tfidf_metrics": raw["comparison"]["baseline"]["metrics"],
+              "bm25_metrics": raw["comparison"]["candidate"]["metrics"],
+              "metric_delta_candidate_minus_baseline": raw["comparison"]["delta"],
+              "interpretation": "Binary incomplete qrels, lexical methods, macro-averaged; not a significance test."
+          }
+          Path("public_metrics.json").write_text(json.dumps(public, indent=2) + "\n")
+          print(json.dumps(public, indent=2))
+          PY
+      - name: Upload aggregate-only metrics (no dataset content)
+        uses: actions/upload-artifact@v4
+        with:
+          name: scifact-aggregate-metrics
+          path: public_metrics.json
+          retention-days: 30
