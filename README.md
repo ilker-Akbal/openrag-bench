@@ -148,8 +148,13 @@ mandatory package dependencies. Both adapters extract stable document/node IDs
 and reject duplicates.
 
 See the [framework integration guide](docs/FRAMEWORK_INTEGRATIONS.md).
-Offline adapter contract tests are provided; full third-party installations
-must be verified independently.
+In addition to offline contract mocks, an
+[optional actual-framework vector-store test](examples/framework_real_integration.py)
+uses LangChain InMemoryVectorStore and LlamaIndex VectorStoreIndex with
+original synthetic keyword embeddings. The
+[dedicated integration workflow](.github/workflows/framework-real-integration.yml)
+checks specific pinned framework versions; this is not a semantic quality
+benchmark or proof of compatibility across all releases.
 
 ## How it works
 
