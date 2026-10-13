@@ -253,3 +253,29 @@ Re-run using:
 ~~~bash
 python scripts/benchmark_streaming.py --queries 100000 --output memory_result.json
 ~~~
+
+
+## Privacy-preserving interactive diagnostic explorer (v0.3 development)
+
+The standalone HTML output uses an offline search filter, metric selection,
+sortable worst/best query deltas, outcome filtering, label coverage and empty
+candidate statistics. Paired comparisons also include the **count** of
+top-k overlapping document IDs without embedding those IDs or query bodies
+in the HTML. Generated outputs remain functional without JavaScript, showing
+all query rows in worst-first order for the default metric.
+
+~~~bash
+openrag-bench candidate.jsonl --baseline baseline.jsonl --k 5 --html explorer.html
+~~~
+
+All user-controlled query IDs and numeric metric payloads are HTML-escaped.
+No external CSS, JavaScript, images, CDN, analytics or telemetry is used.
+**Query IDs can still be sensitive**, so handle generated files according
+to your privacy policy. Reports now carry additive per-query diagnostics
+(retrieved count, positive judgment count and hit count) and, for paired
+runs, candidate/baseline counts and the top-k overlap count. Clients using
+an exact JSON schema must account for these new optional fields.
+
+For privacy reasons, HTML no longer displays the original question text.
+These statistics explain where the retriever regressed; they do not diagnose
+LLM answer quality, unlabeled negative judgments or cause of a missing hit.

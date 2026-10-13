@@ -27,6 +27,10 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: CLI smoke test
         run: openrag-bench examples/retrieval_results.json --k 2 --output report.json --html report.html
+      - name: Offline explorer smoke test
+        run: |
+          openrag-bench examples/comparison_candidate.json --baseline examples/comparison_baseline.json --k 2 --html explorer.html > /dev/null
+          python -c "from pathlib import Path; h=Path('explorer.html').read_text(); assert 'id=\"query-search\"' in h and 'Top-k overlap' in h and 'No positive labels' in h"
       - name: Paired comparison
         run: |
           openrag-bench examples/comparison_candidate.json --baseline examples/comparison_baseline.json --k 2 --min-delta 0 --output comparison.json --html comparison.html

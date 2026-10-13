@@ -42,6 +42,17 @@ python -m unittest discover -s tests -v
 openrag-bench examples/retrieval_results.json --k 2 --output report.json --html report.html
 ```
 
+## Offline diagnostic explorer (v0.3 development)
+
+Standalone interactive HTML reports show per-query worst regressions,
+judgment coverage, empty retrieval cases, top-k overlap, and local metric
+filtering. Reports contain query IDs, **not raw question text or document IDs**.
+They use no external scripts or trackers.
+
+~~~bash
+openrag-bench examples/comparison_candidate.json --baseline examples/comparison_baseline.json --k 2 --html diagnostics.html
+~~~
+
 ## JSONL input and CSV diagnostics
 
 Use newline-delimited retrieval records directly and export spreadsheet-safe,

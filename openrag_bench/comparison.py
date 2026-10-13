@@ -66,6 +66,23 @@ def compare_rows(candidate_rows, baseline_rows, k):
         "query_id": query_id,
         "delta": {key: cand_scores[query_id][key] - base_scores[query_id][key]
                   for key in METRICS},
+        "diagnostics": {
+            "judged_positive_count": len(base_index[query_id]["relevant_ids"]),
+            "candidate_retrieved_count": len(cand_index[query_id]["retrieved_ids"]),
+            "baseline_retrieved_count": len(base_index[query_id]["retrieved_ids"]),
+            "top_k_overlap_count": len(
+                set(cand_index[query_id]["retrieved_ids"][:k])
+                & set(base_index[query_id]["retrieved_ids"][:k])
+            ),
+            "candidate_hits_at_k": len(
+                set(cand_index[query_id]["retrieved_ids"][:k])
+                & set(base_index[query_id]["relevant_ids"])
+            ),
+            "baseline_hits_at_k": len(
+                set(base_index[query_id]["retrieved_ids"][:k])
+                & set(base_index[query_id]["relevant_ids"])
+            ),
+        },
     } for query_id in ids]
     delta = {key: sum(row["delta"][key] for row in per_query) / len(ids)
              for key in METRICS}
