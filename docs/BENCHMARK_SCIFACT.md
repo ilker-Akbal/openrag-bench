@@ -1,15 +1,33 @@
 # Reproducible BEIR SciFact retrieval benchmark
 
-## Status
+## Verified real-dataset result — 13 October 2026
 
-This is a **runnable real-dataset benchmark recipe**. It compares TF-IDF
-cosine to BM25 using BEIR SciFact's official **test** split.
+The benchmark ran on **5,183 scientific abstracts and 300 judged test
+queries**, and the generated TREC files were independently re-evaluated
+using OpenRAG Bench. The two methods require no GPU or cloud API.
 
-**Important:** No live benchmark scores are claimed in this repository until
-someone runs the download, verifies the archive and commits the exact
-reproduction manifest and results. CI tests use **synthetic miniature
-fixtures** and do not download or evaluate real SciFact. This prevents
-network-dependent tests and unsupported accuracy claims.
+| Macro metric @ k=10 | TF-IDF cosine | BM25 (k1=1.2, b=0.75) |
+| --- | ---: | ---: |
+| Precision@10 | 0.0860 | **0.0870** |
+| Recall@10 | 0.7785 | **0.7876** |
+| Hit@10 | 0.8000 | **0.8067** |
+| MRR@10 | 0.5940 | **0.6270** |
+| NDCG@10 | 0.6329 | **0.6605** |
+
+- **Verified run:** https://github.com/ilker-Akbal/openrag-bench/actions/runs/38440711430
+- **Exact code commit:** `b9ccbfab1ddc1b0de0df01afba36f1bd9364a098`
+- **Dataset SHA-256:** `536e14446a0ba56ed1398ab1055f39fe852686ecad24a6306c80c490fa8e0165`
+- **Python:** 3.11 (GitHub Actions Ubuntu runner).
+- **Machine-readable aggregate-only metrics:** [JSON](../benchmarks/scifact_2026-10-13.json)
+- **Verification:** independent standard TREC run/qrels evaluation matched all metric
+  values within `1e-9`; the workflow passed.
+
+**Interpretation:** On this exact retrieval configuration and test collection,
+BM25 achieved NDCG@10 0.6605 versus 0.6329 for TF-IDF (absolute difference
++0.0276). This is **not** evidence of statistical significance, BM25's
+superiority on other datasets, or LLM answer quality. The relevance judgments
+are incomplete; unlabeled documents are treated as nonrelevant. Only
+aggregate results (no third-party texts) were added to the repository.
 
 ## Dataset sources and rights
 
@@ -96,10 +114,10 @@ privately when using non-public datasets; generated files are gitignored.
 
 ## Honest benchmark reporting checklist
 
-Before publishing metric numbers, record the tested Git commit, Python version,
-SciFact archive SHA-256, number of queries and documents, k, exact commands,
-hardware, methods, dataset limitations, output metrics and any deviations.
-Never confuse the CI's synthetic fixture scores with genuine SciFact metrics.
+The verified 2026-10-13 aggregate numbers are captured above, with the code
+commit, environment and archive checksum. Record future runs with the same
+provenance fields; do not confuse unit-test fixture scores with real SciFact
+measurements.
 
 A future follow-up will compare dense embeddings + FAISS against these lexical
 baselines with separately pinned models and explicit compute requirements.

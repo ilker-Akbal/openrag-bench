@@ -18,7 +18,7 @@
 
 ## Next milestones
 
-- [ ] Actually run and independently verify SciFact results on real downloaded data; publish exact metric values with metadata
+- [x] Run and independently verify SciFact on real BEIR data; commit aggregate-only metrics with provenance
 - [ ] Publish reproducible full-pipeline RAG case study with embeddings and retrieval settings
 - [ ] Package/publish tagged releases after verifying source attributions
 - [ ] Harden release workflows, automate security/dependency checks and enable private reporting

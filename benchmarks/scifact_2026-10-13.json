@@ -1,0 +1,39 @@
+{
+  "benchmark": "BEIR SciFact test",
+  "run_date": "2026-10-13",
+  "code_commit": "b9ccbfab1ddc1b0de0df01afba36f1bd9364a098",
+  "workflow_run_url": "https://github.com/ilker-Akbal/openrag-bench/actions/runs/38440711430",
+  "dataset_url": "https://public.ukp.informatik.tu-darmstadt.de/thakur/BEIR/datasets/scifact.zip",
+  "dataset_archive_md5": "5f7d1de60b170fc8027bb7898e2efca1",
+  "dataset_archive_sha256": "536e14446a0ba56ed1398ab1055f39fe852686ecad24a6306c80c490fa8e0165",
+  "python": "3.11",
+  "documents": 5183,
+  "queries": 300,
+  "k": 10,
+  "tfidf": {
+    "precision_at_k": 0.08600000000000027,
+    "recall_at_k": 0.7785000000000001,
+    "hit_at_k": 0.8,
+    "mrr_at_k": 0.5940039682539684,
+    "reciprocal_rank": 0.5940039682539684,
+    "ndcg_at_k": 0.6329113317316912
+  },
+  "bm25": {
+    "precision_at_k": 0.08700000000000027,
+    "recall_at_k": 0.7876111111111112,
+    "hit_at_k": 0.8066666666666666,
+    "mrr_at_k": 0.6269695767195768,
+    "reciprocal_rank": 0.6269695767195768,
+    "ndcg_at_k": 0.6604641499925741
+  },
+  "delta_bm25_minus_tfidf": {
+    "precision_at_k": 0.0010000000000000002,
+    "recall_at_k": 0.009111111111111111,
+    "hit_at_k": 0.006666666666666667,
+    "mrr_at_k": 0.032965608465608455,
+    "reciprocal_rank": 0.032965608465608455,
+    "ndcg_at_k": 0.027552818260882638
+  },
+  "verification": "GitHub Actions benchmark completed successfully and independent TREC re-evaluation matched every metric to tolerance 1e-9.",
+  "disclaimer": "Single dataset, lexical baselines only, incomplete binary relevance judgments, no significance claim, no general BM25-superiority claim."
+}

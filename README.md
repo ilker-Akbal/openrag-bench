@@ -91,9 +91,10 @@ reads it without extracting files, builds a local inverted index, runs **TF-IDF
 cosine** and **BM25**, and saves ranked TREC run files plus aggregate and
 per-query comparisons. Python standard library is sufficient.
 
-**Results are not yet published**: dataset downloads are external, and this
-repository does not fabricate measurements. See the exact
-[reproduction and attribution guide](docs/BENCHMARK_SCIFACT.md). The dataset
+**Verified results are published:** BM25 NDCG@10 **0.6605**, versus TF-IDF
+**0.6329** on 300 judged queries. See the exact
+[reproduction, data attribution and limitations](docs/BENCHMARK_SCIFACT.md)
+and [aggregate-only metrics](benchmarks/scifact_2026-10-13.json). The dataset
 retains its respective licenses; no data is included in this code repository.
 
 ## How it works
