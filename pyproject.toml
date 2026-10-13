@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "openrag-bench"
+version = "0.1.0"
+description = "Offline evaluation and regression testing for RAG retrieval"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{name = "Ilker Akbal"}]
+keywords = ["rag", "retrieval", "evaluation", "benchmark", "faiss", "regression-testing"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = []
+
+[project.optional-dependencies]
+faiss = ["numpy>=1.23", "faiss-cpu>=1.8"]
+
+[project.urls]
+Homepage = "https://github.com/ilker-Akbal/openrag-bench"
+Repository = "https://github.com/ilker-Akbal/openrag-bench"
+Issues = "https://github.com/ilker-Akbal/openrag-bench/issues"
+Documentation = "https://github.com/ilker-Akbal/openrag-bench/blob/main/docs/USAGE.md"
+
+[project.scripts]
+openrag-bench = "openrag_bench.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["openrag_bench*"]
