@@ -1,0 +1,78 @@
+name: SciFact dense model verification
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - ".github/workflows/scifact-dense-verification.yml"
+      - "examples/scifact_dense_faiss.py"
+      - "docs/DENSE_SCIFACT.md"
+
+permissions:
+  contents: read
+
+jobs:
+  dense-real:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      TOKENIZERS_PARALLELISM: "false"
+      HF_HUB_DISABLE_TELEMETRY: "1"
+      OMP_NUM_THREADS: "2"
+      MKL_NUM_THREADS: "2"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install CPU PyTorch
+        run: python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - name: Install optional dense dependencies
+        run: python -m pip install -e '.[dense]'
+      - name: Run real MiniLM embeddings and FAISS on SciFact
+        run: |
+          python examples/scifact_dense_faiss.py \
+            --download --k 10 --device cpu --batch-size 32 \
+            --output-dir reports/scifact-dense
+      - name: Independently re-evaluate both TREC runs and emit aggregate-only metrics
+        run: |
+          openrag-bench reports/scifact-dense/dense.run \
+            --qrels reports/scifact-dense/test.qrels \
+            --baseline reports/scifact-dense/bm25.run --k 10 \
+            --output reports/scifact-dense/verified.json > /dev/null
+          python - <<'PY'
+          import json
+          import importlib.metadata as im
+          from pathlib import Path
+          raw = json.loads(Path("reports/scifact-dense/comparison.json").read_text())
+          check = json.loads(Path("reports/scifact-dense/verified.json").read_text())
+          for key in ("baseline", "candidate"):
+              for metric, value in raw["comparison"][key]["metrics"].items():
+                  assert abs(value - check[key]["metrics"][metric]) < 1e-9
+          for metric, value in raw["comparison"]["delta"].items():
+              assert abs(value - check["delta"][metric]) < 1e-9
+          public = {
+              "benchmark": raw["dataset"],
+              "dataset_sha256": raw["dataset_sha256"],
+              "documents": raw["documents"], "queries": raw["queries"],
+              "k": raw["k"],
+              "model": raw["embedding_model"], "model_revision": raw["embedding_revision"],
+              "index": raw["index"], "baseline": raw["baseline"],
+              "python": "3.11", "device": "cpu",
+              "sentence_transformers_version": im.version("sentence-transformers"),
+              "faiss_cpu_version": im.version("faiss-cpu"),
+              "numpy_version": im.version("numpy"),
+              "baseline_metrics": raw["comparison"]["baseline"]["metrics"],
+              "dense_metrics": raw["comparison"]["candidate"]["metrics"],
+              "delta_dense_minus_baseline": raw["comparison"]["delta"],
+              "note": "Single dataset, incomplete qrels, exact FAISS, no significance claim."
+          }
+          Path("public_dense_metrics.json").write_text(json.dumps(public, indent=2) + "\n")
+          print(json.dumps(public, indent=2))
+          PY
+      - name: Upload aggregate-only metrics (no corpus or query texts)
+        uses: actions/upload-artifact@v4
+        with:
+          name: scifact-dense-aggregate-metrics
+          path: public_dense_metrics.json
+          retention-days: 30
