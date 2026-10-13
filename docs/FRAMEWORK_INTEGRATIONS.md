@@ -4,10 +4,12 @@ OpenRAG Bench can evaluate **existing** LangChain and LlamaIndex retrievers
 without depending on either framework at installation time. Only ranked
 stable document IDs are passed into the same offline evaluation metrics.
 
-These adapters are **thin interoperability wrappers** tested with offline
-framework-shaped mocks. A real user's framework version, vector index and
-ground-truth labels may require additional integration verification. We do
-not claim a live third-party framework benchmark result based on these mocks.
+The adapters have dependency-free mock-based contract tests. A separate
+optional GitHub Actions suite now installs real, pinned LangChain and
+LlamaIndex framework packages and builds actual in-memory vector indices,
+using original synthetic vectors. **The live suite must pass before any
+specific framework-version compatibility is claimed**. It does not prove
+semantic embedding quality or compatibility with every framework release.
 
 ## LangChain retriever
 
@@ -80,6 +82,72 @@ dependencies, pricing and data retention. Inspect those separately.
 - Core OpenRAG Bench library: no dependency on either framework
 - LangChain-style retriever API: `invoke(query)` returning documents
 - LlamaIndex-style retriever API: `retrieve(query)` returning node wrappers
-- Tested with offline shape-contract mocks, not every framework release
-- Full end-to-end independently reproduced integrations are a future
-  community milestone, not a claim made here
+- The default Python 3.10–3.13 CI uses offline mock-based contract tests
+- Optional CI uses real `langchain-core==1.6.5` and `llama-index-core==0.14.25`
+  on Python 3.11, installed independently in separate GitHub Actions jobs
+- Live full framework compatibility must be checked from the dedicated workflow;
+  neither model quality nor cross-version certification is implied
+- Independent external-user reproduction remains an open community task
+
+
+## Actual vector-store compatibility smoke tests (no APIs, no downloads of weights)
+
+The [real-framework integration workflow](../.github/workflows/framework-real-integration.yml)
+runs two isolated optional Python 3.11 jobs. LangChain uses the real
+InMemoryVectorStore; LlamaIndex uses the real VectorStoreIndex and TextNode.
+Both use the same original, three-document synthetic mini-corpus and a
+locally computed 3D keyword embedding. The benchmark asks three unambiguous
+queries and checks top-1 document IDs and all reported OpenRAG Bench metrics.
+This exercises *real library indexing and retrieval*, not mock return values.
+
+**Reproduce the LangChain job** in a separate virtual environment:
+
+~~~bash
+python -m pip install -e .
+python -m pip install "langchain-core==1.6.5" "numpy>=1.23,<3"
+python examples/framework_real_integration.py --framework langchain
+~~~
+
+**Reproduce the LlamaIndex job** in a different virtual environment:
+
+~~~bash
+python -m pip install -e .
+python -m pip install "llama-index-core==0.14.25"
+python examples/framework_real_integration.py --framework llamaindex
+~~~
+
+For the dedicated optional unittest, set environment variable
+OPENRAG_REAL_FRAMEWORK to langchain or llamaindex, then run:
+
+~~~bash
+python -m unittest discover -s tests -p framework_real_integration.py -v
+~~~
+
+On PowerShell use $env:OPENRAG_REAL_FRAMEWORK='llamaindex' (or 'langchain').
+The workflow does this automatically and records installed version, Python
+version, original corpus checksum, top-1 IDs and aggregates. This tiny
+synthetic test proves API compatibility only; it cannot replace a real
+labeled multilingual or large-scale retrieval benchmark. Nothing is uploaded
+except synthetic numeric result metadata.
+
+
+## Verified real-framework GitHub Actions run (13 October 2026)
+
+**Both real package jobs passed** in the dedicated
+[GitHub Actions run](https://github.com/ilker-Akbal/openrag-bench/actions/runs/38456230435).
+
+| Installed framework | Verified package version | Interpreter | Result |
+| --- | --- | --- | --- |
+| LangChain InMemoryVectorStore | langchain-core 1.6.5 | Python 3.11.17 | Pass |
+| LlamaIndex VectorStoreIndex | llama-index-core 0.14.25 | Python 3.11.17 | Pass |
+
+Each job built an actual vector store, embedded three original synthetic
+documents, retrieved the top-ranked ID for three labeled queries, and
+evaluated the output using the real OpenRAG Bench adapter and metric functions.
+All @1 metrics were 1.0 because the keyword vectors were deliberately
+unambiguous. These figures **are not a benchmark of either framework's search
+quality** and do not provide evidence of any third-party user adoption.
+The workflow uploaded aggregate-only results and installed-version metadata.
+
+Additional versions, other stores, production indices and semantic
+embeddings have not been independently validated.

@@ -2,6 +2,14 @@
 
 All notable changes to OpenRAG Bench are documented here.
 
+## Unreleased — working toward v0.3.0
+
+- Add a separate GitHub Actions compatibility suite for actual installed
+  LangChain and LlamaIndex vector index/retriever implementations, using a
+  deterministic, offline, synthetic embedding and exact-label evaluation.
+- Leave default dependency-free core installation unchanged; pinned
+  framework integration dependencies are installed in isolated CI jobs.
+
 ## [v0.2.0] — 2026-10-13
 
 [GitHub public pre-release](https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.2.0).
