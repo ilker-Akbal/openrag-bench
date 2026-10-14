@@ -58,6 +58,21 @@ provides the working baseline; future experiments must not rewrite prior
 published metric values or tags. Large optional frameworks and models must
 not become required dependencies for the offline core.
 
+## v0.4 — OpenRAG Guard (development)
+
+- [ ] Versioned fail-closed quality policies: aggregate, critical and category rules
+- [ ] Five-minute onboarding with init and doctor
+- [ ] Reusable GitHub Action with safe step summary and deterministic failure status
+- [ ] CI proves a critical query regression is blocked despite improved aggregate score
+- [ ] Versioned pre-release only after independent audit and CI
+
+## Next releases (proposed, not implemented)
+
+- v0.5 — Golden Dataset Studio: privacy-aware local UI for human relevance labels.
+- v0.6 — Capture & Replay: deterministic retrieval exports, stable ID mappings
+  and optional adapters for reproducible evaluations.
+- Later: latency/cost guardrails when independently measurable.
+
 ## Codex for Open Source application
 
 An MIT license, public code and successful tests do not establish meaningful

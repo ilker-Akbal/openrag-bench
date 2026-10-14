@@ -137,6 +137,45 @@ footer{margin-top:2rem;color:var(--soft);font-size:.92rem}
             f'<small>{escape(label)}</small></div>'
         )
     lines.append("</section>")
+    if "guard" in report:
+        guard = report["guard"]
+        state = "PASSED" if guard["passed"] else "BLOCKED"
+        tone = "#166534" if guard["passed"] else "#b91c1c"
+        lost = sum(bool(x.get("diagnostics", {}).get("lost_top_k_hit"))
+                   for x in report.get("per_query_delta", []))
+        gained = sum(bool(x.get("diagnostics", {}).get("gained_top_k_hit"))
+                     for x in report.get("per_query_delta", []))
+        lines += [
+            '<section class="card" aria-label="OpenRAG Guard policies">',
+            f'<h2>OpenRAG Guard: <span style="color:{tone}">{state}</span></h2>',
+            f'<p>{lost} lost top-k hits · {gained} gained top-k hits. '
+            'These are observed ranking changes, not causal diagnoses.</p>',
+            '<div class="table-wrap"><table><thead><tr>',
+            '<th scope="col">Rule</th><th scope="col">Scope</th>',
+            '<th scope="col">Metric</th><th scope="col">Queries</th>',
+            '<th scope="col">Candidate mean</th><th scope="col">Delta</th>',
+            '<th scope="col">Result</th>',
+            '</tr></thead><tbody>',
+        ]
+        for item in guard["rules"]:
+            rule_status = "Passed" if item["passed"] else "Failed: " + ", ".join(
+                item["failed_thresholds"])
+            lines.append(
+                "<tr>"
+                f'<th scope="row">{escape(item["id"])}</th>'
+                f'<td>{escape(str(item["selector"]["type"]))}</td>'
+                f'<td>{escape(str(item["metric"]))}</td>'
+                f'<td class="number">{item["query_count"]}</td>'
+                f'<td class="number">{item["candidate_mean"]:.4f}</td>'
+                f'<td class="number">{item["delta"]:+.4f}</td>'
+                f'<td>{escape(rule_status)}</td></tr>'
+            )
+        lines += [
+            '</tbody></table></div>',
+            '<p class="muted">Guard rules block releases if selected critical '
+            'or category-specific queries regress, even when macro scores increase.</p>',
+            '</section>',
+        ]
     if paired:
         lines += ["<section class=\"card\"><h2>Candidate − baseline (macro average)</h2>",
                   _table(report["delta"])]
