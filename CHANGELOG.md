@@ -13,6 +13,19 @@ GitHub Action. Previous releases remain unchanged; not published on PyPI.
 
 # Changelog
 
+## Unreleased — report dashboard (source only)
+
+- Show policy PASS/BLOCK decisions and measured NDCG before detailed metrics.
+- Explain critical query failures with baseline and candidate first-relevant
+  ranks, without leaking question text or raw document IDs.
+- Provide concise human-readable checks and a failed-Guard query filter.
+- Collapse the old repetitive metric tables, clarify absolute score deltas
+  versus relative percentage change and retain all existing metrics.
+- Add six-query graded-relevance synthetic display fixture and HTML
+  accessibility/privacy regression tests. The released v0.4.0 tag and
+  artifacts remain unchanged.
+
+
 All notable changes to OpenRAG Bench are documented here.
 
 ## [v0.3.0] — 2026-10-13

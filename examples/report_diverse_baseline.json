@@ -1,0 +1,86 @@
+[
+  {
+    "query_id": "critical-privacy",
+    "category": "privacy",
+    "critical": true,
+    "retrieved_ids": [
+      "privacy-guide",
+      "misc",
+      "intro"
+    ],
+    "relevant_ids": [
+      "privacy-guide"
+    ]
+  },
+  {
+    "query_id": "setup",
+    "category": "general",
+    "critical": false,
+    "retrieved_ids": [
+      "misc",
+      "setup-guide",
+      "other"
+    ],
+    "relevant_ids": [
+      "setup-guide"
+    ]
+  },
+  {
+    "query_id": "billing",
+    "category": "general",
+    "critical": false,
+    "retrieved_ids": [
+      "billing-guide",
+      "misc",
+      "refund-policy"
+    ],
+    "relevant_ids": [
+      "billing-guide",
+      "refund-policy"
+    ],
+    "relevance_grades": {
+      "billing-guide": 3,
+      "refund-policy": 1
+    }
+  },
+  {
+    "query_id": "api",
+    "category": "general",
+    "critical": false,
+    "retrieved_ids": [
+      "api-guide",
+      "misc",
+      "other"
+    ],
+    "relevant_ids": [
+      "api-guide"
+    ]
+  },
+  {
+    "query_id": "authentication",
+    "category": "general",
+    "critical": false,
+    "retrieved_ids": [
+      "misc",
+      "auth-guide",
+      "security-guide"
+    ],
+    "relevant_ids": [
+      "auth-guide",
+      "security-guide"
+    ]
+  },
+  {
+    "query_id": "faq",
+    "category": "general",
+    "critical": false,
+    "retrieved_ids": [
+      "misc",
+      "faq-guide",
+      "other"
+    ],
+    "relevant_ids": [
+      "faq-guide"
+    ]
+  }
+]
