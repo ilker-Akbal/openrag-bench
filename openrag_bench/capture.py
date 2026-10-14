@@ -130,8 +130,17 @@ def capture_from_retriever(retriever, judgments, k, *, id_map=None):
 
 
 def _write_new(path, payload):
-    with Path(path).open("x", encoding="utf-8", newline="\n") as handle:
-        handle.write(payload)
+    """Create an output exclusively; remove it if writing fails partway."""
+    path = Path(path)
+    created = False
+    try:
+        with path.open("x", encoding="utf-8", newline="\n") as handle:
+            created = True
+            handle.write(payload)
+    except BaseException:
+        if created:
+            path.unlink(missing_ok=True)
+        raise
 
 
 def capture(argv=None):
@@ -167,11 +176,20 @@ def capture(argv=None):
             "rankings_sha256": _digest(rows),
             "id_map_sha256": _digest(mapping) if mapping is not None else None,
         }
-        # Preflight schema and collisions before any write. Existing files stay untouched.
-        _write_new(args.output, serialized)
-        if args.manifest:
-            _write_new(args.manifest, json.dumps(manifest, indent=2,
-                                                 ensure_ascii=False) + "\n")
+        # Validate everything before writing, and roll back an already written
+        # primary dataset if writing the optional manifest subsequently fails.
+        completed = []
+        try:
+            _write_new(args.output, serialized)
+            completed.append(args.output)
+            if args.manifest:
+                _write_new(args.manifest, json.dumps(manifest, indent=2,
+                                                     ensure_ascii=False) + "\n")
+                completed.append(args.manifest)
+        except BaseException:
+            for completed_path in reversed(completed):
+                completed_path.unlink(missing_ok=True)
+            raise
     except (ValueError, TypeError, KeyError, OSError, json.JSONDecodeError) as exc:
         parser.error(str(exc))
     print(json.dumps(manifest, indent=2, ensure_ascii=False))
