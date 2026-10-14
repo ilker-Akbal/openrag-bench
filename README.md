@@ -93,6 +93,20 @@ python examples/scifact_capture_replay.py --download --k 10
 The dataset is not checked into this repository; only aggregate numbers are
 published, and locally generated per-query data must remain private.
 
+## First Capture & Replay report without cloud access
+
+Run an original, small lexical retrieval example with real ranked IDs and a
+deliberate **critical-query release block**, even though overall retrieval
+NDCG improves. No models, network requests or API keys are required:
+
+~~~bash
+python examples/quickstart_capture_replay.py --output-dir reports/quickstart
+~~~
+
+Open `reports/quickstart/guard.html`. The demo is synthetic and does not
+prove independent adoption. For actual LangChain, LlamaIndex or custom
+retrievers, see the [bring-your-own-RAG walkthrough](docs/OWN_RAG_QUICKSTART.md).
+
 ## Quick start
 
 Requires Python 3.10 or newer. Install the **GitHub release wheel** (not published on PyPI):
