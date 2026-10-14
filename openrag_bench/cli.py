@@ -80,12 +80,15 @@ def evaluate(rows, k):
 def main(argv=None):
     import sys
     supplied = sys.argv[1:] if argv is None else list(argv)
+    if supplied and supplied[0] == "studio":
+        from .studio import studio
+        return studio(supplied[1:])
     if supplied and supplied[0] in ("init", "doctor", "guard"):
         from . import commands
         return getattr(commands, supplied[0])(supplied[1:])
     parser = argparse.ArgumentParser(
         description="Evaluate or compare ranked retrieval results (offline)",
-        epilog="Subcommands: init (sample data), doctor (validate), guard (strict quality policy).")
+        epilog="Subcommands: init (sample data), doctor (validate), guard (quality policy), studio (offline labeling).")
     parser.add_argument("dataset", type=Path, help="Candidate JSON or TREC run file")
     parser.add_argument("--input-format", choices=("auto", "json", "jsonl"),
                         default="auto", help="Select JSON array or JSON Lines; auto uses filename extension")

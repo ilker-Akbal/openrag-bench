@@ -119,3 +119,19 @@ openrag-bench guard demo/candidate-regression.json --baseline demo/baseline.json
 
 Son komut örnek kritik soruda hatayı yakalar ve çıkış kodu 2 olur. Belgeler
 sentetiktir; [ayrıntılı politika sözleşmesi](GUARD.md).
+
+
+## Golden Dataset Studio — v0.5 geliştirme
+
+Tek komutla internetsiz, tek HTML dosyalı bir etiketleme editörü oluştur:
+
+    openrag-bench studio --output golden-dataset-studio.html
+    Start-Process .\golden-dataset-studio.html
+
+Soru ve belge kimliği ekle, doğru belgeleri 1–3 dereceyle elle işaretle,
+kritik sorguları seç ve bir taslak olarak yerel JSON kaydet. Etiket ve
+Guard politikası dosyalarını ayrıca dışa aktar.
+
+Dışa aktarılan retrieved_ids alanı kasıtlı olarak boştur; bu veriyi gerçek
+RAG retriever çıktılarıyla birleştirmeden kalite sonucu saymayın.
+Kılavuz: [Golden Dataset Studio](STUDIO.md).
