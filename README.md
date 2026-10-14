@@ -76,6 +76,21 @@ Standalone interactive HTML reports show per-query worst regressions, judgment c
 
 They use no external scripts or trackers.
 
+The latest source checkout on `main` includes a refreshed report-first
+dashboard: an immediately visible **release decision**, critical-query
+before/after ranking evidence, plain-English rule failures, query filtering,
+and collapsed technical metrics. The already published v0.4.0 wheel retains
+the original explorer layout until a subsequent reviewed release.
+
+A more diverse, original six-query demo at `k=3` helps distinguish metrics:
+
+~~~bash
+openrag-bench guard examples/report_diverse_candidate.json --baseline examples/report_diverse_baseline.json --policy examples/guard_policy.json --k 3 --html report_diverse.html
+~~~
+
+This scenario has multiple positive documents and differing rankings; it
+does not represent an independent production benchmark.
+
 ~~~bash
 openrag-bench examples/comparison_candidate.json --baseline examples/comparison_baseline.json --k 2 --html diagnostics.html
 ~~~

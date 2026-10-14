@@ -65,6 +65,34 @@ All specified thresholds must pass. An absolute numeric tolerance of 1e-12
 accommodates floating point noise. This is deterministic testing, NOT a
 statistical hypothesis test or guarantee that any AI response is true.
 
+## Reading the redesigned HTML report (current development branch)
+
+The offline dashboard places the Guard PASS/BLOCK decision and explanation
+first; next are highlighted failed queries, first-relevant baseline/candidate
+ranks, readable policy failures and sortable query diagnostics. The long
+metric tables (baseline, candidate and signed deltas) sit in a collapsed
+native HTML details section. No external CSS, JS, font, network request,
+tracking or API key is required.
+
+Ranks and lost/gained top-k hits are **observations**, not proofs of what
+caused them. A missing rank means no positive-labeled document was returned
+in the recorded ranked results; the top-k hit decision still uses the
+configured cutoff. The highlighted ID list has policy-defined limits;
+the query table retains all per-query rows for local filtering.
+
+Metrics use 0–1 scores and **absolute** differences. For example,
+0.3333 → 0.6667 is a +0.3333 delta (33.33 percentage points),
+not a 33% relative improvement. On minimal single-positive `k=1`
+fixtures, multiple evaluation metrics can legitimately have equal values.
+To explore more varied rankings and graded relevance at `k=3`:
+
+~~~bash
+openrag-bench guard examples/report_diverse_candidate.json --baseline examples/report_diverse_baseline.json --policy examples/guard_policy.json --k 3 --html report_diverse.html
+~~~
+
+The two example files are original and synthetic. The released v0.4.0 wheel
+predates this HTML facelift; use a reviewed source checkout for the new UI.
+
 ## Evidence and privacy
 
 The report includes query IDs, mean scores, failed policies, and

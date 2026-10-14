@@ -81,6 +81,11 @@ jobs:
         run: |
           openrag-bench examples/comparison_candidate.json --baseline examples/comparison_baseline.json --k 2 --html explorer.html > /dev/null
           python -c "from pathlib import Path; h=Path('explorer.html').read_text(); assert 'id=\"query-search\"' in h and 'Top-k overlap' in h and 'No positive labels' in h"
+      - name: Offline dashboard explains blocked policy and diverse top-k rankings
+        run: |
+          openrag-bench guard examples/guard_regression.json --baseline examples/guard_baseline.json --policy examples/guard_policy.json --k 1 --html guard_dashboard.html --output guard_dashboard.json > /dev/null || test "$?" -eq 2
+          openrag-bench guard examples/report_diverse_candidate.json --baseline examples/report_diverse_baseline.json --policy examples/guard_policy.json --k 3 --html diverse_dashboard.html > /dev/null
+          python -c "from pathlib import Path; a=Path('guard_dashboard.html').read_text(); b=Path('diverse_dashboard.html').read_text(); assert a.index('Release blocked') < a.index('No positive labels'); assert 'Relevant top-k hit lost' in a and 'First relevant rank' in a; assert 'Detailed retrieval metrics' in b and 'Quality checks passed' in b"
       - name: Paired comparison
         run: |
           openrag-bench examples/comparison_candidate.json --baseline examples/comparison_baseline.json --k 2 --min-delta 0 --output comparison.json --html comparison.html
