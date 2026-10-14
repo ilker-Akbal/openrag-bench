@@ -228,15 +228,25 @@ Do not claim private invitations were sent unless they actually were.
 
 ## Actual distribution and feedback log
 
-| Destination | Status | Proof / next action |
+**Owner-reported update, 2026-10-14.** Based on browser screenshots
+provided by the project owner, one Reddit megathread comment and one
+DEV Community tutorial article were posted. Hacker News showed the
+official temporary **Show HN restriction** notice at
+https://news.ycombinator.com/showlim ; that screen is **not** evidence
+of a submitted Hacker News item. A direct Reddit comment permalink
+has not yet been recorded. The DEV URL below is transcribed from the
+owner's screenshot, not independently confirmed by the GitHub CI.
+
+| Destination | Status | Evidence / next action |
 | --- | --- | --- |
 | GitHub issue #4 | **PUBLIC** | https://github.com/ilker-Akbal/openrag-bench/issues/4 |
-| r/github megathread | **NOT POSTED** | Requires signed-in Reddit account and final user submission |
-| Hacker News Show HN | **NOT POSTED** | Requires signed-in HN account and maker's participation |
-| DEV Community | **NOT POSTED** | Requires signed-in DEV account and tutorial publication |
+| r/github megathread | **POSTED (owner screenshot)** | The owner's `ilker_Akbal` comment was visible in https://www.reddit.com/r/github/comments/1jy8rea/promote_your_projects_here_selfpromotion/ ; retrieve the specific comment permalink later |
+| Hacker News Show HN | **BLOCKED; NOT POSTED** | New-account Show HN limitation: https://news.ycombinator.com/showlim ; participate organically and retry only when permitted |
+| DEV Community | **PUBLISHED (owner screenshot)** | https://dev.to/ilker_akbal_7ffe2578cb745/when-rag-retrieval-improves-overall-but-breaks-critical-queries-4d3 |
 | Invited developers | **NOT CONTACTED** | Requires developer contact and consent to receive invitation |
 | LinkedIn | **EXCLUDED BY REQUEST** | Do not prepare or publish under this outreach plan |
 
-Only after a real post is submitted should its date and permalink be
-added to this log. Do not fabricate audience size, replies, installs,
-reviews, stars or benchmark reproductions.
+These posts are **public outreach**, not proof of independent installations,
+evaluation quality, user adoption, GitHub stars, downloads or real
+benchmark reproductions. Record third-party results only once independently
+received and reviewed; never invent them.
