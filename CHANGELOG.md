@@ -1,6 +1,8 @@
 # Changelog
 
-## [v0.6.0] — release candidate (not yet published)
+## [v0.6.0] — 2026-10-14
+
+[GitHub v0.6.0 alpha pre-release](https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.6.0) published with audited wheel, sdist and SHA256SUMS.
 
 Capture & Replay connects human-labeled Golden Dataset Studio queries to
 real ranked IDs from an external retriever, then reuses the existing Guard
