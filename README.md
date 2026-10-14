@@ -39,6 +39,8 @@ OpenRAG Bench is a small Python toolkit for comparing the ranked document result
 **Package vs. repository:** The published **v0.6.0 wheel** includes Guard, Golden Dataset Studio and Capture & Replay. The newer `examples/quickstart_capture_replay.py` demonstration is available in the current **`main` source checkout**, not inside that published wheel. Self-authored CI checks are not evidence of external adoption.
 
 
+**Read by topic:** [Setup](#get-started) · [Guard / Studio / Capture](#what-the-toolkit-does) · [Evaluation formats](#evaluation-formats-and-metrics) · [Retriever integrations](#retriever-integrations) · [Real-data benchmarks](#reproducible-real-data-benchmarks) · [Quality gates](#development-quality-gates--current-source) · [Contributing](#contribute-get-support-and-verify-results)
+
 ## Get started
 
 Tested in CI on **Python 3.10–3.13**. The package declares Python >=3.10;
@@ -72,23 +74,23 @@ Open `reports/first-demo/guard.html` (Windows: `Start-Process .\reports\first-de
 
 See [step-by-step demo](docs/DEMO_60_SECONDS.md), [versioned v0.6.0 release assets](https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.6.0), and [bring-your-own-retriever integration](docs/OWN_RAG_QUICKSTART.md).
 
-## Features
+## What the toolkit does
 
-## OpenRAG Guard — critical-query regression policies
+### OpenRAG Guard — critical-query regression policies
 
 OpenRAG Guard checks **scoped retrieval quality policies**. It can block
 an update when the overall NDCG improves but a critical privacy question
 loses its relevant document.
 
 ~~~bash
-openrag-bench init --directory openrag-demo
+# Run after the one-time "init" step in Get started.
 openrag-bench doctor openrag-demo/candidate.json --baseline openrag-demo/baseline.json --policy openrag-demo/guard-policy.json --k 1
 openrag-bench guard openrag-demo/candidate.json --baseline openrag-demo/baseline.json --policy openrag-demo/guard-policy.json --k 1 --html guard.html
 ~~~
 
 Run the `candidate-regression.json` example from **Get started** to see the critical loss correctly **blocked** (exit status 2). All bundled demo inputs are original synthetic data. See the [OpenRAG Guard policy and Action guide](docs/GUARD.md). Guard is included in the published v0.6.0 wheel.
 
-## Golden Dataset Studio — offline human relevance labels
+### Golden Dataset Studio — offline human relevance labels
 
 Generate a **standalone offline browser editor** without a server, account or API key:
 
@@ -106,7 +108,7 @@ See [Studio documentation](docs/STUDIO.md).
 
 **Status:** Studio was introduced in v0.5.0 and is included in the published **v0.6.0** wheel. Python, CLI and JavaScript UI smoke tests pass; **independent human browser and accessibility testing remains open**. It is an alpha tool, not an audited production collaboration or document management platform.
 
-## Capture & Replay — record real rankings and replay Guard
+### Capture & Replay — record real rankings and replay Guard
 
 The published v0.6.0 release adds offline `capture` for joining actual ranked
 retriever results with human-reviewed Golden Dataset Studio labels. A strict
@@ -127,7 +129,7 @@ python examples/scifact_capture_replay.py --download --k 10
 The dataset is not checked into this repository; only aggregate numbers are
 published, and locally generated per-query data must remain private.
 
-## First Capture & Replay report without cloud access
+### First Capture & Replay report without cloud access
 
 Run an original, small lexical retrieval example with real ranked IDs and a
 deliberate **critical-query release block**, even though overall retrieval
@@ -139,7 +141,7 @@ python examples/quickstart_capture_replay.py --output-dir reports/quickstart
 
 Open `reports/quickstart/guard.html`. A **BLOCKED** policy is the expected result, and the demo wrapper returns 0 because it verified that block. The dataset is synthetic and does **not** establish independent adoption. For LangChain, LlamaIndex or custom retrievers, see the [bring-your-own-RAG walkthrough](docs/OWN_RAG_QUICKSTART.md).
 
-## Offline HTML diagnostic explorer
+### Offline HTML diagnostic explorer
 
 Standalone interactive HTML reports show per-query worst regressions, judgment coverage, empty retrieval cases, top-k overlap, and local metric filtering. Reports contain query IDs, **not raw question text or document IDs**.
 
@@ -165,7 +167,9 @@ does not represent an independent production benchmark.
 openrag-bench examples/comparison_candidate.json --baseline examples/comparison_baseline.json --k 2 --html diagnostics.html
 ~~~
 
-## JSONL input and CSV diagnostics
+## Evaluation formats and metrics
+
+### JSONL input and CSV diagnostics
 
 Use newline-delimited retrieval records directly and export spreadsheet-safe, query-level metric comparisons:
 
@@ -176,7 +180,7 @@ openrag-bench examples/comparison_candidate.json --baseline examples/comparison_
 
 CSV reports exclude raw question text and protect against spreadsheet formula injection. See [data formats](docs/USAGE.md).
 
-## Bounded-memory JSONL summary mode
+### Bounded-memory JSONL summary mode
 
 For large labeled JSONL datasets, evaluate without materializing the complete input or per-query report:
 
@@ -188,7 +192,7 @@ The `your-labeled-queries.jsonl` path above is a **placeholder for your own labe
 
 On one Python 3.11 GitHub runner, Python peak allocations were 0.302 MiB streaming versus 121.297 MiB batch, while streaming took 12.46 s versus 9.42 s batch. This is a **memory-for-speed tradeoff**, not a production throughput or total system RAM claim.
 
-## Graded judgments and MAP@k
+### Graded judgments and MAP@k
 
 Beyond binary relevance, evaluate documents labeled with positive integer relevance grades, including standard graded TREC qrels:
 
@@ -199,7 +203,7 @@ openrag-bench examples/trec_candidate.run --qrels examples/trec_graded.qrels \
 
 The original binary NDCG definition remains unchanged. See [metric definitions and graded JSON input](docs/USAGE.md).
 
-## Compare two retrieval versions
+### Compare two retrieval versions
 
 ```bash
 openrag-bench examples/comparison_candidate.json \
@@ -210,7 +214,7 @@ openrag-bench examples/comparison_candidate.json \
 
 A negative delta means the candidate scored worse than the baseline. With `--min-delta 0`, the CLI exits with code `2` if that metric regresses. Use this as a deterministic engineering gate, **not** as a statistical significance test.
 
-## Evaluate standard TREC run files
+### Evaluate standard TREC run files
 
 No custom JSON conversion needed for common information-retrieval datasets.
 
@@ -225,7 +229,15 @@ openrag-bench examples/trec_candidate.run \
 
 Each query from the qrels contributes to the score even when the run returns nothing. Positive relevance grades count as relevant; zero and negative judgments are not relevant. Unknown query IDs, duplicate docs, duplicate ranks and invalid scores are rejected.
 
-## Integrate a retriever using the Python protocol
+## Retriever integrations
+
+### How it works
+
+Your RAG system supplies a ranked list of retrieved document IDs for each labeled question. OpenRAG Bench compares those rankings against explicitly documented relevant IDs. With a baseline and candidate JSON file, it reports per-query differences and seeded paired-bootstrap confidence intervals. Comparisons require matching query IDs and ground-truth labels.
+
+No models are downloaded and the evaluation core makes no network calls.
+
+### Integrate a retriever using the Python protocol
 
 ```python
 from openrag_bench.adapters import run_retriever
@@ -249,7 +261,48 @@ python -m pip install '.[faiss]'
 python examples/faiss_integration.py
 ```
 
-## Human-labeled Turkish retrieval benchmark
+### Use existing LangChain or LlamaIndex retrievers
+
+Plug in LangChain `invoke(query)` retrievers or LlamaIndex `retrieve(query)` retrievers without installing those frameworks as mandatory package dependencies. Both adapters extract stable document/node IDs and reject duplicates.
+
+See the [framework integration guide](docs/FRAMEWORK_INTEGRATIONS.md).
+
+In addition to offline contract mocks, an [optional actual-framework vector-store test](examples/framework_real_integration.py) uses LangChain InMemoryVectorStore and LlamaIndex VectorStoreIndex with original synthetic keyword embeddings. The [dedicated integration workflow](.github/workflows/framework-real-integration.yml) checks specific pinned framework versions; this is not a semantic quality benchmark or proof of compatibility across all releases.
+
+#### Verified installed-framework compatibility
+
+Both pinned packages passed true offline vector-store integration on GitHub Actions: LangChain core **1.6.5** and LlamaIndex core **0.14.25** (Python 3.11.17). See the [actual passing framework run](https://github.com/ilker-Akbal/openrag-bench/actions/runs/38456230435).
+
+The tiny synthetic keyword-vector exercise is a compatibility check, not semantic retrieval benchmarking.
+
+## Reproducible real-data benchmarks
+
+### Reproduce a real dataset benchmark
+
+Run two lexical retrieval baselines against the externally hosted **BEIR SciFact test** split (5,183 scientific abstracts; 300 judged queries):
+
+```bash
+python examples/scifact_benchmark.py --download --k 10 --output-dir reports/scifact
+```
+
+The tool explicitly downloads the official 2.8 MB ZIP, verifies the checksum, reads it without extracting files, builds a local inverted index, runs **TF-IDF cosine** and **BM25**, and saves ranked TREC run files plus aggregate and per-query comparisons. Python standard library is sufficient.
+
+**Verified results are published:** BM25 NDCG@10 **0.6605**, versus TF-IDF **0.6329** on 300 judged queries. See the exact [reproduction, data attribution and limitations](docs/BENCHMARK_SCIFACT.md) and [aggregate-only metrics](benchmarks/scifact_2026-10-13.json). The dataset retains its respective licenses; no data is included in this code repository.
+
+### Dense embeddings + FAISS (optional)
+
+A separate [CPU-capable real-data walkthrough](docs/DENSE_SCIFACT.md) compares a pinned Sentence Transformers MiniLM embedding model with BM25 using FAISS exact vector search:
+
+```bash
+python -m pip install -e '.[dense]'
+python examples/scifact_dense_faiss.py --download --k 10
+```
+
+**Real dense model results have now been verified** on 5,183 SciFact documents and 300 judged queries: MiniLM + FAISS NDCG@10 **0.6451** versus BM25 **0.6605**. See the [provenance and limitations](docs/DENSE_SCIFACT.md) and [verified aggregate metrics](benchmarks/scifact_dense_2026-10-13.json).
+
+Ordinary unit CI does not download weights; a dedicated GitHub Actions workflow performs the real model evaluation.
+
+### Human-labeled Turkish retrieval benchmark
 
 A dedicated offline Python evaluator measures BM25 under Unicode casefolding versus Turkish-specific dotted/dotless-I casing on an **external** dataset of 54 Turkish Wikipedia articles and **58 human-annotated Turkish questions**.
 
@@ -262,51 +315,6 @@ python examples/turkish_real_benchmark.py --download --k 10 --output turkish_sum
 See [provenance, exact pinned revision, data limitations and results](docs/TURKISH_BENCHMARK.md).
 
 These are article-level lexical retrieval baselines on a single health-domain set, not multilingual model certification.
-
-## Reproduce a real dataset benchmark
-
-Run two lexical retrieval baselines against the externally hosted **BEIR SciFact test** split (5,183 scientific abstracts; 300 judged queries):
-
-```bash
-python examples/scifact_benchmark.py --download --k 10 --output-dir reports/scifact
-```
-
-The tool explicitly downloads the official 2.8 MB ZIP, verifies the checksum, reads it without extracting files, builds a local inverted index, runs **TF-IDF cosine** and **BM25**, and saves ranked TREC run files plus aggregate and per-query comparisons. Python standard library is sufficient.
-
-**Verified results are published:** BM25 NDCG@10 **0.6605**, versus TF-IDF **0.6329** on 300 judged queries. See the exact [reproduction, data attribution and limitations](docs/BENCHMARK_SCIFACT.md) and [aggregate-only metrics](benchmarks/scifact_2026-10-13.json). The dataset retains its respective licenses; no data is included in this code repository.
-
-## Use existing LangChain or LlamaIndex retrievers
-
-Plug in LangChain `invoke(query)` retrievers or LlamaIndex `retrieve(query)` retrievers without installing those frameworks as mandatory package dependencies. Both adapters extract stable document/node IDs and reject duplicates.
-
-See the [framework integration guide](docs/FRAMEWORK_INTEGRATIONS.md).
-
-In addition to offline contract mocks, an [optional actual-framework vector-store test](examples/framework_real_integration.py) uses LangChain InMemoryVectorStore and LlamaIndex VectorStoreIndex with original synthetic keyword embeddings. The [dedicated integration workflow](.github/workflows/framework-real-integration.yml) checks specific pinned framework versions; this is not a semantic quality benchmark or proof of compatibility across all releases.
-
-### Verified installed-framework compatibility
-
-Both pinned packages passed true offline vector-store integration on GitHub Actions: LangChain core **1.6.5** and LlamaIndex core **0.14.25** (Python 3.11.17). See the [actual passing framework run](https://github.com/ilker-Akbal/openrag-bench/actions/runs/38456230435).
-
-The tiny synthetic keyword-vector exercise is a compatibility check, not semantic retrieval benchmarking.
-
-## How it works
-
-Your RAG system supplies a ranked list of retrieved document IDs for each labeled question. OpenRAG Bench compares those rankings against explicitly documented relevant IDs. With a baseline and candidate JSON file, it reports per-query differences and seeded paired-bootstrap confidence intervals. Comparisons require matching query IDs and ground-truth labels.
-
-No models are downloaded and the evaluation core makes no network calls.
-
-## Dense embeddings + FAISS (optional)
-
-A separate [CPU-capable real-data walkthrough](docs/DENSE_SCIFACT.md) compares a pinned Sentence Transformers MiniLM embedding model with BM25 using FAISS exact vector search:
-
-```bash
-python -m pip install -e '.[dense]'
-python examples/scifact_dense_faiss.py --download --k 10
-```
-
-**Real dense model results have now been verified** on 5,183 SciFact documents and 300 judged queries: MiniLM + FAISS NDCG@10 **0.6451** versus BM25 **0.6605**. See the [provenance and limitations](docs/DENSE_SCIFACT.md) and [verified aggregate metrics](benchmarks/scifact_dense_2026-10-13.json).
-
-Ordinary unit CI does not download weights; a dedicated GitHub Actions workflow performs the real model evaluation.
 
 ## Development quality gates — current source
 
