@@ -21,6 +21,7 @@ REQUIRED = (
     "openrag_bench/guard.py",
     "openrag_bench/commands.py",
     "openrag_bench/studio.py",
+    "openrag_bench/capture.py",
 )
 FORBIDDEN = {"day-01-llm-rag-agents", "day-02-computer-vision",
              "day-03-sensor-fusion-navigation", "practice",
@@ -90,6 +91,10 @@ def audit(directory):
                          "tests/test_studio.py",
                          "tests/studio_ui_smoke.cjs",
                          "docs/STUDIO.md",
+                         "docs/CAPTURE_REPLAY.md",
+                         "tests/test_capture_replay.py",
+                         "tests/test_scifact_capture_replay.py",
+                         "examples/scifact_capture_replay.py",
                          "docs/GUARD.md",
                          "examples/guard_baseline.json",
                          "examples/guard_candidate.json",
