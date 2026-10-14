@@ -204,8 +204,8 @@ function validateRefs(){
 function validateForExport(){
  if(!state.queries.length)throw Error("Add at least one query.");
  if(!state.documents.length)throw Error("Add documents before exporting.");
- state.documents=validDocs(state.documents);
- state.queries=validQueries(state.queries);
+ validDocs(state.documents);
+ validQueries(state.queries);
  validateRefs();
  for(const row of state.queries){
    clean(row.question,4000,"Question "+row.query_id);
