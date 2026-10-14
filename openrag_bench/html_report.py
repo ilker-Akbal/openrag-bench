@@ -54,10 +54,11 @@ def _query_display(row, index):
     return str(row.get("query_id") or f"row-{index:06d}")
 
 
-def _tr(row, index, paired, selected):
+def _tr(row, index, paired, selected, *, guard_report=False, focus_ids=()):
     metrics = row["delta"] if paired else row["metrics"]
     d = row.get("diagnostics", {})
     label = escape(_query_display(row, index))
+    query_id = row.get("query_id")
     score = float(metrics[selected])
     status = ("regressed" if score < 0 else "improved" if score > 0 else "unchanged") if paired else (
         "missed" if float(metrics.get("hit_at_k", 0)) == 0 else "hit"
@@ -65,12 +66,30 @@ def _tr(row, index, paired, selected):
     judged = d.get("judged_positive_count", "—")
     retrieved = d.get("candidate_retrieved_count" if paired else "retrieved_count", "—")
     overlap = d.get("top_k_overlap_count", "—") if paired else "—"
-    return (f'<tr data-status="{status}" data-scores="{_payload(row, paired)}">'
+    focus = guard_report and query_id in focus_ids
+    cls = ' class="guard-focus"' if focus else ""
+    focused = "true" if focus else "false"
+    rank_cell = ""
+    if guard_report:
+        prior = d.get("baseline_first_relevant_rank")
+        current = d.get("candidate_first_relevant_rank")
+        if d.get("lost_top_k_hit"):
+            observation = "Lost top-k hit"
+        elif d.get("gained_top_k_hit"):
+            observation = "Gained top-k hit"
+        else:
+            observation = "No top-k hit change"
+        rank_cell = (f'<td>{escape(_rank_label(prior))} → '
+                     f'{escape(_rank_label(current))}'
+                     f'<small class="muted rank-note">{observation}</small></td>')
+    return (f'<tr{cls} data-guard-focus="{focused}" data-status="{status}" '
+            f'data-scores="{_payload(row, paired)}">'
             f'<th scope="row">{label}</th>'
             f'<td class="number current-score">{score:+.4f}</td>'
             f'<td class="number">{judged}</td>'
             f'<td class="number">{retrieved}</td>'
             f'<td class="number">{overlap}</td>'
+            + rank_cell +
             f'<td><span class="status {status}">{status}</span></td></tr>')
 
 
@@ -278,7 +297,8 @@ def render_html(report):
         float((row["delta"] if paired else row["metrics"])[selected]),
         str(row.get("query_id") or "")))
     coverage = _coverage(rows, paired=paired)
-    title = "Paired retrieval comparison" if paired else "Retrieval evaluation"
+    title = ("Retrieval quality report" if "guard" in report else
+             "Paired retrieval comparison" if paired else "Retrieval evaluation")
     lines = [
         "<!doctype html>", '<html lang="en"><head><meta charset="utf-8">',
         '<meta name="viewport" content="width=device-width,initial-scale=1">',
@@ -352,6 +372,8 @@ thead{background:#eff4fa}th{font-weight:650}
 .query-table{white-space:nowrap}
 .query-table thead{position:sticky;top:0;z-index:1}
 .query-table tr.guard-focus{background:#fff6f3}
+.rank-note{display:block;font-size:.72rem;white-space:nowrap;margin-top:.15rem}
+.guard-rules .rule-item:last-child{border-bottom:none}
 .controls{display:flex;gap:.7rem;flex-wrap:wrap;margin:1rem 0}
 label{display:flex;gap:.4rem;align-items:center}
 input,select{font:inherit;border:1px solid #8295ae;border-radius:8px;padding:.45rem}
@@ -431,7 +453,7 @@ footer{margin-top:2rem;color:var(--soft);font-size:.86rem;border-top:1px solid v
     if "per_query" not in report and "per_query_delta" not in report:
         lines.append("<p>No per-query rows available in aggregate-only report.</p>")
     else:
-        lines += ['<section class="card"><h2>Query diagnostics</h2>',
+        lines += ['<section class="card" id="query-diagnostics"><h2>Query diagnostics</h2>',
                   '<p class="muted">Use the filters to focus on the worst queries. '
                   'Questions are deliberately omitted to protect private prompts. '
                   'Sorting and filtering work locally without any network access.</p>',
@@ -444,6 +466,8 @@ footer{margin-top:2rem;color:var(--soft);font-size:.86rem;border-top:1px solid v
         lines += ['</select></label>',
                   '<label for="status-filter">Outcome <select id="status-filter">',
                   '<option value="all">All queries</option>']
+        if "guard" in report:
+            lines.append('<option value="guard-failed">Failed Guard queries</option>')
         opts = [("regressed","Regressed"),("improved","Improved"),("unchanged","Unchanged")] if paired else [("missed","No hit"),("hit","Hit")]
         for value, label in opts:
             lines.append(f'<option value="{value}">{label}</option>')
@@ -456,10 +480,14 @@ footer{margin-top:2rem;color:var(--soft);font-size:.86rem;border-top:1px solid v
                   '<div class="table-wrap"><table class="query-table"><thead><tr>',
                   '<th scope="col">Query ID</th><th scope="col">Metric value / delta</th>',
                   '<th scope="col">Positive labels</th><th scope="col">Results returned</th>',
-                  '<th scope="col">Top-k overlap</th><th scope="col">Outcome</th>',
+                  '<th scope="col">Top-k overlap</th>']
+        if "guard" in report:
+            lines.append('<th scope="col">First relevant rank · baseline → candidate</th>')
+        lines += ['<th scope="col">Outcome</th>',
                   '</tr></thead><tbody id="query-rows">']
         for index, row in enumerate(rows, 1):
-            lines.append(_tr(row, index, paired, selected))
+            lines.append(_tr(row, index, paired, selected,
+                             guard_report="guard" in report, focus_ids=failures))
         lines += ['</tbody></table></div></section>',
                   """<script type="text/javascript">
 "use strict";
@@ -493,7 +521,8 @@ footer{margin-top:2rem;color:var(--soft);font-size:.86rem;border-top:1px solid v
         pill.className = "status " + outcome;
         pill.textContent = outcome;
       }
-      const visible = matches && (chosen === "all" || chosen === outcome);
+      const visible = matches && (chosen === "all" || chosen === outcome ||
+        (chosen === "guard-failed" && row.dataset.guardFocus === "true"));
       row.hidden = !visible;
       if (visible) shown++;
       tbody.appendChild(row);
