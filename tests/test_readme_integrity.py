@@ -15,7 +15,7 @@ def local_targets(markdown):
     """Inspect Markdown links and HTML src/href without downloading anything."""
     raw_links = [match.group(1) for match in re.finditer(r"\]\(([^)]+)\)", markdown)]
     raw_links.extend(match.group(1) for match in re.finditer(
-        r"""(?:src|href)="([^"]+)"""", markdown
+        r'(?:src|href)="([^"]+)"', markdown
     ))
     for raw in raw_links:
         if raw.startswith("#"):
