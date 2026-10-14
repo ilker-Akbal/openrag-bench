@@ -75,7 +75,7 @@ not become required dependencies for the offline core.
 - [x] Validate duplicates, stale references, and missing labels on export
 - [ ] Complete independent human UI and accessibility checks before declaring v0.5 production ready
 
-## v0.6 — Capture & Replay (release candidate; not yet published)
+## v0.6 — Capture & Replay (alpha released 2026-10-14)
 
 - [x] Strict offline capture from real ranked JSON/JSONL results onto Studio human labels
 - [x] Optional explicit canonical document ID mapping and retriever protocol capture
@@ -84,15 +84,13 @@ not become required dependencies for the offline core.
 - [x] Add actual BEIR SciFact retriever -> Capture -> Replay path and parity CI checks
 - [x] Python 3.10–3.13, SciFact real-data parity and 100k streaming CI confirmed on PR #47
 - [x] Verify fail-closed mapping, basic rollback tests and privacy boundaries
-- [ ] Complete release candidate audits and fresh-wheel smoke before publishing
-- [ ] Audit and release v0.6 artifacts without altering past tags
+- [x] Audited wheel/source archives, clean installs, SHA256SUMS and GitHub v0.6.0 alpha release
+- [x] v0.6.0 published without altering historical release tags or assets
 
-## Next releases (proposed, not implemented)
+## Future proposals (not implemented)
 
-- v0.5 — Golden Dataset Studio: privacy-aware local UI for human relevance labels.
-- v0.6 — Capture & Replay: deterministic retrieval exports, stable ID mappings
-  and optional adapters for reproducible evaluations.
 - Later: latency/cost guardrails when independently measurable.
+- Improve user-owned retriever onboarding and independent adoption evidence.
 
 ## Codex for Open Source application
 
