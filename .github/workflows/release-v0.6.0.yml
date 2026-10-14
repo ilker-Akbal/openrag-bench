@@ -1,0 +1,140 @@
+name: Publish v0.6.0 GitHub pre-release
+
+# Manual-only v0.6.0 release candidate. No on-push publisher.
+# Existing release/tag may not be overwritten, even on rerun.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: openrag-bench-v0.6.0
+  cancel-in-progress: false
+
+jobs:
+  build-and-release:
+    if: github.repository == 'ilker-Akbal/openrag-bench' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - name: Check version and immutable version tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import tomllib
+          from openrag_bench import __version__
+          metadata = tomllib.loads(Path("pyproject.toml").read_text())
+          assert metadata["project"]["version"] == __version__ == "0.6.0"
+          PY
+          if gh release view v0.6.0 --repo "${GITHUB_REPOSITORY}" >/dev/null 2>&1; then
+            echo "Release v0.6.0 already exists: refusing overwrite."
+            exit 1
+          fi
+          if git ls-remote --exit-code --tags "https://github.com/${GITHUB_REPOSITORY}.git" "refs/tags/v0.6.0" >/dev/null 2>&1; then
+            echo "Tag v0.6.0 already exists: refusing overwrite."
+            exit 1
+          fi
+      - name: Run all regression tests and three input format smoke tests
+        run: |
+          python -m pip install -e .
+          python -m unittest discover -s tests -v
+          openrag-bench examples/retrieval_results.jsonl --k 2 --csv test.csv --output test.json > /dev/null
+          openrag-bench examples/trec_candidate.run --qrels examples/trec_graded.qrels --graded-qrels --k 2 > /dev/null
+          python -c "from openrag_bench.integrations.frameworks import LangChainAdapter, LlamaIndexAdapter; assert LangChainAdapter and LlamaIndexAdapter"
+      - name: Enforce Ruff, Hypothesis and 90% coverage
+        run: |
+          python -m pip install -e '.[dev]'
+          python -m ruff check openrag_bench tests
+          python -m coverage run --source=openrag_bench -m unittest discover -s tests -v
+          python -m coverage report -m --fail-under=90
+          python -m unittest discover -s tests -p property_metrics.py -v
+      - name: Keep v0.3 capability smokes
+        run: |
+          openrag-bench examples/comparison_candidate.json --baseline examples/comparison_baseline.json --k 2 --html explorer.html > /dev/null
+          openrag-bench examples/retrieval_results.jsonl --k 2 --streaming-summary > /dev/null
+          python examples/turkish_real_benchmark.py --help > /dev/null
+          python examples/framework_real_integration.py --help > /dev/null
+      - name: Smoke test passing and blocking OpenRAG Guard policies
+        run: |
+          openrag-bench init --directory guard-demo
+          openrag-bench doctor guard-demo/candidate.json --baseline guard-demo/baseline.json --policy guard-demo/guard-policy.json --k 1
+          openrag-bench guard guard-demo/candidate.json --baseline guard-demo/baseline.json --policy guard-demo/guard-policy.json --k 1 --html guard.html --output guard.json > /dev/null
+          set +e
+          openrag-bench guard examples/guard_regression.json --baseline examples/guard_baseline.json --policy examples/guard_policy.json --k 1 --output blocked.json > /dev/null
+          code=$?
+          set -e
+          test "$code" -eq 2
+          python -c "import json; r=json.load(open('blocked.json')); assert r['delta']['ndcg_at_k'] > 0 and not r['guard']['passed']"
+      - name: Assert v0.6.0 report shows accepted-query regressions
+        run: |
+          openrag-bench guard examples/report_diverse_candidate.json --baseline examples/report_diverse_baseline.json --policy examples/guard_policy.json --k 3 --html accepted-regression.html > /dev/null
+          python -c "from pathlib import Path; h=Path('accepted-regression.html').read_text(); assert '1 of 6 queries regressed on NDCG@k' in h and 'Quality checks passed' in h and 'table-layout:fixed' in h"
+      - name: Studio browser logic and validation smoke
+        run: |
+          openrag-bench studio --output studio-release.html
+          python -c "from pathlib import Path; h=Path('studio-release.html').read_text(); assert 'Content-Security-Policy' in h and 'No automatic saving' not in h; Path('studio-smoke.html').write_text(h); Path('studio-smoke.js').write_text(h.split('<script>')[1].split('</script>')[0])"
+          node --check studio-smoke.js
+          node tests/studio_ui_smoke.cjs
+          python -c "import json; from openrag_bench.cli import _validate; from openrag_bench.guard import validate_policy; rows=json.load(open('studio-judgments-smoke.json')); _validate(rows,3); validate_policy(json.load(open('studio-policy-smoke.json')))"
+      - name: Verify Capture and Replay CLI entrypoints
+        run: |
+          openrag-bench capture --help > /dev/null
+          openrag-bench replay --help > /dev/null
+          python examples/scifact_capture_replay.py --help > /dev/null
+          python -m unittest discover -s tests -p test_capture_replay.py -v
+          python -m unittest discover -s tests -p test_scifact_capture_replay.py -v
+      - name: Build and audit source distribution and wheel
+        run: |
+          python -m pip install build
+          python -m build
+          python scripts/audit_distributions.py
+      - name: Clean install and test wheel
+        run: |
+          python -m venv .wheel-check
+          .wheel-check/bin/pip install --no-deps dist/*.whl
+          .wheel-check/bin/openrag-bench examples/retrieval_results.jsonl --k 2 --csv wheel_check.csv > /dev/null
+          .wheel-check/bin/python -c "from openrag_bench import __version__; assert __version__ == '0.6.0'"
+          .wheel-check/bin/openrag-bench guard examples/report_diverse_candidate.json --baseline examples/report_diverse_baseline.json --policy examples/guard_policy.json --k 3 --html audited-dashboard.html > /dev/null
+          .wheel-check/bin/python -c "from pathlib import Path; assert 'regressed on NDCG@k' in Path('audited-dashboard.html').read_text()"
+          .wheel-check/bin/openrag-bench capture --help > /dev/null
+          .wheel-check/bin/openrag-bench replay --help > /dev/null
+          .wheel-check/bin/python -c "from openrag_bench.capture import capture_from_retriever, capture_rows; assert capture_from_retriever and capture_rows"
+          .wheel-check/bin/openrag-bench studio --output wheel-studio.html
+          .wheel-check/bin/python -c "from pathlib import Path; h=Path('wheel-studio.html').read_text(); assert 'Golden Dataset Studio' in h and 'connect-src' in h"
+          .wheel-check/bin/openrag-bench guard examples/guard_candidate.json --baseline examples/guard_baseline.json --policy examples/guard_policy.json --k 1 > /dev/null
+      - name: Clean install and test source distribution
+        run: |
+          python -m venv .sdist-check
+          .sdist-check/bin/pip install dist/*.tar.gz
+          .sdist-check/bin/openrag-bench examples/retrieval_results.json --k 2 > /dev/null
+          .sdist-check/bin/openrag-bench capture --help > /dev/null
+          .sdist-check/bin/openrag-bench replay --help > /dev/null
+          .sdist-check/bin/openrag-bench studio --output sdist-studio.html
+          .sdist-check/bin/openrag-bench guard examples/guard_candidate.json --baseline examples/guard_baseline.json --policy examples/guard_policy.json --k 1 > /dev/null
+      - name: Record SHA-256 hashes and verify archives
+        run: |
+          cd dist
+          sha256sum openrag_bench-*.whl openrag_bench-*.tar.gz > SHA256SUMS
+          sha256sum --check SHA256SUMS
+          cat SHA256SUMS
+      - name: Create public GitHub v0.6.0 pre-release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create v0.6.0 \
+            dist/openrag_bench-*.whl dist/openrag_bench-*.tar.gz dist/SHA256SUMS \
+            --repo "${GITHUB_REPOSITORY}" \
+            --target "${GITHUB_SHA}" \
+            --title "OpenRAG Bench v0.6.0" \
+            --notes-file docs/RELEASE_NOTES_v0.6.0.md \
+            --prerelease
+          gh release view v0.6.0 --repo "${GITHUB_REPOSITORY}" --json tagName,isPrerelease,url

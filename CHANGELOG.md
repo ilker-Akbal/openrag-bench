@@ -1,5 +1,22 @@
 # Changelog
 
+## [v0.6.0] — release candidate (not yet published)
+
+Capture & Replay connects human-labeled Golden Dataset Studio queries to
+real ranked IDs from an external retriever, then reuses the existing Guard
+engine for deterministic offline regression checks.
+
+- `capture` binds explicitly observed JSON/JSONL rankings to golden judgments
+  with strict query-ID and document-ID mapping validation.
+- `replay` invokes existing Guard logic and pass/blocked return codes.
+- Optional hash-only manifests and cleanup of partial capture/manifest writes.
+- `capture_from_retriever` integrates a user-provided Python retrieval backend.
+- Reproducible real-data SciFact BM25/TF-IDF example with CI checks of
+  Capture/Replay parity against independently evaluated TREC metrics.
+- Tests for invalid mappings, file safety and lexical retrieval integration.
+- No new mandatory dependency, LLM API, hosted service or bundled corpus.
+- v0.5.0 and older GitHub release tags/assets remain unchanged.
+
 ## [v0.5.0] — 2026-10-14
 
 [GitHub v0.5.0 alpha pre-release](https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.5.0)
