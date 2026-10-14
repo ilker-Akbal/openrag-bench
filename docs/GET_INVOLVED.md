@@ -4,6 +4,10 @@ We welcome **genuine, independent** use, reproducible feedback, fixes and
 documentation contributions. This project is young; its technical tests and
 benchmarks are not evidence of a broad user base.
 
+For Reddit, Hacker News or DEV Community feedback requests (LinkedIn excluded),
+see the [channel-specific review-and-publish kit](OUTREACH_NO_LINKEDIN.md).
+Published GitHub feedback issue #4 is the single place to report findings.
+
 For a short first-run demonstration, see
 [Capture & Replay demo](DEMO_60_SECONDS.md). If you try it without prior
 involvement in the project, please report a **real** installation result,
