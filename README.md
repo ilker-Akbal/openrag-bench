@@ -16,7 +16,7 @@
   <a href="https://github.com/ilker-Akbal/openrag-bench/actions/workflows/ci.yml"><img src="https://github.com/ilker-Akbal/openrag-bench/actions/workflows/ci.yml/badge.svg" alt="CI status"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"></a>
   <a href="pyproject.toml"><img src="https://img.shields.io/badge/python-3.10--3.13-blue.svg" alt="Python 3.10 to 3.13"></a>
-  <a href="https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.5.0"><img src="https://img.shields.io/badge/release-v0.5.0-orange.svg" alt="GitHub pre-release v0.5.0"></a>
+  <a href="https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.5.0"><img src="https://img.shields.io/badge/release-v0.5.0-orange.svg" alt="Latest published GitHub pre-release v0.5.0"></a>
 </p>
 
 **Offline retrieval evaluation and regression testing for RAG pipelines.**
@@ -30,7 +30,7 @@ OpenRAG Bench is a small Python toolkit for comparing the ranked document result
 - **Integrate** custom, LangChain, LlamaIndex and optional FAISS retrievers using stable document IDs.
 - **Reproduce** seeded, paired-bootstrap uncertainty intervals without a cloud API.
 
-**Status:** [v0.5.0 public GitHub alpha pre-release](https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.5.0), with SHA-256 checksums and tested wheel/source archives. This measures **retrieval relevance**, not LLM answer quality or factual correctness. The bundled quickstart fixtures are synthetic; separate, real **SciFact** benchmark results are independently verified and published below. We do not claim benchmark superiority or an established external user base.
+**Latest published release:** [v0.5.0 public GitHub alpha pre-release](https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.5.0), with SHA-256 checksums and tested wheel/source archives. This measures **retrieval relevance**, not LLM answer quality or factual correctness. The bundled quickstart fixtures are synthetic; separate, real **SciFact** benchmark results are independently verified and published below. We do not claim benchmark superiority or an established external user base.
 
 **Language:** English documentation (primary) · [Türkçe hızlı başlangıç](docs/README_TR.md)
 
@@ -72,14 +72,14 @@ Automated Python, CLI and JavaScript UI smoke tests pass; broader real-user
 browser and accessibility testing remains open. Treat it as an early tool,
 not an audited production collaboration or document management platform.
 
-## Capture & Replay (proposed v0.6 — unreleased)
+## Capture & Replay (v0.6.0 release candidate — not yet published)
 
-The development version adds offline `capture` for joining actual ranked
+The v0.6.0 release candidate adds offline `capture` for joining actual ranked
 retriever results with human-reviewed Golden Dataset Studio labels. A strict
 optional raw-to-canonical document ID mapping prevents silent ID mismatches.
 `replay` uses the existing Guard engine to compare saved baseline/candidate
-snapshots without rerunning a model. These commands are **not included in the
-published v0.5.0 wheel**.
+snapshots without rerunning a model. The **published v0.5.0 wheel does not include these commands**;
+use the reviewed development checkout until a v0.6.0 release is published.
 
 See [Capture & Replay design and usage](docs/CAPTURE_REPLAY.md).
 
