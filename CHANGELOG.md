@@ -1,4 +1,8 @@
-## Unreleased — working toward v0.4.0
+## [v0.4.0] — 2026-10-14
+
+[GitHub public pre-release](https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.4.0)
+adds fail-closed scoped retrieval policies, onboarding and the read-only
+GitHub Action. Previous releases remain unchanged; not published on PyPI.
 
 - Add OpenRAG Guard deterministic, fail-closed global, critical and
   category-specific retrieval policy gates.
