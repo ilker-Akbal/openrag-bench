@@ -51,6 +51,24 @@ overall improvement correctly **blocked** (exit status 2). All demo inputs
 are original synthetic text. See the [OpenRAG Guard policy and Action guide](docs/GUARD.md).
 This release includes the Guard commands directly in the installable wheel.
 
+## Golden Dataset Studio (v0.5 development)
+
+Generate a **standalone offline browser editor** without a server, account or API key:
+
+    openrag-bench studio --output golden-dataset-studio.html
+
+Open the generated HTML file in any local browser (on Windows: Start-Process .\golden-dataset-studio.html).
+Add document IDs, create human-reviewed questions, grade relevant documents 1–3,
+mark critical queries, import existing JSON rows, and explicitly download
+editable drafts, positive-judgment rows and a versioned Guard policy.
+
+**No automatic saving or uploads.** Save an editable draft before closing the tab.
+The exported golden labels intentionally have empty retrieved_ids: the user's
+actual retriever must fill rankings in candidate and baseline before evaluation.
+See [Studio documentation](docs/STUDIO.md).
+
+**Release boundary:** the already published v0.4.1 wheel does not yet include
+Studio. It is being developed and tested for v0.5.
 ## Quick start
 
 Requires Python 3.10 or newer. Install the **GitHub release wheel** (not published on PyPI):

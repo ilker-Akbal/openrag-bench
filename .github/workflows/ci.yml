@@ -75,6 +75,11 @@ jobs:
         run: |
           test "$RESULT" = "failure"
           python -c "import json; r=json.load(open('guard-action-blocked.json')); assert not r['guard']['passed']"
+      - name: Golden Dataset Studio HTML and JavaScript syntax smoke test
+        run: |
+          openrag-bench studio --output studio-smoke.html
+          python -c "from pathlib import Path; h=Path('studio-smoke.html').read_text(); assert 'connect-src' in h and 'createObjectURL' in h; Path('studio-smoke.js').write_text(h.split('<script>')[1].split('</script>')[0])"
+          node --check studio-smoke.js
       - name: CLI smoke test
         run: openrag-bench examples/retrieval_results.json --k 2 --output report.json --html report.html
       - name: Offline explorer smoke test

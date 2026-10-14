@@ -1,5 +1,18 @@
 # Changelog
 
+## Unreleased — Golden Dataset Studio v0.5 development
+
+- Add a dependency-free local browser editor for manual question/doc relevance
+  grades, categories and critical query flags.
+- Import existing evaluation rows or Studio drafts and export validated golden
+  judgments, policy defaults and locally saved drafts.
+- No server, automatic persistence, telemetry or external dependencies.
+- Exported judgments have intentionally empty retrieval results: developers
+  must run their own retriever before evaluation.
+- v0.4.1 release artifacts are unaffected.
+
+
+
 ## [v0.4.1] — 2026-10-14
 
 [GitHub v0.4.1 pre-release](https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.4.1)
