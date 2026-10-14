@@ -4,6 +4,13 @@ We welcome **genuine, independent** use, reproducible feedback, fixes and
 documentation contributions. This project is young; its technical tests and
 benchmarks are not evidence of a broad user base.
 
+For a short first-run demonstration, see
+[Capture & Replay demo](DEMO_60_SECONDS.md). If you try it without prior
+involvement in the project, please report a **real** installation result,
+environment and any blockers via
+[our independent reproduction request](https://github.com/ilker-Akbal/openrag-bench/issues/4).
+You can also read the [English/Türkçe feedback invitation](COMMUNITY_OUTREACH.md).
+
 ## 10-minute no-cloud quickstart
 
 ```bash
