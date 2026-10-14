@@ -82,6 +82,19 @@ jobs:
           node --check studio-smoke.js
           node tests/studio_ui_smoke.cjs
           python -c "from openrag_bench.cli import _validate; from openrag_bench.guard import validate_policy; import json; rows=json.load(open('studio-judgments-smoke.json')); _validate(rows,3); assert all(not x['retrieved_ids'] for x in rows); validate_policy(json.load(open('studio-policy-smoke.json')))"
+      - name: No-cloud Capture Replay onboarding must block critical regression
+        run: |
+          python examples/quickstart_capture_replay.py --output-dir reports/onboarding-quickstart > quickstart-summary.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          summary = json.loads(Path("quickstart-summary.json").read_text())
+          report = json.loads(Path("reports/onboarding-quickstart/guard.json").read_text())
+          assert summary["overall_improved"] and not summary["guard_passed"]
+          assert "critical-privacy-hit" in report["guard"]["failed_rules"]
+          assert report["delta"]["ndcg_at_k"] > 0
+          assert Path("reports/onboarding-quickstart/guard.html").is_file()
+          PY
       - name: CLI smoke test
         run: openrag-bench examples/retrieval_results.json --k 2 --output report.json --html report.html
       - name: Offline explorer smoke test
