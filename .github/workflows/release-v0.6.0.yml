@@ -1,9 +1,13 @@
 name: Publish v0.6.0 GitHub pre-release
 
-# Manual-only v0.6.0 release candidate. No on-push publisher.
+# One-time main-branch release trigger; must be retired after verification.
 # Existing release/tag may not be overwritten, even on rerun.
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/release-v0.6.0.yml"
 
 permissions:
   contents: write
@@ -14,7 +18,13 @@ concurrency:
 
 jobs:
   build-and-release:
-    if: github.repository == 'ilker-Akbal/openrag-bench' && github.ref == 'refs/heads/main'
+    if: >-
+      github.repository == 'ilker-Akbal/openrag-bench' &&
+      github.ref == 'refs/heads/main' &&
+      (github.event_name == 'workflow_dispatch' ||
+       (github.event_name == 'push' &&
+        startsWith(github.event.head_commit.message,
+                   'release: trigger one-time v0.6.0 publisher')))
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
