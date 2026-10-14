@@ -1,3 +1,21 @@
+# Changelog
+
+## [v0.4.1] — 2026-10-14
+
+[GitHub v0.4.1 pre-release](https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.4.1)
+improves the offline Guard report without altering retrieval metrics,
+quality policy decisions, core dependencies or prior GitHub release assets.
+
+- Decision-first PASS/BLOCK dashboard, explained policy failures and
+  first-relevant-rank comparisons, with the detailed tables collapsed.
+- Explicit warning when a **PASSED** policy still permits per-query NDCG@k
+  regressions; includes the regressed-query count.
+- Query diagnostics fixed-width desktop table with readable wrapped headers
+  and the existing horizontally scrollable small-screen fallback.
+- Original six-query k=3 example with varied metrics; offline privacy,
+  accessibility and compatibility tests maintained.
+- No changes to v0.4.0's published wheel, sdist, hashes or git tag.
+
 ## [v0.4.0] — 2026-10-14
 
 [GitHub public pre-release](https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.4.0)
@@ -10,23 +28,6 @@ GitHub Action. Previous releases remain unchanged; not published on PyPI.
   first-relevant rank diagnostics, and a reusable read-only GitHub Action.
 - Demonstrate a blocked critical query despite positive macro NDCG.
 - Released v0.3.0 artifacts and core mandatory dependencies are unchanged.
-
-# Changelog
-
-## Unreleased — report dashboard (source only)
-
-- Show policy PASS/BLOCK decisions and measured NDCG before detailed metrics.
-- Explain critical query failures with baseline and candidate first-relevant
-  ranks, without leaking question text or raw document IDs.
-- Provide concise human-readable checks and a failed-Guard query filter.
-- Collapse the old repetitive metric tables, clarify absolute score deltas
-  versus relative percentage change and retain all existing metrics.
-- Add six-query graded-relevance synthetic display fixture and HTML
-  accessibility/privacy regression tests. The released v0.4.0 tag and
-  artifacts remain unchanged.
-
-
-All notable changes to OpenRAG Bench are documented here.
 
 ## [v0.3.0] — 2026-10-13
 

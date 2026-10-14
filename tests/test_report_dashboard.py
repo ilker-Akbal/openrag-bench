@@ -75,6 +75,28 @@ class GuardDashboardTests(unittest.TestCase):
         self.assertIn('href="#query-diagnostics"', html)
         self.assertLess(html.index("critical-privacy</h3>"), html.index(">q-pricing</th>"))
 
+    def test_passed_policy_still_discloses_noncritical_query_regression(self):
+        from openrag_bench.io import read_rows
+        from pathlib import Path
+        root = Path(__file__).resolve().parents[1] / "examples"
+        report = guard_comparison(
+            read_rows(root / "report_diverse_candidate.json"),
+            read_rows(root / "report_diverse_baseline.json"),
+            _sample_files()["guard-policy.json"], k=3,
+        )
+        self.assertTrue(report["guard"]["passed"])
+        html = render_html(report)
+        self.assertIn("1 of 6 queries regressed on NDCG@k", html)
+        self.assertIn("Passing the configured policy does not mean every query improved.", html)
+        self.assertIn('role="note"', html)
+        self.assertIn("table-layout:fixed", html)
+        self.assertIn(".query-table th:nth-child(7){width:14%}", html)
+
+    def test_failing_policy_does_not_claim_the_release_passed(self):
+        html = render_html(self.blocked)
+        self.assertIn("Release blocked", html)
+        self.assertNotIn("Passing the configured policy does not mean every query improved.", html)
+
     def test_passing_report_has_no_failure_cards_and_keeps_queries(self):
         html = render_html(self.passed)
         self.assertIn("Quality checks passed", html)

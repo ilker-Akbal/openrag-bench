@@ -138,8 +138,15 @@ def _guard_section(report):
         row_index.get(query_id, {}).get("diagnostics", {}).get("lost_top_k_hit")
         for query_id in critical
     )
+    regressed_ndcg = sum(
+        float(row.get("delta", {}).get("ndcg_at_k", 0)) < -1e-12
+        for row in report.get("per_query_delta", [])
+    )
     if not blocked:
         reason = f"All {len(guard['rules'])} quality rules passed for the evaluated queries."
+        if regressed_ndcg:
+            reason += (f" However, {regressed_ndcg} of {len(row_index)} queries "
+                       "regressed on NDCG@k within the accepted policy limits.")
     elif critical_lost and improvement:
         reason = ("Overall retrieval quality improved, but a critical query lost its "
                   f"relevant top-{int(report['k'])} hit. This release must be blocked.")
@@ -170,6 +177,10 @@ def _guard_section(report):
         '</div>',
         f'<p class="hero-footnote">{len(bad_rules)} failed rules out of '
         f'{len(guard["rules"])}. Metrics measure retrieval relevance, not answer truth.</p>',
+        (f'<p class="regression-notice" role="note">'
+         f'{regressed_ndcg} of {len(row_index)} individual queries regressed on '
+         'NDCG@k. Passing the configured policy does not mean every query improved.'
+         '</p>' if regressed_ndcg and not blocked else ''),
         '</section>',
     ]
     if blocked:
@@ -369,9 +380,21 @@ th,td{text-align:left;padding:.64rem .75rem;border-bottom:1px solid #e3e9f2;over
 thead{background:#eff4fa}th{font-weight:650}
 .number{font-variant-numeric:tabular-nums;text-align:right}
 .table-wrap{overflow-x:auto;max-height:650px}
-.query-table{white-space:nowrap}
+.query-table{table-layout:fixed;width:100%;font-size:.84rem;white-space:normal}
+.query-table th,.query-table td{padding:.6rem .48rem;overflow-wrap:anywhere;word-break:normal;vertical-align:middle}
+.query-table th:first-child{width:17%}
+.query-table th:nth-child(2){width:13%}
+.query-table th:nth-child(3){width:9%}
+.query-table th:nth-child(4){width:10%}
+.query-table th:nth-child(5){width:10%}
+.query-table th:nth-child(6){width:27%}
+.query-table th:nth-child(7){width:14%}
+.regression-notice{margin:.9rem 0 0;border:1px solid #f2d28f;background:#fffaf0;
+ padding:.7rem .85rem;border-radius:9px;color:#754b08;font-size:.87rem}
 .query-table thead{position:sticky;top:0;z-index:1}
 .query-table tr.guard-focus{background:#fff6f3}
+.query-table .status{white-space:normal;display:inline-block}
+.table-wrap{max-width:100%}
 .rank-note{display:block;font-size:.72rem;white-space:nowrap;margin-top:.15rem}
 .guard-rules .rule-item:last-child{border-bottom:none}
 .controls{display:flex;gap:.7rem;flex-wrap:wrap;margin:1rem 0}
@@ -388,6 +411,12 @@ footer{margin-top:2rem;color:var(--soft);font-size:.86rem;border-top:1px solid v
 @media(max-width:900px){
   .score-grid,.stats{grid-template-columns:repeat(2,minmax(0,1fr))}
   .metric-columns{grid-template-columns:1fr}
+  .query-table{table-layout:auto;min-width:870px}
+  .query-table th,.query-table td{white-space:normal}
+  .query-table th:first-child,.query-table th:nth-child(2),
+  .query-table th:nth-child(3),.query-table th:nth-child(4),
+  .query-table th:nth-child(5),.query-table th:nth-child(6),
+  .query-table th:nth-child(7){width:auto}
   .metric-columns h3{min-height:0}
 }
 @media(max-width:630px){
