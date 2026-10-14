@@ -83,6 +83,16 @@ published v0.5.0 wheel**.
 
 See [Capture & Replay design and usage](docs/CAPTURE_REPLAY.md).
 
+A reproducible real-data example uses actual SciFact TF-IDF and BM25 ranked
+searches (external dataset, checksum verified) with Capture and Guard Replay:
+
+~~~bash
+python examples/scifact_capture_replay.py --download --k 10
+~~~
+
+The dataset is not checked into this repository; only aggregate numbers are
+published, and locally generated per-query data must remain private.
+
 ## Quick start
 
 Requires Python 3.10 or newer. Install the **GitHub release wheel** (not published on PyPI):
