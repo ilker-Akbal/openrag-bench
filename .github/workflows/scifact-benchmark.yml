@@ -6,6 +6,8 @@ on:
     paths:
       - "examples/scifact_benchmark.py"
       - "tests/test_scifact_benchmark.py"
+      - "examples/scifact_capture_replay.py"
+      - "tests/test_scifact_capture_replay.py"
       - ".github/workflows/scifact-benchmark.yml"
       - "openrag_bench/**"
       - "docs/BENCHMARK_SCIFACT.md"
@@ -63,9 +65,38 @@ jobs:
           Path("public_metrics.json").write_text(json.dumps(public, indent=2) + "\n")
           print(json.dumps(public, indent=2))
           PY
+      - name: Real SciFact retrieval Capture -> Replay parity check
+        run: |
+          python examples/scifact_capture_replay.py \
+            --archive data/scifact.zip --k 10 \
+            --output-dir reports/scifact-capture > scifact-capture-summary.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          original = json.loads(Path("reports/scifact/comparison.json").read_text())
+          captured = json.loads(Path("reports/scifact-capture/guard.json").read_text())
+          public = json.loads(Path("scifact-capture-summary.json").read_text())
+          assert captured["count"] == public["queries"] == 300
+          assert public["documents"] == 5183
+          assert captured["guard"]["passed"] and public["guard_passed"]
+          for side, method in (("baseline", "tfidf"), ("candidate", "bm25")):
+              expected = original["comparison"][side]["metrics"]
+              observed = captured[side]["metrics"]
+              for metric in expected:
+                  assert abs(expected[metric] - observed[metric]) < 1e-9, (method, metric)
+          for metric, delta in original["comparison"]["delta"].items():
+              assert abs(delta - captured["delta"][metric]) < 1e-9, metric
+          assert abs(public["delta_ndcg_at_k"] -
+                     captured["delta"]["ndcg_at_k"]) < 1e-12
+          assert (Path("reports/scifact-capture/tfidf-manifest.json").is_file()
+                  and Path("reports/scifact-capture/bm25-manifest.json").is_file())
+          print(json.dumps(public, indent=2))
+          PY
       - name: Upload aggregate-only metrics (no dataset content)
         uses: actions/upload-artifact@v7
         with:
           name: scifact-aggregate-metrics
-          path: public_metrics.json
+          path: |
+            public_metrics.json
+            scifact-capture-summary.json
           retention-days: 30
