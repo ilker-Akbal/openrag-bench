@@ -1,13 +1,30 @@
 """Golden Dataset Studio local generator and HTML privacy regression tests."""
 import contextlib
 from io import StringIO
+from html.parser import HTMLParser
 from pathlib import Path
-import re
 import tempfile
 import unittest
 
 from openrag_bench.cli import main
 from openrag_bench.studio import STUDIO_HTML, studio
+
+
+class _ScriptCounter(HTMLParser):
+    """Count script tags using an HTML-aware parser, not a filtering regex."""
+
+    def __init__(self):
+        super().__init__()
+        self.opened = 0
+        self.closed = 0
+
+    def handle_starttag(self, tag, attrs):
+        if tag == "script":
+            self.opened += 1
+
+    def handle_endtag(self, tag):
+        if tag == "script":
+            self.closed += 1
 
 
 class StudioTests(unittest.TestCase):
@@ -59,8 +76,10 @@ class StudioTests(unittest.TestCase):
         self.assertIn("beforeunload", html)
         self.assertIn('role="status"', html)
         self.assertIn("@media(max-width:650px)", html)
-        self.assertEqual(len(re.findall(r"<script>", html)), 1)
-        self.assertEqual(len(re.findall(r"</script>", html)), 1)
+        parser = _ScriptCounter()
+        parser.feed(html)
+        self.assertEqual(parser.opened, 1)
+        self.assertEqual(parser.closed, 1)
 
     def test_export_has_real_metric_schema_and_explicit_empty_results(self):
         html = STUDIO_HTML
