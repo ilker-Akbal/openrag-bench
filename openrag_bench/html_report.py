@@ -285,36 +285,113 @@ def render_html(report):
         '<meta name="referrer" content="no-referrer">',
         "<title>OpenRAG Bench · Diagnostic Explorer</title>",
         """<style>
-:root{font-family:system-ui,sans-serif;color-scheme:light;--ink:#182437;--soft:#52647d;--edge:#cbd5e1;--accent:#2659bc}
-*{box-sizing:border-box}body{margin:0;background:#f6f8fc;color:var(--ink);line-height:1.5}
-main{max-width:1120px;margin:auto;padding:2rem 1rem 4rem}
-h1{margin:.2rem 0;font-size:clamp(1.55rem,3vw,2.5rem)}h2{margin-top:2rem}
-.muted{color:var(--soft)}.card{background:white;border:1px solid var(--edge);border-radius:14px;padding:1.1rem;margin:1rem 0}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:.8rem}
-.stat strong{display:block;font-size:1.7rem}.stat small{color:var(--soft)}
-table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:.6rem .7rem;border-bottom:1px solid #dfe5ee}
-thead{background:#eff4fc}th{font-weight:650}.number{font-variant-numeric:tabular-nums;text-align:right}
-.table-wrap{overflow:auto;max-height:650px}.query-table{white-space:nowrap}
+:root{
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color-scheme:light;
+  --ink:#152238;--soft:#52647b;--edge:#d9e1ec;--paper:#fff;
+  --navy:#1b3555;--accent:#2563b5;--danger:#a12424;--good:#176447;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:#f3f6fa;color:var(--ink);line-height:1.55}
+main{max-width:1210px;margin:auto;padding:2.5rem 1.2rem 4rem}
+header{margin-bottom:1.3rem}
+h1{font-size:clamp(1.8rem,3vw,2.65rem);line-height:1.16;margin:.35rem 0 .7rem;letter-spacing:-.035em}
+h2{font-size:1.3rem;line-height:1.35;margin:.25rem 0 .75rem;letter-spacing:-.015em}
+h3{font-size:1rem;margin:.2rem 0 .6rem}
+p{margin:.55rem 0 1rem}
+a{color:#164d94;text-underline-offset:3px}
+.muted{color:var(--soft)}.eyebrow{font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;font-weight:750;color:var(--soft);margin:0}
+.card,.guard-hero{background:var(--paper);border:1px solid var(--edge);border-radius:16px;padding:1.3rem;margin:1rem 0}
+.card{box-shadow:0 1px 3px rgba(18,38,66,.025)}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.8rem;margin:1.1rem 0}
+.stats .card{margin:0;padding:1.1rem}
+.stat strong{display:block;font-size:1.65rem;letter-spacing:-.025em;font-variant-numeric:tabular-nums}
+.stat small{color:var(--soft);font-size:.8rem}
+.guard-hero{border-left:5px solid var(--danger);padding:1.5rem 1.6rem;margin:1.1rem 0}
+.guard-hero.is-passed{border-left-color:var(--good)}
+.guard-hero h2{font-size:clamp(1.5rem,2.5vw,2rem);margin:.3rem 0 .55rem}
+.hero-top,.section-heading,.failure-meta,.rule-item,.rule-result{display:flex;justify-content:space-between;align-items:center;gap:1rem}
+.hero-reason{font-size:1.02rem;max-width:75ch;margin:.6rem 0 1.3rem}
+.decision-pill{font-weight:800;border-radius:99px;padding:.28rem .85rem;border:1px solid #f0b6b6;background:#fff2f2;color:var(--danger);font-size:.8rem;letter-spacing:.04em}
+.is-passed .decision-pill{border-color:#a5d7c0;background:#eefbf4;color:var(--good)}
+.score-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.7rem}
+.score-tile{min-width:0;padding:1rem;background:#f6f8fb;border:1px solid #e4e9f1;border-radius:11px}
+.score-tile small,.rank-compare small{color:var(--soft);display:block;font-size:.76rem;line-height:1.4}
+.score-tile strong{font-size:1.35rem;line-height:1.65;font-variant-numeric:tabular-nums}
+.up{color:var(--good)}.down{color:var(--danger)}
+.hero-footnote{font-size:.8rem;color:var(--soft);margin:1rem 0 0}
+.attention{border-top:3px solid var(--danger)}
+.section-heading{align-items:flex-start;flex-wrap:wrap;margin-bottom:.7rem}
+.section-heading h2{margin:.1rem 0}
+.jump-link{font-size:.88rem;font-weight:650;white-space:nowrap}
+.failure-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem;margin:1rem 0}
+.failure-card{background:#fafbfd;border:1px solid #dbe3ee;border-radius:12px;padding:1.05rem;min-width:0}
+.failure-card h3{overflow-wrap:anywhere;margin:.6rem 0 .3rem}
+.failure-card p{margin:.35rem 0 .9rem;font-size:.89rem}
+.failure-meta{gap:.5rem;font-size:.78rem;color:var(--soft)}
+.rank-compare{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:.7rem;align-items:center;border-top:1px solid var(--edge);padding-top:.75rem}
+.rank-compare strong{display:block;font-variant-numeric:tabular-nums}
+.rule-list{display:flex;flex-direction:column;margin:.8rem 0}
+.rule-item{border-bottom:1px solid #e6ebf2;padding:.75rem .2rem;align-items:center}
+.rule-main{display:flex;flex-direction:column;min-width:0;gap:.1rem;overflow-wrap:anywhere}
+.rule-main .muted{font-size:.79rem}.rule-result{white-space:nowrap;flex-shrink:0}
+.rule-delta{font-size:.89rem;font-variant-numeric:tabular-nums}
+.rule-explanation{margin:.1rem .2rem .6rem;color:var(--danger);font-size:.82rem}
+details summary{cursor:pointer;font-weight:700;list-style-position:inside;padding:.65rem 0}
+details summary:hover{color:var(--accent)}
+.detail-inset{border-top:1px solid var(--edge);padding-top:.35rem}
+.metrics-panel{margin-top:1.1rem}
+.metrics-panel summary{font-size:1.04rem}.metric-columns{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.85rem}
+.metric-columns h3{min-height:2.4em}
+.metric-columns table{font-size:.84rem}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:.64rem .75rem;border-bottom:1px solid #e3e9f2;overflow-wrap:anywhere}
+thead{background:#eff4fa}th{font-weight:650}
+.number{font-variant-numeric:tabular-nums;text-align:right}
+.table-wrap{overflow-x:auto;max-height:650px}
+.query-table{white-space:nowrap}
 .query-table thead{position:sticky;top:0;z-index:1}
+.query-table tr.guard-focus{background:#fff6f3}
 .controls{display:flex;gap:.7rem;flex-wrap:wrap;margin:1rem 0}
-label{display:flex;gap:.4rem;align-items:center}input,select{font:inherit;border:1px solid #8295ae;border-radius:8px;padding:.45rem}
-input{min-width:190px}button{font:inherit;border:1px solid #8295ae;border-radius:8px;background:white;padding:.5rem;cursor:pointer}
+label{display:flex;gap:.4rem;align-items:center}
+input,select{font:inherit;border:1px solid #8295ae;border-radius:8px;padding:.45rem}
+input{min-width:190px}
+button{font:inherit;border:1px solid #8295ae;border-radius:8px;background:white;padding:.5rem;cursor:pointer}
 :focus-visible{outline:3px solid #e69b19;outline-offset:3px}
-.status{font-size:.83rem;font-weight:600;padding:.2rem .5rem;border-radius:100px}
-.regressed,.missed{background:#fee2e2;color:#991b1b}
-.improved,.hit{background:#dcfce7;color:#166534}.unchanged{background:#edf2f7;color:#475569}
-.bar-track{background:#e2e8f0;border-radius:100px;min-width:70px;height:.62rem;overflow:hidden}
-.bar-fill{display:block;height:100%;background:var(--accent)}.negative{background:#b91c1c}
-footer{margin-top:2rem;color:var(--soft);font-size:.92rem}
-@media(max-width:650px){main{padding:1rem}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+.status{font-size:.78rem;font-weight:650;padding:.2rem .5rem;border-radius:100px;white-space:nowrap}
+.regressed,.missed{background:#fde5e5;color:#8f2020}
+.improved,.hit{background:#def5e9;color:#155e42}
+.unchanged{background:#edf2f7;color:#475569}
+footer{margin-top:2rem;color:var(--soft);font-size:.86rem;border-top:1px solid var(--edge);padding-top:1rem}
+@media(max-width:900px){
+  .score-grid,.stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .metric-columns{grid-template-columns:1fr}
+  .metric-columns h3{min-height:0}
+}
+@media(max-width:630px){
+  main{padding:1rem .7rem 2.5rem}
+  .guard-hero,.card{padding:1rem}
+  .failure-grid{grid-template-columns:1fr}
+  .hero-top,.section-heading{align-items:flex-start}
+  .score-tile{padding:.75rem}
+  .score-tile strong{font-size:1.08rem}
+  .rule-item{align-items:flex-start}
+  .rule-result{flex-direction:column;align-items:flex-end;gap:.3rem}
+  .stats{gap:.5rem}
+  .stat strong{font-size:1.25rem}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 </style>""",
         '</head><body><main><header><p class="muted">OFFLINE · OPENRAG BENCH</p>',
         f"<h1>{title}</h1>",
         f'<p class="muted">Evaluated {int(report["count"])} labeled queries at k={int(report["k"])}. '
         "Query IDs only; raw questions and document IDs are not included in this HTML.</p></header>",
-        '<section aria-label="Evaluation coverage" class="stats">',
     ]
+    failures = set()
+    if "guard" in report:
+        guard_lines, failures = _guard_section(report)
+        lines.extend(guard_lines)
+    lines.append('<section aria-label="Evaluation coverage" class="stats">')
     cards = [
         ("Queries", coverage["queries"]),
         ("No positive labels", coverage["no_positive_labels"]),
@@ -327,12 +404,9 @@ footer{margin-top:2rem;color:var(--soft);font-size:.92rem}
             f'<small>{escape(label)}</small></div>'
         )
     lines.append("</section>")
-    failures = set()
-    if "guard" in report:
-        guard_lines, failures = _guard_section(report)
-        lines.extend(guard_lines)
+    metrics_lines = []
     if paired:
-        lines += [
+        metrics_lines += [
             '<details class="card metrics-panel">',
             '<summary>Detailed retrieval metrics (baseline, candidate and differences)</summary>',
             '<p class="muted">Scores are fractions from 0 to 1, not percentages. '
@@ -349,7 +423,7 @@ footer{margin-top:2rem;color:var(--soft);font-size:.92rem}
             'not statistical significance tests.</p></details>',
         ]
     else:
-        lines += [
+        metrics_lines += [
             '<details class="card metrics-panel" open>',
             '<summary>Aggregate metrics</summary>',
             _table(report["metrics"]), '</details>',
@@ -433,6 +507,7 @@ footer{margin-top:2rem;color:var(--soft);font-size:.92rem}
   refresh();
 })();
 </script>"""]
+    lines.extend(metrics_lines)
     lines = [line.replace("__PAIRED__", "true" if paired else "false") for line in lines]
     lines += ['<footer>Generated by OpenRAG Bench · No remote scripts, fonts, '
               'tracking or API calls. Raw questions/document IDs excluded. '
