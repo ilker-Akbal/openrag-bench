@@ -72,6 +72,27 @@ Automated Python, CLI and JavaScript UI smoke tests pass; broader real-user
 browser and accessibility testing remains open. Treat it as an early tool,
 not an audited production collaboration or document management platform.
 
+## Capture & Replay (proposed v0.6 — unreleased)
+
+The development version adds offline `capture` for joining actual ranked
+retriever results with human-reviewed Golden Dataset Studio labels. A strict
+optional raw-to-canonical document ID mapping prevents silent ID mismatches.
+`replay` uses the existing Guard engine to compare saved baseline/candidate
+snapshots without rerunning a model. These commands are **not included in the
+published v0.5.0 wheel**.
+
+See [Capture & Replay design and usage](docs/CAPTURE_REPLAY.md).
+
+A reproducible real-data example uses actual SciFact TF-IDF and BM25 ranked
+searches (external dataset, checksum verified) with Capture and Guard Replay:
+
+~~~bash
+python examples/scifact_capture_replay.py --download --k 10
+~~~
+
+The dataset is not checked into this repository; only aggregate numbers are
+published, and locally generated per-query data must remain private.
+
 ## Quick start
 
 Requires Python 3.10 or newer. Install the **GitHub release wheel** (not published on PyPI):

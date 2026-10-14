@@ -75,6 +75,17 @@ not become required dependencies for the offline core.
 - [x] Validate duplicates, stale references, and missing labels on export
 - [ ] Complete independent human UI and accessibility checks before declaring v0.5 production ready
 
+## v0.6 — Capture & Replay (development, not released)
+
+- [x] Strict offline capture from real ranked JSON/JSONL results onto Studio human labels
+- [x] Optional explicit canonical document ID mapping and retriever protocol capture
+- [x] Deterministic versioned hash-only capture manifest
+- [x] Reuse existing Guard for offline replay, no new evaluation algorithm
+- [x] Add actual BEIR SciFact retriever -> Capture -> Replay path and parity CI checks
+- [ ] Confirm all GitHub CI results, including SciFact real-data run, before merging
+- [ ] Review privacy, file-write failure scenarios and production readiness
+- [ ] Audit and release v0.6 artifacts without altering past tags
+
 ## Next releases (proposed, not implemented)
 
 - v0.5 — Golden Dataset Studio: privacy-aware local UI for human relevance labels.
