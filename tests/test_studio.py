@@ -69,12 +69,9 @@ class StudioTests(unittest.TestCase):
         self.assertIn('relevance_grades:grades', html)
         self.assertIn('critical:q.critical', html)
         self.assertIn('question:q.question', html)
-        self.assertIn('"version":1', html) if False else None
         self.assertIn("return {version:1,rules:rules};", html)
         self.assertIn('select:{type:"critical"}', html)
         self.assertIn('metric:"hit_at_k",min_query_score:1,max_regressed_queries:0', html)
-        self.assertIn("These are human", "These are human")
-        self.assertIn("ranked", "ranked")
         self.assertIn("retriever must subsequently supply ranked", html)
 
     def test_import_validation_and_draft_controls_present(self):
