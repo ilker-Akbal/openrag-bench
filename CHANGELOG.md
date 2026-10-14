@@ -1,3 +1,12 @@
+## Unreleased — working toward v0.4.0
+
+- Add OpenRAG Guard deterministic, fail-closed global, critical and
+  category-specific retrieval policy gates.
+- Add original synthetic init, data/policy doctor, redacted guard reports,
+  first-relevant rank diagnostics, and a reusable read-only GitHub Action.
+- Demonstrate a blocked critical query despite positive macro NDCG.
+- Released v0.3.0 artifacts and core mandatory dependencies are unchanged.
+
 # Changelog
 
 All notable changes to OpenRAG Bench are documented here.

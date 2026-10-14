@@ -34,6 +34,29 @@ jobs:
         run: python -m pip install -e .
       - name: Unit tests
         run: python -m unittest discover -s tests -v
+      - name: OpenRAG Guard onboarding and doctor smoke test
+        run: |
+          openrag-bench init --directory guard-demo
+          openrag-bench doctor guard-demo/candidate.json --baseline guard-demo/baseline.json --policy guard-demo/guard-policy.json --k 1
+          openrag-bench guard guard-demo/candidate.json --baseline guard-demo/baseline.json --policy guard-demo/guard-policy.json --k 1 --html guard_pass.html --output guard_pass.json > /dev/null
+          python -c "import json; from pathlib import Path; r=json.load(open('guard_pass.json')); assert r['guard']['passed'] and 'OpenRAG Guard' in Path('guard_pass.html').read_text()"
+      - name: A critical-query regression MUST block a macro-improving candidate
+        run: |
+          set +e
+          openrag-bench guard examples/guard_regression.json --baseline examples/guard_baseline.json --policy examples/guard_policy.json --k 1 --output guard_block.json > /dev/null
+          exit_code=$?
+          set -e
+          test "$exit_code" -eq 2
+          python -c "import json; r=json.load(open('guard_block.json')); assert r['delta']['ndcg_at_k'] > 0 and not r['guard']['passed'] and 'critical-coverage' in r['guard']['failed_rules']"
+      - name: Local OpenRAG Guard composite action test
+        if: matrix.python-version == '3.11'
+        uses: ./.github/actions/guard
+        with:
+          candidate: examples/guard_candidate.json
+          baseline: examples/guard_baseline.json
+          policy: examples/guard_policy.json
+          k: '1'
+          report: guard-action.json
       - name: CLI smoke test
         run: openrag-bench examples/retrieval_results.json --k 2 --output report.json --html report.html
       - name: Offline explorer smoke test

@@ -103,3 +103,19 @@ Korpus ve etiketler CC BY-SA 4.0 lisanslıdır; bu depoya veya MIT pakete
 kopyalanmaz. Çıktı yalnızca sayısal metrikleri ve SHA-256 özetlerini içerir.
 Tek bir sağlık alanındaki 58 soru, genel Türkçe RAG doğruluğunu kanıtlamaz.
 Ayrıntılar: [Veri ve yöntem belgesi](TURKISH_BENCHMARK.md).
+
+
+## OpenRAG Guard (v0.4 geliştirme)
+
+Genel retrieval metriği artsa dahi kritik bir soru bozuluyorsa sürümü
+engellemek için kurallar tanımlar. Veri ve politikayı internetsiz doğrular:
+
+~~~powershell
+openrag-bench init --directory demo
+openrag-bench doctor demo/candidate.json --baseline demo/baseline.json --policy demo/guard-policy.json --k 1
+openrag-bench guard demo/candidate.json --baseline demo/baseline.json --policy demo/guard-policy.json --k 1 --html guard.html
+openrag-bench guard demo/candidate-regression.json --baseline demo/baseline.json --policy demo/guard-policy.json --k 1
+~~~
+
+Son komut örnek kritik soruda hatayı yakalar ve çıkış kodu 2 olur. Belgeler
+sentetiktir; [ayrıntılı politika sözleşmesi](GUARD.md).

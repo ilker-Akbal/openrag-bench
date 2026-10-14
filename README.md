@@ -34,6 +34,23 @@ OpenRAG Bench is a small Python toolkit for comparing the ranked document result
 
 **Language:** English documentation (primary) · [Türkçe hızlı başlangıç](docs/README_TR.md)
 
+## OpenRAG Guard — block critical retrieval regressions (v0.4 development)
+
+OpenRAG Guard checks **scoped retrieval quality policies**. It can block
+an update when the overall NDCG improves but a critical privacy question
+loses its relevant document.
+
+~~~bash
+openrag-bench init --directory openrag-demo
+openrag-bench doctor openrag-demo/candidate.json --baseline openrag-demo/baseline.json --policy openrag-demo/guard-policy.json --k 1
+openrag-bench guard openrag-demo/candidate.json --baseline openrag-demo/baseline.json --policy openrag-demo/guard-policy.json --k 1 --html guard.html
+~~~
+
+Try candidate-regression.json instead of candidate.json to see the same
+overall improvement correctly **blocked** (exit status 2). All demo inputs
+are original synthetic text. See the [OpenRAG Guard policy and Action guide](docs/GUARD.md).
+The downloadable v0.3.0 release remains unchanged until v0.4.0 is verified.
+
 ## Quick start
 
 Requires Python 3.10 or newer. Install the **GitHub release wheel** (not published on PyPI):
