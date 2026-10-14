@@ -98,16 +98,6 @@ not become required dependencies for the offline core.
 - [ ] Validate an actual downstream LangChain/LlamaIndex/custom integration
   that the project maintainer did not author, using private data safely
 
-## AI-assisted independent QA preparation
-
-- [x] A synthetic-only black-box CLI probe with original test data, Guard
-  pass/block cases, input validation and privacy-marker checking
-- [x] A detailed Work/Luna handoff for **actual** browser interactions,
-  keyboard navigation, import/export and responsive screen checks
-- [ ] AI agent executes the plan in its own runtime and returns dated evidence
-- [ ] Human developer independently verifies onboarding (AI agent testing
-  does not count as unrelated external user adoption)
-
 ## Future proposals (not implemented)
 
 - Later: latency/cost guardrails when independently measurable.
