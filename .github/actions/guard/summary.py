@@ -16,11 +16,20 @@ def render(report):
         "| Policy | Metric | Queries | Candidate mean | Delta | Status |",
         "| --- | --- | ---: | ---: | ---: | --- |",
     ]
+    def safe_cell(value):
+        content = html.escape(str(value), quote=True).replace("|", "&#124;")
+        for symbol, replacement in (("\\r", " "), ("\\n", " "),
+                                    ("[", "&#91;"), ("]", "&#93;"),
+                                    ("(", "&#40;"), (")", "&#41;"),
+                                    ("\u0060", "&#96;")):
+            content = content.replace(symbol, replacement)
+        return content
+
     for item in guard["rules"]:
         state = "Pass" if item["passed"] else "Blocked"
         parts = [
-            html.escape(str(item["id"]), quote=True).replace("|", "&#124;").replace("\r", " ").replace("\n", " "),
-            html.escape(str(item["metric"]), quote=True).replace("|", "&#124;"),
+            safe_cell(item["id"]),
+            safe_cell(item["metric"]),
             str(int(item["query_count"])),
             f"{float(item['candidate_mean']):.4f}",
             f"{float(item['delta']):+.4f}",

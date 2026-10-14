@@ -57,6 +57,24 @@ jobs:
           policy: examples/guard_policy.json
           k: '1'
           report: guard-action.json
+      - name: Local composite action must block a critical regression
+        id: negative_guard_action
+        if: matrix.python-version == '3.11'
+        continue-on-error: true
+        uses: ./.github/actions/guard
+        with:
+          candidate: examples/guard_regression.json
+          baseline: examples/guard_baseline.json
+          policy: examples/guard_policy.json
+          k: '1'
+          report: guard-action-blocked.json
+      - name: Confirm critical regression actually failed the composite action
+        if: matrix.python-version == '3.11'
+        env:
+          RESULT: ${{ steps.negative_guard_action.outcome }}
+        run: |
+          test "$RESULT" = "failure"
+          python -c "import json; r=json.load(open('guard-action-blocked.json')); assert not r['guard']['passed']"
       - name: CLI smoke test
         run: openrag-bench examples/retrieval_results.json --k 2 --output report.json --html report.html
       - name: Offline explorer smoke test

@@ -96,6 +96,12 @@ class GuardTests(unittest.TestCase):
                                        "--output", str(result)]), 2)
         self.assertFalse(json.loads(result.read_text())["passed"])
 
+    def test_unpaired_doctor_allows_optional_query_ids(self):
+        data = [{"retrieved_ids": ["doc-a"], "relevant_ids": ["doc-a"]},
+                {"retrieved_ids": ["doc-b"], "relevant_ids": ["doc-b"]}]
+        path = self.save("single-mode.json", data)
+        self.assertEqual(self.command(["doctor", str(path)]), 0)
+
     def test_mismatched_critical_and_categories_fail_closed(self):
         for key, value in [("critical", False), ("category", "other")]:
             candidate = [dict(row) for row in self.samples["candidate.json"]]

@@ -90,7 +90,8 @@ def doctor(argv=None):
     try:
         candidate = read_rows(args.dataset)
         _validate(candidate, args.k)
-        if len(candidate) != len({r.get("query_id") for r in candidate}):
+        observed_ids = [r["query_id"] for r in candidate if "query_id" in r]
+        if len(observed_ids) != len(set(observed_ids)):
             raise ValueError("Duplicate candidate query IDs")
         if args.baseline:
             baseline = read_rows(args.baseline)
