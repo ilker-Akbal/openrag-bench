@@ -19,7 +19,7 @@ def render(report):
     for item in guard["rules"]:
         state = "Pass" if item["passed"] else "Blocked"
         parts = [
-            html.escape(str(item["id"]), quote=True).replace("|", "&#124;"),
+            html.escape(str(item["id"]), quote=True).replace("|", "&#124;").replace("\r", " ").replace("\n", " "),
             html.escape(str(item["metric"]), quote=True).replace("|", "&#124;"),
             str(int(item["query_count"])),
             f"{float(item['candidate_mean']):.4f}",
