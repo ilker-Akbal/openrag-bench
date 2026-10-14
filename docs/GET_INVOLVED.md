@@ -18,6 +18,24 @@ openrag-bench examples/comparison_candidate.json \
 
 Then open `report.html` locally; no GPU or API key is needed.
 
+## First Capture & Replay report with an intentional critical-query block
+
+After cloning and installing above:
+
+~~~bash
+python examples/quickstart_capture_replay.py --output-dir reports/quickstart
+~~~
+
+Open `reports/quickstart/guard.html`. The candidate improves aggregate
+NDCG@1 while dropping a designated critical privacy guide, so the Guard
+**must block** the update. This is a synthetic integration demonstration,
+not independent retrieval evidence or a speed-of-onboarding measurement.
+
+For your **own retriever**, follow
+[Own RAG quickstart](OWN_RAG_QUICKSTART.md). Report true time-to-first-report,
+environment, unexpected failures and only **redacted** logs. No production
+secrets or private question/document text should be shared.
+
 ## Useful first contributions
 
 1. Reproduce the [real SciFact experiment](BENCHMARK_SCIFACT.md) and compare
