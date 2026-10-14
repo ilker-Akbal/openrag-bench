@@ -56,52 +56,56 @@ This is my project, and I have no independently verified adopters to cite yet.
 
 ## Channel 2 — Hacker News: Show HN
 
-**Official guidelines:** https://news.ycombinator.com/showhn.html
+**Official Show HN instructions:** https://news.ycombinator.com/showhn.html
+**Official HN community guidelines:** https://news.ycombinator.com/newsguidelines.html
 **Submission UI:** https://news.ycombinator.com/submit
 
-The official instructions require a project people can try, a title that
-begins \`Show HN\`, and active participation by its maker. Link directly
-to the **GitHub repository**, not this outreach document. Do not ask
-others to upvote/comment and do not use multiple accounts.
+**Important: Hacker News explicitly asks contributors not to submit
+AI-generated or AI-edited text**, including comments. This repo's
+maintainer-facing notes are a **factual checklist and outline**, not text
+to paste into an HN title or comment. The maintainer must write the
+final text personally, using their own voice, without AI editing.
+The previously prepared AI-authored HN submission and comment copy
+was withdrawn from this kit in accordance with the official guidelines.
 
-### Submission fields
+The official Show HN criteria ask for an original project other users
+can try, for the submission title to begin with `Show HN`, and for
+the maker to participate in technical discussion. Avoid requesting
+upvotes/comments or automated/multiple-account submission.
 
-**Title:**
-Show HN: OpenRAG Bench – Offline regression checks for RAG retrieval
+### Submission facts (not a posting draft)
 
-**URL:**
-https://github.com/ilker-Akbal/openrag-bench
+- **Target URL:** https://github.com/ilker-Akbal/openrag-bench
+- **Title rule:** start with `Show HN:`; describe your concrete tool in
+  your own words, without marketing language.
+- **What it is:** MIT-licensed offline Python retrieval evaluation,
+  baseline/candidate regression comparisons, local reports and Guard.
+- **Why it exists:** A retriever update can improve aggregate NDCG while
+  a required critical-query document is lost.
+- **Runnable current-main demo:**
+  `python examples/quickstart_capture_replay.py --output-dir reports/first-demo`
+  (requires a source checkout and `pip install -e .`).
+- **Expected result:** `reports/first-demo/guard.html` shows BLOCKED;
+  the example wrapper returns exit 0 because the intentional block was
+  detected; direct blocked Replay returns 2.
+- **Release boundary:** published public v0.6.0 alpha wheel contains
+  Capture/Replay/Studio, but the newer demo exists only on `main`.
+- **Independent SciFact evidence:** 5,183 documents, 300 judged queries,
+  BM25 0.6605 and TF-IDF 0.6329 at NDCG@10; not a universal model claim.
+- **Limitations:** evaluates ranked document relevance, not generated
+  LLM answer accuracy, and independent adoption is not yet established.
 
-**Optional first explanatory comment (review and post as the maintainer):**
+### Human-author checklist
 
-I built OpenRAG Bench because I wanted to compare changes to RAG retrieval
-pipelines without needing a hosted LLM judge. The core is standard-library
-Python: it scores ranked document IDs against labeled relevance judgments
-and checks regression policies in CI.
-
-One failure mode I wanted to expose: the candidate can improve macro NDCG
-but stop retrieving the required document for a critical query. The
-synthetic demo in the repo intentionally produces that outcome. You can
-run it after cloning the main branch and installing in editable mode:
-
-\`python examples/quickstart_capture_replay.py --output-dir reports/first-demo\`
-
-Open \`reports/first-demo/guard.html\` for the offline decision report. The
-demo wrapper returns 0 after verifying the expected **blocked** policy; the
-raw blocked Guard/Replay exits 2.
-
-I also tested actual BM25 and TF-IDF retrieval on the 300-query SciFact
-test set, where BM25 achieved 0.6605 vs 0.6329 NDCG@10 (one dataset,
-not a universal quality claim). The v0.6.0 alpha release includes Capture
-& Replay and Golden Dataset Studio. It measures retrieval quality,
-not LLM answers or hallucinations.
-
-I'd appreciate feedback on stable document IDs, the evaluation schema,
-and the setup steps. Real use/production adoption has not been verified.
-
-**Before submitting:** Confirm you can answer technical questions soon after
-publication and that the current repository instructions still work.
-If you cannot participate, save this draft rather than posting and leaving.
+1. Confirm the repo and source-checkout demo still work, and that you
+   can answer questions soon after posting.
+2. Write your own concise HN title and, if useful, your own first
+   comment about why you built it, the failure case and genuine limits.
+   **Do not copy, paraphrase through AI, or AI-edit this checklist into a post.**
+3. Submit your project URL using the HN UI; don't submit the docs page,
+   don't ask for votes, and don't automate posting.
+4. Record the resulting HN permalink only **after** submission succeeds.
+   Be responsive to criticism and distinguish reproduction from opinion.
 
 ## Channel 3 — DEV Community: hands-on Python tutorial
 
