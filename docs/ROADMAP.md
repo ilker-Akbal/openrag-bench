@@ -98,6 +98,17 @@ not become required dependencies for the offline core.
 - [ ] Validate an actual downstream LangChain/LlamaIndex/custom integration
   that the project maintainer did not author, using private data safely
 
+## Community onboarding (2026-10, prepared; external feedback pending)
+
+- [x] Prepare a short synthetic-only Capture/Guard walkthrough with clear expected
+  PASS/BLOCK semantics and current-main versus published-wheel distinction
+- [x] Provide honest bilingual EN/TR developer introduction and independent
+  reproduction invitation; update Turkish installation instructions to v0.6.0
+- [ ] Post the invitation to suitable communities via an authorized account,
+  respecting each community's rules; preserve links to actual postings
+- [ ] Obtain genuine, separately reproduced feedback from unrelated users
+  (no manufactured installs, downloads, posts or testimonials)
+
 ## Future proposals (not implemented)
 
 - Later: latency/cost guardrails when independently measurable.
