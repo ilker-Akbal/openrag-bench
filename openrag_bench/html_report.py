@@ -74,6 +74,196 @@ def _tr(row, index, paired, selected):
             f'<td><span class="status {status}">{status}</span></td></tr>')
 
 
+# Explanations use only measured ranks and policy rules; no source text or document IDs.
+_THRESHOLD_WORDS = {
+    "min_delta": "Quality improvement below minimum",
+    "min_score": "Average quality below minimum",
+    "min_query_score": "A query failed its minimum score",
+    "max_regressed_queries": "Too many queries got worse",
+}
+
+
+def _rank_label(rank):
+    return "Not retrieved" if rank is None else f"#{int(rank)}"
+
+
+def _guard_failure_ids(guard):
+    """Return only IDs already selected by failed policies (no raw documents)."""
+    failures = []
+    critical = set()
+    for rule in guard["rules"]:
+        if rule["passed"]:
+            continue
+        ids = rule.get("regressed_query_ids", []) + rule.get("below_min_query_score_ids", [])
+        if rule.get("selector", {}).get("type") == "critical":
+            critical.update(ids)
+        for query_id in ids:
+            if query_id not in failures:
+                failures.append(query_id)
+    return failures, critical
+
+
+def _guard_section(report):
+    guard = report["guard"]
+    blocked = not guard["passed"]
+    failures, critical = _guard_failure_ids(guard)
+    row_index = {row.get("query_id"): row for row in report.get("per_query_delta", [])}
+    lost = sum(bool(row.get("diagnostics", {}).get("lost_top_k_hit"))
+               for row in report.get("per_query_delta", []))
+    gained = sum(bool(row.get("diagnostics", {}).get("gained_top_k_hit"))
+                 for row in report.get("per_query_delta", []))
+    bad_rules = [rule for rule in guard["rules"] if not rule["passed"]]
+    delta = float(report["delta"]["ndcg_at_k"])
+    improvement = delta > 1e-12
+    critical_lost = any(
+        row_index.get(query_id, {}).get("diagnostics", {}).get("lost_top_k_hit")
+        for query_id in critical
+    )
+    if not blocked:
+        reason = f"All {len(guard['rules'])} quality rules passed for the evaluated queries."
+    elif critical_lost and improvement:
+        reason = ("Overall retrieval quality improved, but a critical query lost its "
+                  f"relevant top-{int(report['k'])} hit. This release must be blocked.")
+    elif critical_lost:
+        reason = (f"A critical query lost a relevant hit within the top {int(report['k'])} "
+                  "results. This release must be blocked.")
+    else:
+        reason = (f"{len(bad_rules)} of {len(guard['rules'])} retrieval quality rules "
+                  "were not met. Review the failed checks below.")
+    state = "BLOCKED" if blocked else "PASSED"
+    title = "Release blocked" if blocked else "Quality checks passed"
+    lines = [
+        f'<section class="guard-hero {"is-blocked" if blocked else "is-passed"}" '
+        'aria-label="OpenRAG Guard decision">',
+        '<div class="hero-top"><span class="eyebrow">OPENRAG GUARD · RELEASE DECISION</span>',
+        f'<span class="decision-pill">{state}</span></div>',
+        f'<h2>{title}</h2><p class="hero-reason">{escape(reason)}</p>',
+        '<div class="score-grid">',
+        ('<div class="score-tile"><small>Baseline NDCG@k</small>'
+         f'<strong>{float(report["baseline"]["metrics"]["ndcg_at_k"]):.4f}</strong></div>'),
+        ('<div class="score-tile"><small>Candidate NDCG@k</small>'
+         f'<strong>{float(report["candidate"]["metrics"]["ndcg_at_k"]):.4f}</strong></div>'),
+        ('<div class="score-tile"><small>NDCG@k change</small>'
+         f'<strong class="{"up" if delta > 0 else "down" if delta < 0 else ""}">'
+         f'{delta:+.4f}</strong></div>'),
+        ('<div class="score-tile"><small>Lost / gained top-k hits</small>'
+         f'<strong>{lost} / {gained}</strong></div>'),
+        '</div>',
+        f'<p class="hero-footnote">{len(bad_rules)} failed rules out of '
+        f'{len(guard["rules"])}. Metrics measure retrieval relevance, not answer truth.</p>',
+        '</section>',
+    ]
+    if blocked:
+        lines += ['<section class="card attention" id="guard-failures" '
+                  'aria-label="Reasons for blocking">',
+                  '<div class="section-heading"><div>',
+                  '<p class="eyebrow">NEXT ACTION</p>',
+                  '<h2>What needs attention?</h2></div>',
+                  '<a class="jump-link" href="#query-diagnostics">Inspect all queries ↓</a>',
+                  '</div>']
+        if critical_lost:
+            lines.append('<p>A critical query stopped returning its required '
+                         'relevant document within the configured top-k cutoff. '
+                         'Review that regression before approving this change.</p>')
+        else:
+            lines.append('<p>The selected quality policy was not satisfied. '
+                         'The report shows observed changes, not a proven root cause.</p>')
+        if failures:
+            # Policies expose a maximum of 20 IDs per failing threshold. Be explicit.
+            ordered = sorted(failures, key=lambda x: (
+                x not in critical,
+                not row_index.get(x, {}).get("diagnostics", {}).get("lost_top_k_hit", False),
+                str(x)))
+            lines.append('<div class="failure-grid">')
+            for query_id in ordered[:6]:
+                row = row_index.get(query_id, {})
+                diag = row.get("diagnostics", {})
+                baseline_rank = diag.get("baseline_first_relevant_rank")
+                candidate_rank = diag.get("candidate_first_relevant_rank")
+                lost_hit = bool(diag.get("lost_top_k_hit"))
+                tag = ("Critical query" if query_id in critical else "Regressed query")
+                reason_line = ("Relevant top-k hit lost" if lost_hit else
+                               "This query violates a selected rule")
+                lines += [
+                    '<article class="failure-card">',
+                    f'<div class="failure-meta"><span>{escape(tag)}</span>'
+                    '<span class="status regressed">Needs review</span></div>',
+                    f'<h3>{escape(str(query_id))}</h3>',
+                    f'<p>{reason_line}</p>',
+                    '<div class="rank-compare">',
+                    f'<div><small>Baseline first relevant</small><strong>'
+                    f'{escape(_rank_label(baseline_rank))}</strong></div>',
+                    f'<span aria-hidden="true">→</span><div>',
+                    f'<small>Candidate first relevant</small><strong>'
+                    f'{escape(_rank_label(candidate_rank))}</strong></div>',
+                    '</div></article>',
+                ]
+            lines.append('</div>')
+            if len(failures) > 6:
+                lines.append('<p class="muted">Showing 6 highlighted query IDs. '
+                             'Use Query diagnostics below to inspect all visible queries. '
+                             'Policy output lists at most 20 IDs per threshold.</p>')
+        else:
+            lines.append('<p class="muted">No specific query ID was identified by the '
+                         'failed threshold; inspect the policy scope and aggregate scores.</p>')
+        lines.append('</section>')
+    lines += [
+        '<section class="card guard-rules" aria-label="Quality policies">',
+        '<div class="section-heading"><div><p class="eyebrow">POLICIES</p>',
+        '<h2>Quality checks</h2></div>',
+        f'<span class="muted">{len(guard["rules"]) - len(bad_rules)} of '
+        f'{len(guard["rules"])} passed</span></div>',
+        '<div class="rule-list">',
+    ]
+    for item in guard["rules"]:
+        is_pass = bool(item["passed"])
+        errors = ", ".join(_THRESHOLD_WORDS.get(name, str(name))
+                           for name in item.get("failed_thresholds", []))
+        scope = item.get("selector", {}).get("type", "unknown")
+        lines += [
+            f'<div class="rule-item {"rule-pass" if is_pass else "rule-fail"}">',
+            '<div class="rule-main">',
+            f'<strong>{escape(str(item["id"]))}</strong>',
+            f'<span class="muted">{escape(str(scope))} · '
+            f'{escape(str(item["metric"]))} · {int(item["query_count"])} queries</span>',
+            '</div>',
+            '<div class="rule-result">',
+            (f'<span class="status {"hit" if is_pass else "regressed"}">'
+             f'{"Passed" if is_pass else "Blocked"}</span>'),
+            f'<span class="rule-delta">{float(item["delta"]):+.4f}</span>',
+            '</div></div>',
+        ]
+        if not is_pass and errors:
+            lines.append(f'<p class="rule-explanation">{escape(errors)}</p>')
+    lines += [
+        '</div>',
+        '<details class="detail-inset"><summary>Show precise rule values and thresholds</summary>',
+        '<div class="table-wrap"><table><thead><tr>',
+        '<th scope="col">Rule</th><th scope="col">Scope</th>',
+        '<th scope="col">Metric</th><th scope="col">Queries</th>',
+        '<th scope="col">Candidate mean</th><th scope="col">Delta</th>',
+        '<th scope="col">Result</th></tr></thead><tbody>',
+    ]
+    for item in guard["rules"]:
+        failed_names = ", ".join(item.get("failed_thresholds", []))
+        outcome = "Passed" if item["passed"] else f"Failed: {failed_names}"
+        lines.append(
+            '<tr>'
+            f'<th scope="row">{escape(str(item["id"]))}</th>'
+            f'<td>{escape(str(item["selector"]["type"]))}</td>'
+            f'<td>{escape(str(item["metric"]))}</td>'
+            f'<td class="number">{int(item["query_count"])}</td>'
+            f'<td class="number">{float(item["candidate_mean"]):.4f}</td>'
+            f'<td class="number">{float(item["delta"]):+.4f}</td>'
+            f'<td>{escape(outcome)}</td></tr>'
+        )
+    lines += [
+        '</tbody></table></div></details>',
+        '</section>',
+    ]
+    return lines, set(failures)
+
+
 def render_html(report):
     paired = "delta" in report
     scores_reference = report["delta"] if paired else report["metrics"]
@@ -137,62 +327,33 @@ footer{margin-top:2rem;color:var(--soft);font-size:.92rem}
             f'<small>{escape(label)}</small></div>'
         )
     lines.append("</section>")
+    failures = set()
     if "guard" in report:
-        guard = report["guard"]
-        state = "PASSED" if guard["passed"] else "BLOCKED"
-        tone = "#166534" if guard["passed"] else "#b91c1c"
-        lost = sum(bool(x.get("diagnostics", {}).get("lost_top_k_hit"))
-                   for x in report.get("per_query_delta", []))
-        gained = sum(bool(x.get("diagnostics", {}).get("gained_top_k_hit"))
-                     for x in report.get("per_query_delta", []))
-        lines += [
-            '<section class="card" aria-label="OpenRAG Guard policies">',
-            f'<h2>OpenRAG Guard: <span style="color:{tone}">{state}</span></h2>',
-            f'<p>{lost} lost top-k hits · {gained} gained top-k hits. '
-            'These are observed ranking changes, not causal diagnoses.</p>',
-            '<div class="table-wrap"><table><thead><tr>',
-            '<th scope="col">Rule</th><th scope="col">Scope</th>',
-            '<th scope="col">Metric</th><th scope="col">Queries</th>',
-            '<th scope="col">Candidate mean</th><th scope="col">Delta</th>',
-            '<th scope="col">Result</th>',
-            '</tr></thead><tbody>',
-        ]
-        for item in guard["rules"]:
-            rule_status = "Passed" if item["passed"] else "Failed: " + ", ".join(
-                item["failed_thresholds"])
-            lines.append(
-                "<tr>"
-                f'<th scope="row">{escape(item["id"])}</th>'
-                f'<td>{escape(str(item["selector"]["type"]))}</td>'
-                f'<td>{escape(str(item["metric"]))}</td>'
-                f'<td class="number">{item["query_count"]}</td>'
-                f'<td class="number">{item["candidate_mean"]:.4f}</td>'
-                f'<td class="number">{item["delta"]:+.4f}</td>'
-                f'<td>{escape(rule_status)}</td></tr>'
-            )
-        lines += [
-            '</tbody></table></div>',
-            '<p class="muted">Guard rules block releases if selected critical '
-            'or category-specific queries regress, even when macro scores increase.</p>',
-            '</section>',
-        ]
+        guard_lines, failures = _guard_section(report)
+        lines.extend(guard_lines)
     if paired:
-        lines += ["<section class=\"card\"><h2>Candidate − baseline (macro average)</h2>",
-                  _table(report["delta"])]
-        for metric, difference in report["delta"].items():
-            magnitude = min(100., abs(float(difference)) * 100.)
-            css = "negative" if difference < 0 else ""
-            lines.append(f'<p>{escape(str(metric))}: {float(difference):+.4f}</p>'
-                         f'<div class="bar-track" role="img" aria-label="'
-                         f'{escape(str(metric))} delta {float(difference):+.4f}">'
-                         f'<span class="bar-fill {css}" style="width:{magnitude:.2f}%"></span></div>')
-        lines += ["<h2>Candidate</h2>", _table(report["candidate"]["metrics"]),
-                  "<h2>Baseline</h2>", _table(report["baseline"]["metrics"]),
-                  "<p class=\"muted\">Paired bootstrap intervals are descriptive only, "
-                  "not statistical significance tests.</p></section>"]
+        lines += [
+            '<details class="card metrics-panel">',
+            '<summary>Detailed retrieval metrics (baseline, candidate and differences)</summary>',
+            '<p class="muted">Scores are fractions from 0 to 1, not percentages. '
+            'A delta of +0.3333 means +33.33 percentage points, not a 33% '
+            'relative increase. Values for different metrics can coincide '
+            'on simple top-1 fixtures with one positive label per query.</p>',
+            '<div class="metric-columns">',
+            '<div><h3>Candidate − baseline (macro average)</h3>',
+            _table(report["delta"]), '</div>',
+            '<div><h3>Candidate</h3>', _table(report["candidate"]["metrics"]), '</div>',
+            '<div><h3>Baseline</h3>', _table(report["baseline"]["metrics"]), '</div>',
+            '</div>',
+            '<p class="muted">Paired bootstrap intervals are descriptive only, '
+            'not statistical significance tests.</p></details>',
+        ]
     else:
-        lines += ['<section class="card"><h2>Aggregate metrics</h2>',
-                  _table(report["metrics"]), "</section>"]
+        lines += [
+            '<details class="card metrics-panel" open>',
+            '<summary>Aggregate metrics</summary>',
+            _table(report["metrics"]), '</details>',
+        ]
     if "per_query" not in report and "per_query_delta" not in report:
         lines.append("<p>No per-query rows available in aggregate-only report.</p>")
     else:
