@@ -241,10 +241,13 @@ owner's screenshot, not independently confirmed by the GitHub CI.
 | --- | --- | --- |
 | GitHub issue #4 | **PUBLIC** | https://github.com/ilker-Akbal/openrag-bench/issues/4 |
 | r/github megathread | **POSTED (owner screenshot)** | The owner's `ilker_Akbal` comment was visible in https://www.reddit.com/r/github/comments/1jy8rea/promote_your_projects_here_selfpromotion/ ; retrieve the specific comment permalink later |
+| Reddit profile post | **VISIBLE ON OWNER PROFILE (screenshot); subreddit distribution NOT VERIFIED** | [Direct post](https://www.reddit.com/user/ilker_Akbal/comments/1x5z8kw/i_built_an_opensource_tool_to_catch_hidden_rag/) · [Owner's shared Reddit shortcut](https://www.reddit.com/u/ilker_Akbal/s/7QsEeSkId1). Owner screenshot on 2026-10-14 shows 7 views, 1 upvote, no comments at capture time; these counts can change. The `/user/` path does not establish an `r/sideprojects` community post. |
 | Hacker News Show HN | **BLOCKED; NOT POSTED** | New-account Show HN limitation: https://news.ycombinator.com/showlim ; participate organically and retry only when permitted |
 | DEV Community | **PUBLISHED (owner screenshot)** | https://dev.to/ilker_akbal_7ffe2578cb745/when-rag-retrieval-improves-overall-but-breaks-critical-queries-4d3 |
 | Invited developers | **NOT CONTACTED** | Requires developer contact and consent to receive invitation |
 | LinkedIn | **EXCLUDED BY REQUEST** | Do not prepare or publish under this outreach plan |
+
+**Caution:** The user-profile post has not been verified as a submission to a subreddit. A profile post and a subreddit post are distinct; do not record the latter without the actual subreddit permalink. Reddit pages could not be independently fetched during this update.
 
 These posts are **public outreach**, not proof of independent installations,
 evaluation quality, user adoption, GitHub stars, downloads or real
