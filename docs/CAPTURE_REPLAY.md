@@ -1,6 +1,6 @@
-# Capture & Replay — proposed v0.6 (development branch)
+# Capture & Replay — v0.6.0 public GitHub alpha
 
-**Status:** under development; not part of the published v0.5.0 pre-release.
+**Status:** included in the [v0.6.0 GitHub alpha pre-release](https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.6.0).
 This is an offline capture-to-evaluation workflow, not an HTTP traffic recorder,
 retrieval engine, LLM evaluator, or a claim of live end-to-end integration.
 
