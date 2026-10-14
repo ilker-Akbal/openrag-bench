@@ -10,12 +10,12 @@ human-labeled retrieval benchmark, low-memory evaluation and enforced
 quality/coverage tests. All versions are GitHub **pre-releases**, not PyPI
 distributions.
 
-The v0.3.0, v0.4.0, v0.4.1 and v0.5.0 tags and GitHub Releases are published through one-time,
+The v0.3.0, v0.4.0, v0.4.1, v0.5.0 and v0.6.0 tags and GitHub Releases were published through one-time,
 audited GitHub Actions release workflow and have public SHA-256 checksums.
 
-The v0.6.0 release candidate adds Capture & Replay and verified actual
-SciFact retrieval replay; publication still requires fresh audit of the
-v0.6.0 wheel and source archive, versioned tag and SHA256SUMS.
+The [v0.6.0 public GitHub alpha pre-release](https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.6.0)
+adds Capture & Replay and verified real-data SciFact retrieval replay. Its
+wheel, source archive and SHA256SUMS were checked by the release workflow.
 
 This checklist applies to **future** releases. A package version alone never
 proves that a later release exists.
@@ -44,7 +44,7 @@ proves that a later release exists.
 
 1. Confirm the version in `pyproject.toml` matches the intended tag.
 2. From the reviewed clean `main` commit, create a signed or annotated
-   Git tag such as `v0.6.0`. Push the tag and verify it resolves to
+   Git tag such as `v0.7.0`. Push the tag and verify it resolves to
    the reviewed commit.
 3. Generate SHA-256 hashes for wheel and source distribution.
 4. Create a GitHub Release from that tag with tested Python versions,
