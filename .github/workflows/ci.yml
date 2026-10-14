@@ -95,6 +95,17 @@ jobs:
           assert report["delta"]["ndcg_at_k"] > 0
           assert Path("reports/onboarding-quickstart/guard.html").is_file()
           PY
+      - name: Luna black-box QA probe (synthetic only)
+        run: |
+          python scripts/luna_qa_probe.py --output-dir reports/luna-ci > luna-qa-summary.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r = json.loads(Path("luna-qa-summary.json").read_text())
+          assert r["total"] >= 10 and r["passed"] == r["total"], r
+          assert Path("reports/luna-ci/studio.html").exists()
+          assert Path("reports/luna-ci/blocked.html").exists()
+          PY
       - name: CLI smoke test
         run: openrag-bench examples/retrieval_results.json --k 2 --output report.json --html report.html
       - name: Offline explorer smoke test
