@@ -81,7 +81,8 @@ not become required dependencies for the offline core.
 - [x] Optional explicit canonical document ID mapping and retriever protocol capture
 - [x] Deterministic versioned hash-only capture manifest
 - [x] Reuse existing Guard for offline replay, no new evaluation algorithm
-- [ ] Complete CI, external tool verification, and real-retriever end-to-end trial
+- [x] Add actual BEIR SciFact retriever -> Capture -> Replay path and parity CI checks
+- [ ] Confirm all GitHub CI results, including SciFact real-data run, before merging
 - [ ] Review privacy, file-write failure scenarios and production readiness
 - [ ] Audit and release v0.6 artifacts without altering past tags
 
