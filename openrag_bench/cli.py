@@ -84,7 +84,8 @@ def main(argv=None):
         from . import commands
         return getattr(commands, supplied[0])(supplied[1:])
     parser = argparse.ArgumentParser(
-        description="Evaluate or compare ranked retrieval results (offline)")
+        description="Evaluate or compare ranked retrieval results (offline)",
+        epilog="Subcommands: init (sample data), doctor (validate), guard (strict quality policy).")
     parser.add_argument("dataset", type=Path, help="Candidate JSON or TREC run file")
     parser.add_argument("--input-format", choices=("auto", "json", "jsonl"),
                         default="auto", help="Select JSON array or JSON Lines; auto uses filename extension")

@@ -59,7 +59,8 @@ def init(argv=None):
         # Fail closed before writing anything: no partially overwritten fixtures.
         if directory.exists() and not directory.is_dir():
             raise ValueError(f"{directory}: existing path is not a directory")
-        if any((directory / name).exists() for name in files):
+        if any((directory / name).exists() or (directory / name).is_symlink()
+               for name in files):
             raise ValueError(f"{directory}: a demo file already exists; refusing to overwrite")
         directory.mkdir(parents=True, exist_ok=True)
         for name, data in files.items():

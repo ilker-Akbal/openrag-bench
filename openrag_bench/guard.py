@@ -170,17 +170,17 @@ def guard_comparison(candidate_rows, baseline_rows, policy, k):
             "below_min_query_score_ids": below_threshold[:20],
             "passed": not reasons, "failed_thresholds": reasons,
         })
-    # Simple rank observations are not causal explanations. Do not export doc IDs.
+    # One lookup per query: rank observations, not causal explanations.
+    candidate_ranked = {row["query_id"]: row["retrieved_ids"] for row in candidate_rows}
+    baseline_ranked = {row["query_id"]: row["retrieved_ids"] for row in baseline_rows}
     for item in compared["per_query_delta"]:
         key = item["query_id"]
         relevant = set(metadata[key]["relevant_ids"])
         candidate_rank = next(
-            (i for i, doc in enumerate(next(row for row in candidate_rows
-                                          if row["query_id"] == key)["retrieved_ids"], 1)
+            (i for i, doc in enumerate(candidate_ranked[key], 1)
              if doc in relevant), None)
         baseline_rank = next(
-            (i for i, doc in enumerate(next(row for row in baseline_rows
-                                          if row["query_id"] == key)["retrieved_ids"], 1)
+            (i for i, doc in enumerate(baseline_ranked[key], 1)
              if doc in relevant), None)
         diag = item["diagnostics"]
         diag["baseline_first_relevant_rank"] = baseline_rank
