@@ -1,0 +1,61 @@
+name: OpenRAG Guard
+description: "Block retrieval quality regressions using local labeled query datasets"
+branding:
+  icon: shield
+  color: blue
+inputs:
+  candidate:
+    description: "Relative path to candidate JSON or JSONL evaluation data"
+    required: true
+  baseline:
+    description: "Relative path to baseline JSON or JSONL evaluation data"
+    required: true
+  policy:
+    description: "Relative path to guard policy JSON"
+    required: true
+  k:
+    description: "Top-k cutoff (positive integer)"
+    required: false
+    default: "5"
+  report:
+    description: "Path for a privacy-redacted JSON report in the workspace"
+    required: false
+    default: "openrag-guard-report.json"
+outputs:
+  passed:
+    description: "true when every quality policy passed; false otherwise"
+    value: ${{ steps.summary.outputs.passed }}
+runs:
+  using: composite
+  steps:
+    - name: Prepare Python
+      uses: actions/setup-python@v7
+      with:
+        python-version: '3.11'
+    - name: Install the action's own checked-out OpenRAG Bench package
+      shell: bash
+      env:
+        OPENRAG_ACTION_ROOT: ${{ github.action_path }}
+      run: |
+        python -m pip install --no-deps "${OPENRAG_ACTION_ROOT}/../../.."
+    - name: Run strict local retrieval quality gates
+      shell: bash
+      env:
+        INPUT_CANDIDATE: ${{ inputs.candidate }}
+        INPUT_BASELINE: ${{ inputs.baseline }}
+        INPUT_POLICY: ${{ inputs.policy }}
+        INPUT_K: ${{ inputs.k }}
+        INPUT_REPORT: ${{ inputs.report }}
+      run: |
+        python -m openrag_bench.cli guard "$INPUT_CANDIDATE" \
+          --baseline "$INPUT_BASELINE" --policy "$INPUT_POLICY" \
+          --k "$INPUT_K" --output "$INPUT_REPORT" > /dev/null
+    - name: Write a safely escaped GitHub step summary
+      id: summary
+      if: always()
+      shell: bash
+      env:
+        INPUT_REPORT: ${{ inputs.report }}
+        OPENRAG_ACTION_ROOT: ${{ github.action_path }}
+      run: |
+        python "${OPENRAG_ACTION_ROOT}/summary.py" "$INPUT_REPORT"
