@@ -30,21 +30,51 @@ OpenRAG Bench is a small Python toolkit for comparing the ranked document result
 - **Integrate** custom, LangChain, LlamaIndex and optional FAISS retrievers using stable document IDs.
 - **Reproduce** seeded, paired-bootstrap uncertainty intervals without a cloud API.
 
-**Latest published release:** [v0.6.0 public GitHub alpha pre-release](https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.6.0), with SHA-256 checksums and tested wheel/source archives. This measures **retrieval relevance**, not LLM answer quality or factual correctness. The bundled quickstart fixtures are synthetic; separate, real **SciFact** benchmark results are independently verified and published below. We do not claim benchmark superiority or an established external user base.
+**Latest published version:** [v0.6.0 GitHub alpha pre-release](https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.6.0) (audited wheel, source archive and SHA-256 checksums; **not on PyPI**). This tool evaluates **retrieval relevance**, not generated-answer correctness or hallucination rates. The real SciFact results were cross-checked using a separate TREC scoring path in CI; they do not prove broad model superiority or independent external adoption.
 
 **Language:** English documentation (primary) · [Türkçe hızlı başlangıç](docs/README_TR.md)
 
-**New here?** Try the [short, reproducible demo](docs/DEMO_60_SECONDS.md)
-to see a critical retrieval regression blocked despite an aggregate
-improvement. Interested in testing it independently?
-[Give first-run feedback](https://github.com/ilker-Akbal/openrag-bench/issues/4).
-[English / Türkçe community introduction](docs/COMMUNITY_OUTREACH.md).
-The demo runs from the current `main` source checkout; the published v0.6.0
-wheel does not bundle that newer example. Our self-authored CI tests do not
-establish independent user adoption.
+**Start here:** [Run the short Guard demo](docs/DEMO_60_SECONDS.md) · [Use your own RAG retriever](docs/OWN_RAG_QUICKSTART.md) · [Türkçe hızlı başlangıç](docs/README_TR.md) · [Report a real setup problem](https://github.com/ilker-Akbal/openrag-bench/issues/4)
+
+**Package vs. repository:** The published **v0.6.0 wheel** includes Guard, Golden Dataset Studio and Capture & Replay. The newer `examples/quickstart_capture_replay.py` demonstration is available in the current **`main` source checkout**, not inside that published wheel. Self-authored CI checks are not evidence of external adoption.
 
 
-## OpenRAG Guard — block critical retrieval regressions (v0.5.0)
+## Get started
+
+Tested in CI on **Python 3.10–3.13**. The package declares Python >=3.10;
+newer interpreter versions are not yet part of our tested matrix.
+
+**Option A — install the published v0.6.0 wheel** (offline evaluation after installation; downloading the wheel requires network access):
+
+~~~bash
+python -m pip install https://github.com/ilker-Akbal/openrag-bench/releases/download/v0.6.0/openrag_bench-0.6.0-py3-none-any.whl
+openrag-bench --help
+openrag-bench init --directory openrag-demo
+openrag-bench guard openrag-demo/candidate.json --baseline openrag-demo/baseline.json --policy openrag-demo/guard-policy.json --k 1 --html guard.html
+~~~
+
+Open `guard.html` in your browser (Windows PowerShell: `Start-Process .\guard.html`). The sample candidate passes its configured Guard policy. To see an **intentional BLOCK** (exit code **2**) without clobbering any files:
+
+~~~bash
+openrag-bench guard openrag-demo/candidate-regression.json --baseline openrag-demo/baseline.json --policy openrag-demo/guard-policy.json --k 1 --html guard-blocked.html
+~~~
+
+**Option B — clone `main` for examples, tests and the newer Capture/Replay demo:**
+
+~~~bash
+git clone https://github.com/ilker-Akbal/openrag-bench.git
+cd openrag-bench
+python -m pip install -e .
+python examples/quickstart_capture_replay.py --output-dir reports/first-demo
+~~~
+
+Open `reports/first-demo/guard.html` (Windows: `Start-Process .\reports\first-demo\guard.html`). This synthetic demo **correctly blocks** a critical loss despite an aggregate score increase. Its **wrapper exits 0** when the expected blocked result is verified; an ordinary blocked `guard` or `replay` CLI call returns **2**. Use a fresh output directory on subsequent runs; the demo refuses to overwrite captures.
+
+See [step-by-step demo](docs/DEMO_60_SECONDS.md), [versioned v0.6.0 release assets](https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.6.0), and [bring-your-own-retriever integration](docs/OWN_RAG_QUICKSTART.md).
+
+## Features
+
+## OpenRAG Guard — critical-query regression policies
 
 OpenRAG Guard checks **scoped retrieval quality policies**. It can block
 an update when the overall NDCG improves but a critical privacy question
@@ -56,12 +86,9 @@ openrag-bench doctor openrag-demo/candidate.json --baseline openrag-demo/baselin
 openrag-bench guard openrag-demo/candidate.json --baseline openrag-demo/baseline.json --policy openrag-demo/guard-policy.json --k 1 --html guard.html
 ~~~
 
-Try candidate-regression.json instead of candidate.json to see the same
-overall improvement correctly **blocked** (exit status 2). All demo inputs
-are original synthetic text. See the [OpenRAG Guard policy and Action guide](docs/GUARD.md).
-This release includes the Guard commands directly in the installable wheel.
+Run the `candidate-regression.json` example from **Get started** to see the critical loss correctly **blocked** (exit status 2). All bundled demo inputs are original synthetic data. See the [OpenRAG Guard policy and Action guide](docs/GUARD.md). Guard is included in the published v0.6.0 wheel.
 
-## Golden Dataset Studio (v0.5.0 public alpha pre-release)
+## Golden Dataset Studio — offline human relevance labels
 
 Generate a **standalone offline browser editor** without a server, account or API key:
 
@@ -77,12 +104,9 @@ The exported golden labels intentionally have empty retrieved_ids: the user's
 actual retriever must fill rankings in candidate and baseline before evaluation.
 See [Studio documentation](docs/STUDIO.md).
 
-**Status:** Studio is packaged in the v0.5.0 GitHub alpha pre-release.
-Automated Python, CLI and JavaScript UI smoke tests pass; broader real-user
-browser and accessibility testing remains open. Treat it as an early tool,
-not an audited production collaboration or document management platform.
+**Status:** Studio was introduced in v0.5.0 and is included in the published **v0.6.0** wheel. Python, CLI and JavaScript UI smoke tests pass; **independent human browser and accessibility testing remains open**. It is an alpha tool, not an audited production collaboration or document management platform.
 
-## Capture & Replay (v0.6.0 public GitHub alpha pre-release)
+## Capture & Replay — record real rankings and replay Guard
 
 The published v0.6.0 release adds offline `capture` for joining actual ranked
 retriever results with human-reviewed Golden Dataset Studio labels. A strict
@@ -107,42 +131,21 @@ published, and locally generated per-query data must remain private.
 
 Run an original, small lexical retrieval example with real ranked IDs and a
 deliberate **critical-query release block**, even though overall retrieval
-NDCG improves. No models, network requests or API keys are required:
+NDCG improves. After the source checkout is installed, this synthetic demo needs no model, API key or network access:
 
 ~~~bash
 python examples/quickstart_capture_replay.py --output-dir reports/quickstart
 ~~~
 
-Open `reports/quickstart/guard.html`. The demo is synthetic and does not
-prove independent adoption. For actual LangChain, LlamaIndex or custom
-retrievers, see the [bring-your-own-RAG walkthrough](docs/OWN_RAG_QUICKSTART.md).
+Open `reports/quickstart/guard.html`. A **BLOCKED** policy is the expected result, and the demo wrapper returns 0 because it verified that block. The dataset is synthetic and does **not** establish independent adoption. For LangChain, LlamaIndex or custom retrievers, see the [bring-your-own-RAG walkthrough](docs/OWN_RAG_QUICKSTART.md).
 
-## Quick start
-
-Requires Python 3.10 or newer. Install the **GitHub release wheel** (not published on PyPI):
-
-```bash
-python -m pip install https://github.com/ilker-Akbal/openrag-bench/releases/download/v0.6.0/openrag_bench-0.6.0-py3-none-any.whl
-openrag-bench --help
-```
-
-To run the examples and tests from source:
-
-```bash
-git clone https://github.com/ilker-Akbal/openrag-bench.git
-cd openrag-bench
-python -m pip install -e .
-python -m unittest discover -s tests -v
-openrag-bench examples/retrieval_results.json --k 2 --output report.json --html report.html
-```
-
-## Offline diagnostic explorer (v0.5.0)
+## Offline HTML diagnostic explorer
 
 Standalone interactive HTML reports show per-query worst regressions, judgment coverage, empty retrieval cases, top-k overlap, and local metric filtering. Reports contain query IDs, **not raw question text or document IDs**.
 
 They use no external scripts or trackers.
 
-The reviewed v0.5.0 release includes a refreshed report-first dashboard
+The v0.6.0 package includes a report-first dashboard
 with a clear **release decision**, critical-query before/after ranking
 evidence, plain-English policy failures, an explicit warning when a passed
 policy permits individual regressions, filters, and collapsed technical
@@ -168,7 +171,7 @@ Use newline-delimited retrieval records directly and export spreadsheet-safe, qu
 
 ```bash
 openrag-bench examples/retrieval_results.json --csv per_query.csv --k 2
-openrag-bench candidate.jsonl --baseline baseline.jsonl --csv deltas.csv --k 5
+openrag-bench examples/comparison_candidate.json --baseline examples/comparison_baseline.json --csv deltas.csv --k 2
 ```
 
 CSV reports exclude raw question text and protect against spreadsheet formula injection. See [data formats](docs/USAGE.md).
@@ -178,10 +181,10 @@ CSV reports exclude raw question text and protect against spreadsheet formula in
 For large labeled JSONL datasets, evaluate without materializing the complete input or per-query report:
 
 ~~~bash
-openrag-bench large.jsonl --streaming-summary --k 5 --output summary.json
+openrag-bench your-labeled-queries.jsonl --streaming-summary --k 5 --output summary.json
 ~~~
 
-This mode writes only aggregate metrics and rejects baselines, HTML, CSV and TREC inputs. Normal JSONL/JSON/TREC behavior remains unchanged. See the [streaming guide](docs/USAGE.md) and [100k-query synthetic benchmark evidence](benchmarks/streaming_100k_2026-10-13.json).
+The `your-labeled-queries.jsonl` path above is a **placeholder for your own labeled JSONL input**, not a file bundled with this repository. This mode writes only aggregate metrics and rejects baselines, HTML, CSV and TREC inputs. Normal JSONL/JSON/TREC behavior remains unchanged. See the [streaming guide](docs/USAGE.md) and [100k-query synthetic benchmark evidence](benchmarks/streaming_100k_2026-10-13.json).
 
 On one Python 3.11 GitHub runner, Python peak allocations were 0.302 MiB streaming versus 121.297 MiB batch, while streaming took 12.46 s versus 9.42 s batch. This is a **memory-for-speed tradeoff**, not a production throughput or total system RAM claim.
 
@@ -222,7 +225,7 @@ openrag-bench examples/trec_candidate.run \
 
 Each query from the qrels contributes to the score even when the run returns nothing. Positive relevance grades count as relevant; zero and negative judgments are not relevant. Unknown query IDs, duplicate docs, duplicate ranks and invalid scores are rejected.
 
-## Run against a real retriever
+## Integrate a retriever using the Python protocol
 
 ```python
 from openrag_bench.adapters import run_retriever
@@ -239,14 +242,14 @@ result = run_retriever(
 print(result["metrics"])
 ```
 
-An optional FAISS adapter and reproducible synthetic-vector example are provided:
+The code above is a **protocol illustration using fixed returned IDs**, not a real search benchmark. Replace the example retriever with your own ranking system. An optional FAISS adapter and a reproducible synthetic-vector example are provided (run from a source checkout):
 
 ```bash
 python -m pip install '.[faiss]'
 python examples/faiss_integration.py
 ```
 
-## Turkish human-labeled retrieval evaluation (v0.5.0)
+## Human-labeled Turkish retrieval benchmark
 
 A dedicated offline Python evaluator measures BM25 under Unicode casefolding versus Turkish-specific dotted/dotless-I casing on an **external** dataset of 54 Turkish Wikipedia articles and **58 human-annotated Turkish questions**.
 
@@ -305,9 +308,9 @@ python examples/scifact_dense_faiss.py --download --k 10
 
 Ordinary unit CI does not download weights; a dedicated GitHub Actions workflow performs the real model evaluation.
 
-## Development quality gates (v0.5.0)
+## Development quality gates — current source
 
-The required Python 3.11 CI job now runs Ruff static lint, exact coverage measurement, and Hypothesis property tests alongside ordinary unit tests.
+The Python 3.11 CI job runs Ruff lint, measured line coverage with a **90% minimum**, and Hypothesis property tests alongside ordinary unit tests. The CI matrix also checks Python 3.10, 3.12 and 3.13; historical coverage percentages should not be mistaken for current measurements.
 
 Development tooling remains an **optional** install, not a mandatory runtime dependency.
 
@@ -326,6 +329,7 @@ See [quality requirements and actual measured coverage](docs/QUALITY.md).
 The tool is maintained in the open. You can install the existing public pre-release, reproduce the verified SciFact results, report bugs with tiny synthetic fixtures, or suggest a new retriever adapter. Contributions and issues must come from real users; no usage figures are claimed.
 
 - [Reproduce independently or contribute](docs/GET_INVOLVED.md)
+- [EN/TR community introduction](docs/COMMUNITY_OUTREACH.md) and [public feedback issue](https://github.com/ilker-Akbal/openrag-bench/issues/4)
 - [Ask a usage question or report a reproducible bug](SUPPORT.md)
 - [Contributor guidelines](CONTRIBUTING.md)
 - [Report a security concern](SECURITY.md)
@@ -333,6 +337,10 @@ The tool is maintained in the open. You can install the existing public pre-rele
 
 ## Documentation
 
+- [First-run demonstration and expected BLOCKED report](docs/DEMO_60_SECONDS.md)
+- [Golden Dataset Studio](docs/STUDIO.md) · [Capture & Replay](docs/CAPTURE_REPLAY.md) · [Guard policy](docs/GUARD.md)
+- [Connect your own retriever](docs/OWN_RAG_QUICKSTART.md) · [LangChain/LlamaIndex adapters](docs/FRAMEWORK_INTEGRATIONS.md)
+- [Türkçe hızlı başlangıç](docs/README_TR.md)
 - [Input format, metric definitions and limitations](docs/USAGE.md)
 - [Contributor guide](CONTRIBUTING.md)
 - [Security guidance](SECURITY.md)
