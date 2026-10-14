@@ -1,11 +1,8 @@
 name: Publish v0.5.0 GitHub pre-release
 
-# One-time audited v0.5.0 alpha pre-release; retire push after success.
+# v0.5.0 alpha pre-release published and verified; historical manual audit only.
+# Existing release/tag may not be overwritten.
 on:
-  push:
-    branches: [main]
-    paths:
-      - ".github/workflows/release-v0.5.0.yml"
   workflow_dispatch:
 
 permissions:
