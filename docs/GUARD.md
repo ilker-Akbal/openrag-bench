@@ -90,8 +90,8 @@ To explore more varied rankings and graded relevance at `k=3`:
 openrag-bench guard examples/report_diverse_candidate.json --baseline examples/report_diverse_baseline.json --policy examples/guard_policy.json --k 3 --html report_diverse.html
 ~~~
 
-The two example files are original and synthetic. The released v0.4.0 wheel
-predates this HTML facelift; use a reviewed source checkout for the new UI.
+The two example files are original and synthetic. The reviewed v0.4.1 GitHub wheel includes this redesigned HTML report.
+Previously published v0.4.0 artifacts remain unchanged.
 
 ## Evidence and privacy
 
