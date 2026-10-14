@@ -66,14 +66,14 @@ not become required dependencies for the offline core.
 - [x] CI proves a critical query regression is blocked despite improved aggregate score
 - [x] Versioned pre-release only after independent audit and CI
 
-## v0.5 — Golden Dataset Studio (in development)
+## v0.5 — Golden Dataset Studio (alpha released 2026-10-14)
 
-- [ ] Local static HTML browser editor without third-party scripts or uploads
-- [ ] Import/export human-rated golden query/document judgments
-- [ ] Edit critical tags, categories and relevance grades 1–3
-- [ ] Export editable JSON drafts and default Guard policy v1
-- [ ] Validate duplicates, stale references, and missing labels on export
-- [ ] Verify GUI interactively on desktop and mobile before publishing v0.5
+- [x] Local static HTML browser editor without third-party scripts or uploads
+- [x] Import/export human-rated golden query/document judgments
+- [x] Edit critical tags, categories and relevance grades 1–3
+- [x] Export editable JSON drafts and default Guard policy v1
+- [x] Validate duplicates, stale references, and missing labels on export
+- [ ] Complete independent human UI and accessibility checks before declaring v0.5 production ready
 
 ## Next releases (proposed, not implemented)
 

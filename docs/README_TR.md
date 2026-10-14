@@ -1,7 +1,7 @@
 # OpenRAG Bench — Türkçe Hızlı Başlangıç
 
 [English README](../README.md) ·
-[GitHub v0.4.1 ön sürümü](https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.4.1)
+[GitHub v0.5.0 ön sürümü](https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.5.0)
 
 **OpenRAG Bench**, RAG sistemlerinin *belge erişim (retrieval) kalitesini*
 ölçen, iki retrieval sürümünü karşılaştırabilen ve performans gerilemelerini
@@ -24,7 +24,7 @@ doğruluğunu, halüsinasyon oranını veya bilgiye dayandırılmasını doğrud
 Python 3.10–3.13 desteklenir. GitHub ön sürümü için:
 
 ```bash
-python -m pip install https://github.com/ilker-Akbal/openrag-bench/releases/download/v0.4.1/openrag_bench-0.4.1-py3-none-any.whl
+python -m pip install https://github.com/ilker-Akbal/openrag-bench/releases/download/v0.5.0/openrag_bench-0.5.0-py3-none-any.whl
 openrag-bench --help
 ```
 
@@ -105,7 +105,7 @@ Tek bir sağlık alanındaki 58 soru, genel Türkçe RAG doğruluğunu kanıtlam
 Ayrıntılar: [Veri ve yöntem belgesi](TURKISH_BENCHMARK.md).
 
 
-## OpenRAG Guard (v0.4.1)
+## OpenRAG Guard (v0.5.0)
 
 Genel retrieval metriği artsa dahi kritik bir soru bozuluyorsa sürümü
 engellemek için kurallar tanımlar. Veri ve politikayı internetsiz doğrular:
@@ -121,7 +121,7 @@ Son komut örnek kritik soruda hatayı yakalar ve çıkış kodu 2 olur. Belgele
 sentetiktir; [ayrıntılı politika sözleşmesi](GUARD.md).
 
 
-## Golden Dataset Studio — v0.5 geliştirme
+## Golden Dataset Studio — v0.5.0 alfa sürümü
 
 Tek komutla internetsiz, tek HTML dosyalı bir etiketleme editörü oluştur:
 
