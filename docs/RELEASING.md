@@ -10,7 +10,7 @@ human-labeled retrieval benchmark, low-memory evaluation and enforced
 quality/coverage tests. All versions are GitHub **pre-releases**, not PyPI
 distributions.
 
-The v0.3.0, v0.4.0 and v0.4.1 tags and GitHub Releases are published through one-time,
+The v0.3.0, v0.4.0, v0.4.1 and v0.5.0 tags and GitHub Releases are published through one-time,
 audited GitHub Actions release workflow and have public SHA-256 checksums.
 
 This checklist applies to **future** releases. A package version alone never

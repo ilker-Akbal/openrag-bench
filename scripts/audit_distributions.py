@@ -20,6 +20,7 @@ REQUIRED = (
     "openrag_bench/streaming.py",
     "openrag_bench/guard.py",
     "openrag_bench/commands.py",
+    "openrag_bench/studio.py",
 )
 FORBIDDEN = {"day-01-llm-rag-agents", "day-02-computer-vision",
              "day-03-sensor-fusion-navigation", "practice",
@@ -86,6 +87,9 @@ def audit(directory):
                          "scripts/benchmark_streaming.py",
                          "benchmarks/streaming_100k_2026-10-13.json",
                          "tests/test_guard.py",
+                         "tests/test_studio.py",
+                         "tests/studio_ui_smoke.cjs",
+                         "docs/STUDIO.md",
                          "docs/GUARD.md",
                          "examples/guard_baseline.json",
                          "examples/guard_candidate.json",

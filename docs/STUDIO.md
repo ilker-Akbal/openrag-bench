@@ -1,6 +1,6 @@
 # Golden Dataset Studio — offline human relevance labeling
 
-**Status:** development target for v0.5. The published v0.4.1 GitHub wheel does not include this editor.
+**Status:** included in the v0.5.0 GitHub alpha pre-release. Real-user browser and accessibility review are ongoing; no PyPI release.
 
 ## What it does
 
@@ -10,7 +10,7 @@ or a retriever, upload document content, or automatically guess correct answers.
 
 ## Launch locally
 
-Install from the checked-out development branch and run:
+Install the reviewed v0.5.0 GitHub wheel (or use a checked-out source tree) and run:
 
     python -m pip install -e .
     openrag-bench studio --output golden-dataset-studio.html
@@ -85,5 +85,5 @@ your use case; auto-generated policies are only a starting point.
 Python unit tests validate generator output, safe file overwrite behavior,
 offline design constraints and emitted data schema. GitHub Actions extracts
 the embedded script and runs Node's JavaScript syntax checker. A real browser
-end-to-end test and human usability review are required before a v0.5
-release is claimed as production-ready.
+end-to-end test and human usability review remain necessary before any
+production-readiness claim. v0.5.0 is a public alpha pre-release.

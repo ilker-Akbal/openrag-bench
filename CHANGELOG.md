@@ -1,6 +1,11 @@
 # Changelog
 
-## Unreleased — Golden Dataset Studio v0.5 development
+## [v0.5.0] — 2026-10-14
+
+[GitHub v0.5.0 alpha pre-release](https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.5.0)
+adds the offline, human-driven Golden Dataset Studio. This is early adopter
+software with automated browser-logic smoke and Python security checks;
+external usability testing is still pending.
 
 - Add a dependency-free local browser editor for manual question/doc relevance
   grades, categories and critical query flags.
