@@ -34,6 +34,16 @@ OpenRAG Bench is a small Python toolkit for comparing the ranked document result
 
 **Language:** English documentation (primary) · [Türkçe hızlı başlangıç](docs/README_TR.md)
 
+**New here?** Try the [short, reproducible demo](docs/DEMO_60_SECONDS.md)
+to see a critical retrieval regression blocked despite an aggregate
+improvement. Interested in testing it independently?
+[Give first-run feedback](https://github.com/ilker-Akbal/openrag-bench/issues/4).
+[English / Türkçe community introduction](docs/COMMUNITY_OUTREACH.md).
+The demo runs from the current `main` source checkout; the published v0.6.0
+wheel does not bundle that newer example. Our self-authored CI tests do not
+establish independent user adoption.
+
+
 ## OpenRAG Guard — block critical retrieval regressions (v0.5.0)
 
 OpenRAG Guard checks **scoped retrieval quality policies**. It can block
