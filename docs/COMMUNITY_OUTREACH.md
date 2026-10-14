@@ -6,6 +6,11 @@ Respect each community's self-promotion and link policies; only post where
 feedback requests are permitted. Personalize each post and avoid mass posting,
 vote requests, manufactured testimonials, or claims of independent adoption.
 
+**Non-LinkedIn distribution:** Ready-to-paste channel-specific Reddit
+megathread, Show HN and DEV tutorial drafts and a truthful posting log are in
+[OUTREACH_NO_LINKEDIN.md](OUTREACH_NO_LINKEDIN.md). The GitHub invitation
+is public, but no external platform post has been made from this repository.
+
 Project: https://github.com/ilker-Akbal/openrag-bench
 
 Current latest public GitHub **alpha**: v0.6.0 (MIT, Python 3.10–3.13,
