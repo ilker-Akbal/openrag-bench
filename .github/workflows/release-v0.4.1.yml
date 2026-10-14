@@ -1,11 +1,8 @@
 name: Publish v0.4.1 GitHub pre-release
 
-# Single-use fail-closed audited v0.4.1 publication. Retire push after success.
+# v0.4.1 published and verified; historical publisher is manual only.
+# The existing tag and release remain immutable; overwrite attempts fail.
 on:
-  push:
-    branches: [main]
-    paths:
-      - ".github/workflows/release-v0.4.1.yml"
   workflow_dispatch:
 
 permissions:
