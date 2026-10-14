@@ -87,6 +87,17 @@ not become required dependencies for the offline core.
 - [x] Audited wheel/source archives, clean installs, SHA256SUMS and GitHub v0.6.0 alpha release
 - [x] v0.6.0 published without altering historical release tags or assets
 
+## Onboarding and external verification follow-up (ongoing)
+
+- [x] Start an executable, no-cloud, deliberately blocked Capture/Replay example
+  with its own CI tests: [tracking issue #52](https://github.com/ilker-Akbal/openrag-bench/issues/52)
+- [x] Document Studio → user-owned retriever → Capture → Guard Replay with
+  stable-ID and data privacy guidance
+- [ ] Have an **independent** developer follow the instructions, record
+  actual setup time and report genuine friction (#39, #4)
+- [ ] Validate an actual downstream LangChain/LlamaIndex/custom integration
+  that the project maintainer did not author, using private data safely
+
 ## Future proposals (not implemented)
 
 - Later: latency/cost guardrails when independently measurable.

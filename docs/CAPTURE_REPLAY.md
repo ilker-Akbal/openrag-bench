@@ -4,6 +4,10 @@
 This is an offline capture-to-evaluation workflow, not an HTTP traffic recorder,
 retrieval engine, LLM evaluator, or a claim of live end-to-end integration.
 
+For an end-to-end first report with an intentionally blocked critical query,
+see the [no-cloud quickstart and own-retriever integration template](OWN_RAG_QUICKSTART.md).
+The synthetic demo does not constitute an external real-world benchmark.
+
 ## From Golden Dataset Studio to real retrieval evidence
 
 1. Export `openrag-golden-judgments.json` from Studio. Its `retrieved_ids`

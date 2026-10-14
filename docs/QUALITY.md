@@ -4,9 +4,9 @@ OpenRAG Bench's ordinary dependency-free runtime has **zero mandatory
 third-party Python dependencies**. Its *optional* dev extra isolates
 the following pinned developer tools:
 
-- ruff==0.14.0 — focused syntax errors, undefined/unused imports and E4/E7/E9/F checks
-- coverage==7.10.7 — measure executed Python lines in openrag_bench
-- hypothesis==6.143.1 — randomized but reproducible invariant tests for
+- ruff==0.17.0 — focused syntax errors, undefined/unused imports and E4/E7/E9/F checks
+- coverage==7.16.2 — measure executed Python lines in openrag_bench
+- hypothesis==6.168.5 — randomized but reproducible invariant tests for
   metric bounds, label order and paired candidate/baseline symmetry
 
 ## Reproduce
@@ -27,8 +27,10 @@ The existing **Python 3.11** status check in ci.yml executes these commands
 and must pass under the active main-branch ruleset. The other 3.10, 3.12
 and 3.13 jobs still run standard library unit tests and package smoke tests.
 
-The observed initial Python 3.11 CI report measured **95% line coverage**
-(555 measured statements, 26 missed). The enforced threshold is set to
+An earlier Python 3.11 CI report measured **95% line coverage**
+(555 measured statements, 26 missed). More recent releases add further modules
+and must be checked against the **current** CI coverage report rather than
+reusing that historical count. The enforced threshold is set to
 **90%**, leaving a small margin while catching substantial regressions.
 This is actual line coverage under that test environment, **not** branch
 coverage, production correctness or whole application security.
