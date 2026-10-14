@@ -1,11 +1,8 @@
 name: Publish v0.4.0 GitHub pre-release
 
-# One-time audited release trigger; refuse an existing tag.
+# v0.4.0 published successfully; historical workflow is manual only.
+# Existing v0.4.0 release and tag are immutable; this job refuses overwrites.
 on:
-  push:
-    branches: [main]
-    paths:
-      - ".github/workflows/release-v0.4.0.yml"
   workflow_dispatch:
 
 permissions:
