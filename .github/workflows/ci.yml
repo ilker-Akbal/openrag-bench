@@ -80,6 +80,8 @@ jobs:
           openrag-bench studio --output studio-smoke.html
           python -c "from pathlib import Path; h=Path('studio-smoke.html').read_text(); assert 'connect-src' in h and 'createObjectURL' in h; Path('studio-smoke.js').write_text(h.split('<script>')[1].split('</script>')[0])"
           node --check studio-smoke.js
+          node tests/studio_ui_smoke.cjs
+          python -c "from openrag_bench.cli import _validate; from openrag_bench.guard import validate_policy; import json; rows=json.load(open('studio-judgments-smoke.json')); _validate(rows,3); assert all(not x['retrieved_ids'] for x in rows); validate_policy(json.load(open('studio-policy-smoke.json')))"
       - name: CLI smoke test
         run: openrag-bench examples/retrieval_results.json --k 2 --output report.json --html report.html
       - name: Offline explorer smoke test
