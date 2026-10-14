@@ -111,4 +111,5 @@ release, not a moving main branch. The RAG pipeline itself must produce
 candidate and baseline ranking outputs; the action evaluates these files
 and does not run the retriever automatically.
 
-v0.3.0 is unchanged. The code described here targets the next release.
+Guard is published as a GitHub v0.4.0 pre-release (not on PyPI).
+Previous release tags and assets remain immutable.

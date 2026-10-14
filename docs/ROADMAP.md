@@ -58,13 +58,13 @@ provides the working baseline; future experiments must not rewrite prior
 published metric values or tags. Large optional frameworks and models must
 not become required dependencies for the offline core.
 
-## v0.4 — OpenRAG Guard (development)
+## v0.4 — OpenRAG Guard (released 2026-10-14)
 
-- [ ] Versioned fail-closed quality policies: aggregate, critical and category rules
-- [ ] Five-minute onboarding with init and doctor
-- [ ] Reusable GitHub Action with safe step summary and deterministic failure status
-- [ ] CI proves a critical query regression is blocked despite improved aggregate score
-- [ ] Versioned pre-release only after independent audit and CI
+- [x] Versioned fail-closed quality policies: aggregate, critical and category rules
+- [x] Five-minute onboarding with init and doctor
+- [x] Reusable GitHub Action with safe step summary and deterministic failure status
+- [x] CI proves a critical query regression is blocked despite improved aggregate score
+- [x] Versioned pre-release only after independent audit and CI
 
 ## Next releases (proposed, not implemented)
 

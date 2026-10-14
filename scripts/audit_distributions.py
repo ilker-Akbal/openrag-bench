@@ -18,6 +18,8 @@ REQUIRED = (
     "openrag_bench/integrations/frameworks.py",
     "openrag_bench/html_report.py",
     "openrag_bench/streaming.py",
+    "openrag_bench/guard.py",
+    "openrag_bench/commands.py",
 )
 FORBIDDEN = {"day-01-llm-rag-agents", "day-02-computer-vision",
              "day-03-sensor-fusion-navigation", "practice",
@@ -82,7 +84,13 @@ def audit(directory):
                          "examples/turkish_real_benchmark.py",
                          "examples/framework_real_integration.py",
                          "scripts/benchmark_streaming.py",
-                         "benchmarks/streaming_100k_2026-10-13.json"):
+                         "benchmarks/streaming_100k_2026-10-13.json",
+                         "tests/test_guard.py",
+                         "docs/GUARD.md",
+                         "examples/guard_baseline.json",
+                         "examples/guard_candidate.json",
+                         "examples/guard_regression.json",
+                         "examples/guard_policy.json"):
             if not any(name.endswith("/" + required) for name in names):
                 raise ValueError(f"Source distribution missing {required}")
     return wheels[0], tarballs[0]
