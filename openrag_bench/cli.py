@@ -78,6 +78,11 @@ def evaluate(rows, k):
 
 
 def main(argv=None):
+    import sys
+    supplied = sys.argv[1:] if argv is None else list(argv)
+    if supplied and supplied[0] in ("init", "doctor", "guard"):
+        from . import commands
+        return getattr(commands, supplied[0])(supplied[1:])
     parser = argparse.ArgumentParser(
         description="Evaluate or compare ranked retrieval results (offline)")
     parser.add_argument("dataset", type=Path, help="Candidate JSON or TREC run file")
@@ -99,7 +104,7 @@ def main(argv=None):
     parser.add_argument("--csv", type=Path, help="Write per-query spreadsheet-safe CSV (excludes question text)")
     parser.add_argument("--streaming-summary", action="store_true",
                         help="Evaluate JSONL incrementally; output aggregate metrics without per-query rows")
-    args = parser.parse_args(argv)
+    args = parser.parse_args(supplied)
     if args.streaming_summary:
         if args.baseline or args.qrels or args.graded_qrels or args.csv or args.html:
             parser.error("--streaming-summary supports JSONL summary only; no --baseline, --qrels, --csv or --html")
@@ -162,4 +167,4 @@ def main(argv=None):
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
