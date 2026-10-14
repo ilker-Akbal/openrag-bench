@@ -95,6 +95,48 @@ published in the Guard HTML report. No retriever is run during replay.
 This separation enables offline deterministic comparison without claiming that
 replay itself executes the original retrieval model.
 
+## Reproduce Capture & Replay with a real external retriever
+
+The repository contains a **real BEIR SciFact** path using the official,
+checksummed 5,183-document/300-judged-query dataset. Both TF-IDF cosine and
+BM25 are implemented lexical retrievers that rank corpus documents based on
+actual query/doc terms, **not** copied golden labels. The same output is
+independently scored through the existing TREC benchmark.
+
+From the repository checkout, after installing the development branch:
+
+~~~powershell
+python examples/scifact_capture_replay.py --download --k 10 --output-dir reports/scifact-capture
+~~~
+
+To avoid network access use a previously verified \`data/scifact.zip\`
+with \`--archive data/scifact.zip\` and **omit** \`--download\`.
+When the archive checksum does not match the official BEIR publication,
+the program refuses to run.
+
+What happens:
+
+1. Build human-supplied golden judgments from official SciFact test qrels,
+   leaving \`retrieved_ids\` empty; no Studio critical flags are fabricated.
+2. Run real TF-IDF and BM25 searches against the external corpus for all queries.
+3. Feed actual ranked IDs to the new \`capture\` command (twice).
+4. \`replay\` uses the existing Guard engine to check aggregate NDCG non-regression.
+5. Independently compare the captured metrics with the original SciFact TREC
+   benchmark results in GitHub Actions; the CI artifact includes **aggregate
+   numbers only**.
+
+Locally generated \`reports/scifact-capture/*.json\` include third-party
+question texts, relevance labels and document IDs; the directory is gitignored
+and **must not be committed or attached as a public workflow artifact**. The
+console summary and uploaded CI summary contain only aggregate measurements,
+dataset counts, and the archive SHA-256.
+
+This is a real-data lexical retrieval integration. It is **not** evidence
+of LangChain/LlamaIndex production adoption or of LLM answer quality. Human
+Studio workflows with private source documents still require a user-owned
+retriever and matching stable IDs.
+
+
 ## Reproducibility and boundaries
 
 - Existing v0.5.0 evaluation JSON format and Guard policy v1 remain unchanged.
