@@ -212,7 +212,7 @@ def _guard_section(report):
                     '<div class="rank-compare">',
                     f'<div><small>Baseline first relevant</small><strong>'
                     f'{escape(_rank_label(baseline_rank))}</strong></div>',
-                    f'<span aria-hidden="true">→</span><div>',
+                    '<span aria-hidden="true">→</span><div>',
                     f'<small>Candidate first relevant</small><strong>'
                     f'{escape(_rank_label(candidate_rank))}</strong></div>',
                     '</div></article>',
