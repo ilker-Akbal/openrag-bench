@@ -1,7 +1,7 @@
 # OpenRAG Bench — Türkçe Hızlı Başlangıç
 
 [English README](../README.md) ·
-[GitHub v0.5.0 ön sürümü](https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.5.0)
+[GitHub v0.6.0 alfa ön sürümü](https://github.com/ilker-Akbal/openrag-bench/releases/tag/v0.6.0)
 
 **OpenRAG Bench**, RAG sistemlerinin *belge erişim (retrieval) kalitesini*
 ölçen, iki retrieval sürümünü karşılaştırabilen ve performans gerilemelerini
@@ -13,18 +13,19 @@ doğruluğunu, halüsinasyon oranını veya bilgiye dayandırılmasını doğrud
 
 ## Neler yapabilir?
 
-- Precision@k, Recall@k, Hit@k, MRR@k ve ikili NDCG@k
-- JSON ve TREC run/qrels dosyalarıyla değerlendirme
-- Baseline/candidate karşılaştırması ve JSON/HTML raporu
-- CI'da metrik gerilemesi için başarısız çıkış kodu
-- İsteğe bağlı FAISS, BM25 ve MiniLM entegrasyon örnekleri
+- Precision@k, Recall@k, Hit@k, MRR@k, MAP@k; ikili ve dereceli NDCG@k
+- JSON, JSONL ve TREC run/qrels dosyalarıyla değerlendirme
+- Baseline/candidate karşılaştırması; JSON, HTML ve CSV raporları
+- OpenRAG Guard ile kritik sorgu/kategori kuralları ve CI gerileme kontrolü
+- Golden Dataset Studio ile çevrimdışı elle etiketleme; Capture & Replay
+- İsteğe bağlı FAISS, BM25, MiniLM, LangChain ve LlamaIndex entegrasyon örnekleri
 
 ## Hızlı kurulum
 
 Python 3.10–3.13 desteklenir. GitHub ön sürümü için:
 
 ```bash
-python -m pip install https://github.com/ilker-Akbal/openrag-bench/releases/download/v0.5.0/openrag_bench-0.5.0-py3-none-any.whl
+python -m pip install https://github.com/ilker-Akbal/openrag-bench/releases/download/v0.6.0/openrag_bench-0.6.0-py3-none-any.whl
 openrag-bench --help
 ```
 
@@ -37,6 +38,36 @@ python -m pip install -e .
 python -m unittest discover -s tests -v
 python -m openrag_bench.cli examples/retrieval_results.json --k 2 --html report.html
 ```
+
+## Kısa Capture & Replay demosu
+
+Gerçek sıralı retrieval sonuçlarının kaydedilip Guard tarafından değerlendirildiği
+küçük **sentetik** örneği denemek için kaynak kodu klonladıktan sonra:
+
+~~~powershell
+python examples/quickstart_capture_replay.py --output-dir reports/first-demo
+Start-Process .\reports\first-demo\guard.html
+~~~
+
+Küçük kelime eşleştirme retriever'ları, genel NDCG@1 değeri yükselirken
+kritik bir gizlilik belgesinin kaybolduğu örneği üretir. Raporun **BLOCKED**
+göstermesi burada beklenen sonuçtur; test betiği doğru engellemeyi algıladığı
+için çıkış kodu 0 olur. Örnek **güncel `main` kaynak dalındadır**,
+yayımlanan v0.6.0 wheel paketinin içinde değildir.
+
+Adım adım açıklama: [Kısa demo](DEMO_60_SECONDS.md).
+Gerçek RAG sistemine bağlama: [Entegrasyon rehberi](OWN_RAG_QUICKSTART.md).
+
+## Bağımsız kullanıcı geri bildirimi
+
+Projeyi daha önce geliştirmemiş kişilerden temiz kurulum, ilk rapora ulaşma
+süresi ve kendi retriever'ına bağlama hakkındaki **gerçek** geri bildirimleri
+bekliyoruz. Komut, Python/işletim sistemi sürümü, commit SHA ve hatayı
+yeniden üreten sentetik örnekleri
+[GitHub geri bildirim konusuna](https://github.com/ilker-Akbal/openrag-bench/issues/4)
+ekleyebilirsiniz. API anahtarı, özel veri veya gizli belge göndermeyin.
+
+[İngilizce ve Türkçe paylaşım/geri bildirim çağrıları](COMMUNITY_OUTREACH.md).
 
 ## İki yöntemi karşılaştırma
 
