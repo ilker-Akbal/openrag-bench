@@ -47,6 +47,31 @@ For your **own retriever**, follow
 environment, unexpected failures and only **redacted** logs. No production
 secrets or private question/document text should be shared.
 
+## Verified first-party integration in a separate RAG repository
+
+OpenRAG Bench v0.6.0 has now been installed as a **real downstream
+dependency** in the maintainer's separate, existing
+[local Sentence Transformers + FAISS RAG practice repository](https://github.com/ilker-Akbal/roketsan-level-up-ai-2026).
+The [merged integration PR #2](https://github.com/ilker-Akbal/roketsan-level-up-ai-2026/pull/2)
+and [actual-model GitHub Actions run](https://github.com/ilker-Akbal/roketsan-level-up-ai-2026/actions/runs/38748708363)
+verify real embedding inference, FAISS ranked document IDs, Capture & Replay
+against the published v0.6.0 wheel, and a redacted Guard report.
+An intentional overrestrictive threshold also caused a measured regression
+that Guard rejected (exit code 2), as verified by that CI run.
+
+**Exact observed first-run result:** six short original synthetic documents,
+six author-labeled questions, BM25 **not involved**; NDCG@3 was 1.0000
+for both FAISS score thresholds (0.35 and 0.20), with no quality gain.
+The [full integration limits and commands](https://github.com/ilker-Akbal/roketsan-level-up-ai-2026/blob/main/docs/OPENRAG_BENCH_INTEGRATION.md)
+make clear why this tiny exercise is not a broad benchmark.
+
+**Integrity boundary:** This is a first-party cross-repository software
+integration performed by the **same maintainer**, not an independent
+external user, production deployment, third-party adoption, or evidence
+of general model superiority. It does demonstrate that the installable
+public release works in a separate repository with a real model and index.
+We still need genuinely independent developers to test their own systems.
+
 ## Useful first contributions
 
 1. Reproduce the [real SciFact experiment](BENCHMARK_SCIFACT.md) and compare
