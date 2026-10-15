@@ -231,6 +231,8 @@ Each query from the qrels contributes to the score even when the run returns not
 
 ## Retriever integrations
 
+**First-party cross-repository integration verified:** Our [separate local MiniLM + FAISS RAG project](https://github.com/ilker-Akbal/roketsan-level-up-ai-2026) installed the public v0.6.0 wheel and evaluated actual FAISS-ranked chunk IDs in [passing CI](https://github.com/ilker-Akbal/roketsan-level-up-ai-2026/actions/runs/38748708363). It uses only six author-labeled synthetic snippets; this is **not independent user adoption** or broad retrieval benchmarking. See [exact method and limits](docs/GET_INVOLVED.md).
+
 ### How it works
 
 Your RAG system supplies a ranked list of retrieved document IDs for each labeled question. OpenRAG Bench compares those rankings against explicitly documented relevant IDs. With a baseline and candidate JSON file, it reports per-query differences and seeded paired-bootstrap confidence intervals. Comparisons require matching query IDs and ground-truth labels.
